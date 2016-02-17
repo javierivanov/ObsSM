@@ -1,6 +1,6 @@
 /*******************************************************************************
  * ALMA - Atacama Large Millimeter Array
- * Copyright (c) AUI - Associated Universities Inc., 2011
+ * Copyright (c) AUI - Associated Universities Inc., 2016
  * (in the framework of the ALMA collaboration).
  * All rights reserved.
  * 
@@ -23,18 +23,34 @@
  * 
  *******************************************************************************/
 
-package org.alma.obssm.parser;
+package org.alma.obssm.sm;
 
-import java.util.List;
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class SubjectTransition {
-    public List<String> and_list;
-    public List<String> or_list;
-    public List<String> search_list;
+import org.alma.obssm.Run;
+import org.apache.commons.scxml.SCXMLListener;
+import org.apache.commons.scxml.model.Transition;
+import org.apache.commons.scxml.model.TransitionTarget;
+
+public class CustomEntryListener implements SCXMLListener {
 
     @Override
-    public String toString() {
-        return "SubjectTransition{" + "and_list=" + and_list + ", or_list=" + or_list + ", search_list=" + search_list + '}';
+    public void onEntry(TransitionTarget state) {
+    	Timestamp ts = new Timestamp(System.currentTimeMillis());
+        System.out.println(ts.toString() + " STATE: " + state.getId());
     }
-    
+
+    @Override
+    public void onExit(TransitionTarget state) {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void onTransition(TransitionTarget from, TransitionTarget to, Transition transition) {
+        //sthrow new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

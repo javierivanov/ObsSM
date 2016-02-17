@@ -1,6 +1,6 @@
 /*******************************************************************************
  * ALMA - Atacama Large Millimeter Array
- * Copyright (c) AUI - Associated Universities Inc., 2011
+ * Copyright (c) AUI - Associated Universities Inc., 2016
  * (in the framework of the ALMA collaboration).
  * All rights reserved.
  * 

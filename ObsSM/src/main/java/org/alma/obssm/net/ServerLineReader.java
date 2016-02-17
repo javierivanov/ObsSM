@@ -1,6 +1,6 @@
 /*******************************************************************************
  * ALMA - Atacama Large Millimeter Array
- * Copyright (c) AUI - Associated Universities Inc., 2011
+ * Copyright (c) AUI - Associated Universities Inc., 2016
  * (in the framework of the ALMA collaboration).
  * All rights reserved.
  * 
@@ -23,34 +23,41 @@
  * 
  *******************************************************************************/
 
-package org.alma.obssm.sm;
+package org.alma.obssm.net;
 
-import java.sql.Timestamp;
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import org.alma.obssm.Run;
-import org.apache.commons.scxml.SCXMLListener;
-import org.apache.commons.scxml.model.Transition;
-import org.apache.commons.scxml.model.TransitionTarget;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.Scanner;
 
-public class CustomEntryListener implements SCXMLListener {
+public class ServerLineReader {
+    private ServerSocket serverSocket;
 
-    @Override
-    public void onEntry(TransitionTarget state) {
-    	Timestamp ts = new Timestamp(System.currentTimeMillis());
-        System.out.println(ts.toString() + " STATE: " + state.getId());
+
+
+
+    public ServerSocket getServerSocket() {
+		return serverSocket;
+	}
+
+	public ServerLineReader(int port) throws IOException {
+        this.serverSocket = new ServerSocket(port);
     }
 
-    @Override
-    public void onExit(TransitionTarget state) {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public String waitForLine() throws IOException
+    {
+        Socket client = this.serverSocket.accept();
+        Scanner s = new Scanner(client.getInputStream());
+        String out = s.nextLine();
+        s.close();
+        client.close();
+        return out;
     }
 
-    @Override
-    public void onTransition(TransitionTarget from, TransitionTarget to, Transition transition) {
-        //sthrow new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
+    public void killserver() throws IOException
+    {
+        this.serverSocket.close();
+    }
 }

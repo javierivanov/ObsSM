@@ -1,6 +1,6 @@
 /*******************************************************************************
  * ALMA - Atacama Large Millimeter Array
- * Copyright (c) AUI - Associated Universities Inc., 2011
+ * Copyright (c) AUI - Associated Universities Inc., 2016
  * (in the framework of the ALMA collaboration).
  * All rights reserved.
  * 
@@ -23,41 +23,18 @@
  * 
  *******************************************************************************/
 
-package org.alma.obssm.net;
+package org.alma.obssm.parser;
 
+import java.util.List;
 
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.Scanner;
+public class SubjectTransition {
+    public List<String> and_list;
+    public List<String> or_list;
+    public List<String> search_list;
 
-public class ServerLineReader {
-    private ServerSocket serverSocket;
-
-
-
-
-    public ServerSocket getServerSocket() {
-		return serverSocket;
-	}
-
-	public ServerLineReader(int port) throws IOException {
-        this.serverSocket = new ServerSocket(port);
+    @Override
+    public String toString() {
+        return "SubjectTransition{" + "and_list=" + and_list + ", or_list=" + or_list + ", search_list=" + search_list + '}';
     }
-
-    public String waitForLine() throws IOException
-    {
-        Socket client = this.serverSocket.accept();
-        Scanner s = new Scanner(client.getInputStream());
-        String out = s.nextLine();
-        s.close();
-        client.close();
-        return out;
-    }
-
-
-    public void killserver() throws IOException
-    {
-        this.serverSocket.close();
-    }
+    
 }
