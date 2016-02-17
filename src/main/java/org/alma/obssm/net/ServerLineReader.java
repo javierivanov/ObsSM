@@ -9,10 +9,10 @@ import java.util.Scanner;
 
 public class ServerLineReader {
     private ServerSocket serverSocket;
-    
-    
-    
-    
+
+
+
+
     public ServerSocket getServerSocket() {
 		return serverSocket;
 	}
@@ -20,7 +20,7 @@ public class ServerLineReader {
 	public ServerLineReader(int port) throws IOException {
         this.serverSocket = new ServerSocket(port);
     }
-    
+
     public String waitForLine() throws IOException
     {
         Socket client = this.serverSocket.accept();
@@ -30,8 +30,8 @@ public class ServerLineReader {
         client.close();
         return out;
     }
-    
-    
+
+
     public void killserver() throws IOException
     {
         this.serverSocket.close();
