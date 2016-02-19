@@ -1,4 +1,14 @@
 {
-  "array.creation": {"and_list": ["component CONTROL/Array", "activated and initialized in"], "or_list": [], "search_list": ["(Array)\\d+"]},
-  "component.delivered": {"and_list": ["observing mode starting"], "or_list": [], "search_list": ["(Array)\\d+"]}
+  "array.creation":
+    {
+       "and_list": ["component CONTROL/Array", "activated and initialized in"],
+       "or_list": [],
+       "search_list": ["(Array)\\d+"]
+    },
+  "component.delivered":
+    {
+       "and_list": ["observing mode starting"],
+       "or_list": [],
+       "search_list": ["(Array)\\d+"]
+    }
 }

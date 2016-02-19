@@ -26,11 +26,7 @@
 package org.alma.obssm.sm;
 
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import org.alma.obssm.Run;
 import org.apache.commons.scxml.SCXMLListener;
 import org.apache.commons.scxml.model.Transition;
 import org.apache.commons.scxml.model.TransitionTarget;

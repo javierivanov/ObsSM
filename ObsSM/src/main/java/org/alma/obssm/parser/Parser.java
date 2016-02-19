@@ -25,11 +25,6 @@
 
 package org.alma.obssm.parser;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -39,8 +34,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
 
 /**
  *
@@ -57,7 +57,7 @@ public class Parser {
         this.subjects = new HashMap<>();
         
         Set<Entry<String, JsonElement>> se = element.getAsJsonObject().entrySet();
-        for (Iterator i = se.iterator(); i.hasNext();)
+        for (Iterator<Entry<String, JsonElement>> i = se.iterator(); i.hasNext();)
         {
             Entry<String, JsonElement> e = (Entry<String, JsonElement>) i.next();
             SubjectTransition t = gson.fromJson(e.getValue(), SubjectTransition.class);
@@ -93,6 +93,7 @@ public class Parser {
     
     private SubjectTransition getSubjectTransition(String transition) throws NullPointerException
     {
+    	if (transition == null) return null;
         SubjectTransition st = this.subjects.get(transition);
         if (st == null)
         {
@@ -104,14 +105,16 @@ public class Parser {
     
     public List<String> getListSearchPattern(String line, String transition) throws NullPointerException
     {
+    	System.out.println(transition);
         SubjectTransition st = getSubjectTransition(transition);
         List<String> list =   new ArrayList<>();
-        
+
         st.search_list.stream().map((pattern) -> Pattern.compile(pattern)).map((p) -> p.matcher(line)).map((m) -> {
             String output = "";
             if (m.find())
             {
                 output = m.group();
+                System.out.println(output);
             }
             return output;
         }).forEach((output) -> {

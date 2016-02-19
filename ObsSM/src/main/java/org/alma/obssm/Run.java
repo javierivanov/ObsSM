@@ -37,33 +37,36 @@ import org.apache.commons.scxml.model.ModelException;
 import org.xml.sax.SAXException;
 
 
-
 public class Run {
-    public static void main(String args[]) {
-        Run run = new Run();
+    public static void main(String args[])
+    {
+        @SuppressWarnings("unused")
+		Run run = new Run();
     }
     
     public Run()
     {
         try {
             ServerLineReader slr = new ServerLineReader(8888);
-            System.out.println("Server on the line!");
-            StateMachine sm = new StateMachine("/Users/javier/Desktop/ObsSM.xml");
+            System.out.println("SM Server on the line!");
+            StateMachine sm = new StateMachine("/Users/javier/GitHub/ObsSM/examples/models/ObsSM.xml");
             System.out.println("SCXML parsed");
-            Parser p = new Parser("/Users/javier/Desktop/ObsSM.json");
+            Parser p = new Parser("/Users/javier/GitHub/ObsSM/examples/models/ObsSM.json");
             System.out.println("JSON transitions subjects parsed");
             
             System.out.println("Loop started and waiting for logs on port: " + slr.getServerSocket().getLocalPort());
             while(true)
             {
                 String line = slr.waitForLine();
-                sm.fireEvent(p.getParseAction(line, sm.getTransitionsStringList()));
+                String event = p.getParseAction(line, sm.getTransitionsStringList());
+                sm.fireEvent(event);
                 if (line.equals("EOF")) 
                 {
                     slr.killserver();
                     break;
                 }
             }
+            
             
             System.out.println("Loop ended");
             

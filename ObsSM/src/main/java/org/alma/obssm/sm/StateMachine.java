@@ -49,9 +49,12 @@ public class StateMachine {
     
     protected SCXMLExecutor engine;
     protected SCXML stateMachine;
+    protected String keyName;
     
     
-    public StateMachine(String xmlFile) throws IOException, ModelException, SAXException
+    
+
+	public StateMachine(String xmlFile) throws IOException, ModelException, SAXException
     {
         
         this.stateMachine = SCXMLParser.parse(new File(xmlFile).toURI().toURL(),
@@ -88,7 +91,8 @@ public class StateMachine {
     
     public List<String> getTransitionsStringList()
     {
-        List<Transition> transitions = getCurrentState().getTransitionsList();
+        @SuppressWarnings("unchecked")
+		List<Transition> transitions = getCurrentState().getTransitionsList();
         List<String> list = new ArrayList<>();
      
         transitions.stream().forEach((t) -> {
@@ -97,7 +101,8 @@ public class StateMachine {
         return list;
     }
     
-    public List<Transition> getTransitionsList()
+    @SuppressWarnings("unchecked")
+	public List<Transition> getTransitionsList()
     {
         return getCurrentState().getTransitionsList();
     }
@@ -107,5 +112,23 @@ public class StateMachine {
         return ( (State) states.iterator().next());
     }
     
+    
+    public String getKeyName() {
+		return keyName;
+	}
 
+
+
+	public void setKeyName(String keyName) {
+		this.keyName = keyName;
+	}
+
+
+
+	@Override
+	public String toString() {
+		return "StateMachine [engine=" + engine + ", stateMachine=" + stateMachine + ", keyName=" + keyName + "]";
+	}
+	
+	
 }
