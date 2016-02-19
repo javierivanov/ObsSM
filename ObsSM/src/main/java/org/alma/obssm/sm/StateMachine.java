@@ -44,6 +44,14 @@ import org.apache.commons.scxml.model.State;
 import org.apache.commons.scxml.model.Transition;
 import org.xml.sax.SAXException;
 
+
+/**
+ * This class define a State Machine(SM) executor, who decides the legality of the transitions
+ * and change its own state when its correct. 
+ * @author Javier Fuentes
+ * @version 0.1
+ *
+ */
 public class StateMachine {
     
     
@@ -52,8 +60,17 @@ public class StateMachine {
     protected String keyName;
     
     
-    
-
+    /**
+     * Constructor of the class, initialize the engine and the model and runs the engine
+     * also uses a Listener who can triggers events on states changes.
+     * 
+     * @see CustomEntryListener
+     * 
+     * @param xmlFile Origin SM file with the SCXML model.
+     * @throws IOException
+     * @throws ModelException
+     * @throws SAXException
+     */
 	public StateMachine(String xmlFile) throws IOException, ModelException, SAXException
     {
         
@@ -72,7 +89,13 @@ public class StateMachine {
     }
     
     
-    
+    /**
+     * Fires the transition in the model. If the event is null do nothing.
+     * 
+     * @param event
+     * @return true if the models has reached the end and false in other case.  
+     * @throws ModelException
+     */
     public boolean fireEvent(final String event) throws ModelException {
         if (event == null) return engine.getCurrentStatus().isFinal();
         
@@ -83,12 +106,22 @@ public class StateMachine {
         return engine.getCurrentStatus().isFinal();
     }
     
+    
+    /**
+     * Returns the current State name.
+     * @return String with the name of the actual state.
+     */
     public String getCurrentStateId() {
         Set<?> states = engine.getCurrentStatus().getStates();
         State state = (State) states.iterator().next();
         return state.getId();
     }
     
+    
+    /**
+     * Returns a list with all possible transitions.
+     * @return List with all String names of the possible transitions.
+     */
     public List<String> getTransitionsStringList()
     {
         @SuppressWarnings("unchecked")
@@ -101,24 +134,43 @@ public class StateMachine {
         return list;
     }
     
+    
+    /**
+     * Returns a list with all possible transitions.
+     * @see Transition
+     * @return List with all Transition possible.
+     */
     @SuppressWarnings("unchecked")
 	public List<Transition> getTransitionsList()
     {
         return getCurrentState().getTransitionsList();
     }
     
+    
+    
+    /**
+     * Returns the current State.
+     * @see State
+     * @return the current State.
+     */
     public State getCurrentState() {
         Set<?> states = engine.getCurrentStatus().getStates();
         return ( (State) states.iterator().next());
     }
     
-    
+    /**
+     * Returns the keyName
+     * @return
+     */
     public String getKeyName() {
 		return keyName;
 	}
 
 
-
+    /**
+     * Set the keyName
+     * @param keyName
+     */
 	public void setKeyName(String keyName) {
 		this.keyName = keyName;
 	}

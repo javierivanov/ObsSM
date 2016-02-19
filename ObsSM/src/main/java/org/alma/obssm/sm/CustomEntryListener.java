@@ -31,6 +31,15 @@ import org.apache.commons.scxml.SCXMLListener;
 import org.apache.commons.scxml.model.Transition;
 import org.apache.commons.scxml.model.TransitionTarget;
 
+
+/**
+ * This class implements a SCXMLListener who allows to trigger a method on every transition.
+ * This class also is able to do whatever thing, e.g. connect to a database or connect to a socket
+ * and transmit the transitions and states.
+ * @author Javier Fuentes
+ * @version 0.1
+ *
+ */
 public class CustomEntryListener implements SCXMLListener {
 
     @Override

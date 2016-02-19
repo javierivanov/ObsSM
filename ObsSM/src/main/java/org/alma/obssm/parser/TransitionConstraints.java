@@ -27,7 +27,20 @@ package org.alma.obssm.parser;
 
 import java.util.List;
 
-public class SubjectTransition {
+
+
+/**
+ * This class is used to describe a JSON element.
+ * It has 3 Lists.
+ * and_list, or_list, search_list.
+ * and_list requires that all the elements on the list must be on the log.
+ * or_list requires at least one element on the list must be on the log.
+ * search_list is a list of regexpr that search for a pattern on the log.
+ * @author Javier Fuentes
+ * @version 0.1
+ *
+ */
+public class TransitionConstraints {
     public List<String> and_list;
     public List<String> or_list;
     public List<String> search_list;

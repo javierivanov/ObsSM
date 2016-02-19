@@ -43,12 +43,20 @@ import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 
 /**
- *
- * @author javier
+ * This class parse the log with the transitions constrains on the JSON file.
+ * @author Javier Fuentes
+ * @version 0.1
  */
 public class Parser {
-    protected Map<String, SubjectTransition> subjects;
+    protected Map<String, TransitionConstraints> subjects;
     
+    
+    /**
+     * Constructor, initialize the JSON constraints file.
+     *  
+     * @param url
+     * @throws FileNotFoundException
+     */
     public Parser(String url) throws FileNotFoundException
     {
         JsonReader reader = new JsonReader(new FileReader(url));
@@ -60,7 +68,7 @@ public class Parser {
         for (Iterator<Entry<String, JsonElement>> i = se.iterator(); i.hasNext();)
         {
             Entry<String, JsonElement> e = (Entry<String, JsonElement>) i.next();
-            SubjectTransition t = gson.fromJson(e.getValue(), SubjectTransition.class);
+            TransitionConstraints t = gson.fromJson(e.getValue(), TransitionConstraints.class);
             this.subjects.put(e.getKey(), t);
         }
     }
@@ -68,7 +76,7 @@ public class Parser {
     private boolean parseLine(String line, String transition) throws NullPointerException
     {
         
-        SubjectTransition st = getSubjectTransition(transition);
+        TransitionConstraints st = getSubjectTransition(transition);
         
         if (!st.and_list.stream().noneMatch((aux) -> (!line.contains(aux)))) {
             return false;
@@ -91,10 +99,10 @@ public class Parser {
         return null;
     }
     
-    private SubjectTransition getSubjectTransition(String transition) throws NullPointerException
+    private TransitionConstraints getSubjectTransition(String transition) throws NullPointerException
     {
     	if (transition == null) return null;
-        SubjectTransition st = this.subjects.get(transition);
+        TransitionConstraints st = this.subjects.get(transition);
         if (st == null)
         {
             throw new NullPointerException("The transition do not exists on the HashMap");
@@ -106,7 +114,7 @@ public class Parser {
     public List<String> getListSearchPattern(String line, String transition) throws NullPointerException
     {
     	System.out.println(transition);
-        SubjectTransition st = getSubjectTransition(transition);
+        TransitionConstraints st = getSubjectTransition(transition);
         List<String> list =   new ArrayList<>();
 
         st.search_list.stream().map((pattern) -> Pattern.compile(pattern)).map((p) -> p.matcher(line)).map((m) -> {

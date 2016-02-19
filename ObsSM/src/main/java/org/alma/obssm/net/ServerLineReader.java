@@ -31,6 +31,13 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
 
+
+/**
+ * 
+ * @author Javier Fuentes
+ * @version 0.1
+ *
+ */
 public class ServerLineReader {
     private ServerSocket serverSocket;
 

@@ -36,14 +36,28 @@ import org.alma.obssm.parser.Parser;
 import org.apache.commons.scxml.model.ModelException;
 import org.xml.sax.SAXException;
 
-
+/**
+ * Main class, initialize the State Machines and Parsers and runs the interpreter only.
+ * 
+ * @version 0.1
+ * @author Javier Fuentes
+ *
+ */
 public class Run {
+	
+	/**
+	 * Main function. Initialize the Run class.. 
+	 * @param args
+	 */
     public static void main(String args[])
     {
         @SuppressWarnings("unused")
 		Run run = new Run();
     }
     
+    /**
+     * Constructor of the class, who runs the interpreter
+     */
     public Run()
     {
         try {
