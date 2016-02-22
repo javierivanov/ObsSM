@@ -29,6 +29,8 @@ package org.alma.obssm;
 import org.alma.obssm.sm.StateMachine;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.MissingFormatArgumentException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.alma.obssm.net.ServerLineReader;
@@ -51,21 +53,26 @@ public class Run {
 	 */
     public static void main(String args[])
     {
+    	if (args.length == 0) 
+    	{
+    		throw new MissingFormatArgumentException("The model path is required");
+    	}
         @SuppressWarnings("unused")
-		Run run = new Run();
+		Run run = new Run(args[0]);
     }
     
     /**
      * Constructor of the class, who runs the interpreter
      */
-    public Run()
+    public Run(String filepathname)
     {
         try {
+        	
             ServerLineReader slr = new ServerLineReader(8888);
             System.out.println("SM Server on the line!");
-            StateMachine sm = new StateMachine("/Users/javier/GitHub/ObsSM/examples/models/ObsSM.xml");
+            StateMachine sm = new StateMachine(filepathname + "model.xml");
             System.out.println("SCXML parsed");
-            Parser p = new Parser("/Users/javier/GitHub/ObsSM/examples/models/ObsSM.json");
+            Parser p = new Parser(filepathname + "transitions.json");
             System.out.println("JSON transitions subjects parsed");
             
             System.out.println("Loop started and waiting for logs on port: " + slr.getServerSocket().getLocalPort());
