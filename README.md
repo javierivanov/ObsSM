@@ -26,7 +26,7 @@ mvn clean dependency:copy-dependencies package
 
 #Execute the interpreter
 ```
-java -cp "target/ObsSM-0.1.jar:target/dependency/*" org.alma.obssm.Run /path/to/folder/model/
+java -cp "target/ObsSM-0.1.jar:target/dependency/*" org.alma.obssm.Run /path/to/folder/model/ [listener port(default 8888)]
 ```
 
 The SCXML model must be named model.xml and the transitions constraints must be named transitions.json and both of them have to be on the same folder.
