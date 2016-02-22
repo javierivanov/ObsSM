@@ -3,7 +3,7 @@ ALMA Log's State Machine Parser
 
 #Compiling Process
 
-* Download sources [https://github.com/javierivanov/ObsSM/archive/obssm-0.1.zip](obssm-0.1)
+* Download sources https://github.com/javierivanov/ObsSM/archive/obssm-0.1.zip
 * Unzip files
 
 ```
@@ -13,13 +13,13 @@ unzip obssm-0.1.zip
 * Enter to the project folder
 
 ```
-cd obssm-0.1/ObsSM/
+cd ObsSM-obssm-0.1/ObsSM/
 ```
 
 * Compile using Maven
 
 ```
-clean dependency:copy-dependencies package
+mvn clean dependency:copy-dependencies package
 ```
 
 #Execute the program
