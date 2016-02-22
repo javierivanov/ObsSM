@@ -22,7 +22,7 @@ cd ObsSM-obssm-0.1/ObsSM/
 mvn clean dependency:copy-dependencies package
 ```
 
-#Execute the program
+#Execute the interpreter
 ```
 java -cp "target/ObsSM-0.1.jar:target/dependency/*" org.alma.obssm.Run /complete/path/to/folder/model/
 ```
