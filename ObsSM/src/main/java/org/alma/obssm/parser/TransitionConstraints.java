@@ -34,7 +34,7 @@ import java.util.List;
  * search_list is a list of regexpr that search for a pattern on the log.
  * keyname is the identifier of the SM
  * @author Javier Fuentes
- * @version 0.1.1
+ * @version 0.2
  *
  */
 public class TransitionConstraints {

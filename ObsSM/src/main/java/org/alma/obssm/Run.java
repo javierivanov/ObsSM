@@ -39,7 +39,7 @@ import org.xml.sax.SAXException;
 /**
  * Main class, initialize the State Machines and Parsers and runs the interpreter only.
  *
- * @version 0.1.1
+ * @version 0.2
  * @author Javier Fuentes
  *
  */

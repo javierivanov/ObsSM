@@ -36,8 +36,8 @@ import org.xml.sax.SAXException;
  * This class manages State Machines which are currently active.
  * 
  * @author Javier Fuentes
- * @version 0.1.1
- * @since 0.1.1
+ * @version 0.2
+ * @since 0.2
  */
 
 

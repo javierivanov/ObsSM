@@ -42,7 +42,7 @@ import com.google.gson.stream.JsonReader;
 /**
  * This class parse the log with the transitions constrains on the JSON file.
  * @author Javier Fuentes
- * @version 0.1
+ * @version 0.2
  */
 public class Parser {
     protected Map<String, TransitionConstraints> constraints;

@@ -33,7 +33,7 @@ import org.apache.commons.scxml.model.TransitionTarget;
  * This class also is able to do whatever thing, e.g. connect to a database or connect to a socket
  * and transmit the transitions and states.
  * @author Javier Fuentes
- * @version 0.1.1
+ * @version 0.2
  *
  */
 public class CustomEntryListener implements SCXMLListener {
