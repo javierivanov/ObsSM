@@ -33,6 +33,10 @@ import java.util.Scanner;
 
 
 /**
+ * Socket connection layer. It will requires more attention later.
+ * 
+ * TO DO:
+ * 	Create a more standard communication layer.
  * 
  * @author Javier Fuentes
  * @version 0.1

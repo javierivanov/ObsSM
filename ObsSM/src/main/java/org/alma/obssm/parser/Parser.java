@@ -73,6 +73,14 @@ public class Parser {
         }
     }
     
+    
+    /**
+     * Read a log line and a transition, search for coincidences with the transitions constrains.
+     * @param line
+     * @param transition
+     * @return true when the log line corresponds to transition.
+     * @throws NullPointerException
+     */
     private boolean parseLine(String line, String transition) throws NullPointerException
     {
         
@@ -89,6 +97,13 @@ public class Parser {
         return st.or_list.isEmpty();
     }
     
+    
+    /**
+     * Compares all the transitions possibilities with the log line.
+     * @param line
+     * @param transitionList
+     * @return the corresponding transition, and null when there is no transition.
+     */
     public String getParseAction(String line, List<String> transitionList)
     {
         for (String t: transitionList)
@@ -99,6 +114,13 @@ public class Parser {
         return null;
     }
     
+    
+    /**
+     * Returns transitions constrains.
+     * @param transition
+     * @return a transitionconstraint
+     * @throws NullPointerException
+     */
     private TransitionConstraints getSubjectTransition(String transition) throws NullPointerException
     {
     	if (transition == null) return null;
@@ -110,7 +132,13 @@ public class Parser {
         return st;
     }
     
-    
+    /**
+     * Returns a list with all regexpr matchings fields.
+     * @param line
+     * @param transition
+     * @return
+     * @throws NullPointerException
+     */
     public List<String> getListSearchPattern(String line, String transition) throws NullPointerException
     {
     	System.out.println(transition);
