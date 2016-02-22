@@ -18,7 +18,7 @@ cd ObsSM-obssm-0.1/ObsSM/
 
 * Compile using Maven
 
-You have to had installed Maven for this step.
+You have to have installed Maven for this step.
 
 ```
 mvn clean dependency:copy-dependencies package
