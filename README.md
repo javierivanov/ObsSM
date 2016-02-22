@@ -18,13 +18,15 @@ cd ObsSM-obssm-0.1/ObsSM/
 
 * Compile using Maven
 
+You have to had installed Maven for this step.
+
 ```
 mvn clean dependency:copy-dependencies package
 ```
 
 #Execute the interpreter
 ```
-java -cp "target/ObsSM-0.1.jar:target/dependency/*" org.alma.obssm.Run /complete/path/to/folder/model/
+java -cp "target/ObsSM-0.1.jar:target/dependency/*" org.alma.obssm.Run /path/to/folder/model/
 ```
 
 The SCXML model must be named model.xml and the transitions constraints must be named transitions.json and both of them have to be on the same folder.
