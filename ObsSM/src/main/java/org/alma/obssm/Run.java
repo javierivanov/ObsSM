@@ -68,7 +68,7 @@ public class Run {
     		throw new FileNotFoundException("The model and transitions folder has not been found");
     	}
     	
-    	if (new File(f.getPath()+"/models.xml").exists() && new File(f.getPath()+"/transitions.json").exists())
+    	if (!new File(f.getPath()+"/models.xml").exists() || !new File(f.getPath()+"/transitions.json").exists())
     	{
     		throw new FileNotFoundException("File models have not been found on path");
     	}
