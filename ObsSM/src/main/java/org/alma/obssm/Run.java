@@ -17,16 +17,10 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
- *
- * @autor Javier Fuentes j.fuentes.m(at)icloud.com
- * @version 0.1
- *
  *******************************************************************************/
 
 package org.alma.obssm;
 
-
-import org.alma.obssm.sm.StateMachine;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -35,15 +29,17 @@ import java.sql.Timestamp;
 import java.util.MissingFormatArgumentException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.alma.obssm.net.ServerLineReader;
 import org.alma.obssm.parser.Parser;
+import org.alma.obssm.sm.StateMachineManager;
 import org.apache.commons.scxml.model.ModelException;
 import org.xml.sax.SAXException;
 
 /**
  * Main class, initialize the State Machines and Parsers and runs the interpreter only.
  *
- * @version 0.1
+ * @version 0.1.1
  * @author Javier Fuentes
  *
  */
@@ -91,25 +87,31 @@ public class Run {
     public Run(String filepathname, int port)
     {
         try {
-
+        	/**
+        	 * Setting up.
+        	 */
             ServerLineReader slr = new ServerLineReader(port);
             System.out.println(new Timestamp(System.currentTimeMillis()) +" SM Server on the line!");
-            StateMachine sm = new StateMachine(filepathname + "/model.xml");
-            System.out.println(new Timestamp(System.currentTimeMillis()) +" SCXML parsed");
             Parser p = new Parser(filepathname + "/transitions.json");
-            System.out.println(new Timestamp(System.currentTimeMillis()) +" JSON transitions subjects parsed");
-
+            
+            System.out.println(p.getConstraints());
+            
+            StateMachineManager smm = new StateMachineManager(filepathname + "/model.xml");
+            /**
+             * First state machine. It will wait for a keyName
+             */
+			smm.addNewStateMachine();
+            
             System.out.println(new Timestamp(System.currentTimeMillis()) +" Loop started and waiting for logs on port: " + slr.getServerSocket().getLocalPort());
-            while(true)
+            
+            while (true)
             {
-                String line = slr.waitForLine();
-                String event = p.getParseAction(line, sm.getTransitionsStringList());
-                sm.fireEvent(event);
-                if (line.equals("EOF"))
-                {
-                    slr.killserver();
-                    break;
-                }
+            	String line = slr.waitForLine();
+            	if (line.equals("EOF")) break;
+            	
+            	String parsedAction = p.getParseAction(line, smm.getAllPossiblesTransitions());
+    			String keyName = p.getKeyName(line, parsedAction);
+    			smm.findAndTriggerAction(parsedAction, keyName);
             }
 
             System.out.println(new Timestamp(System.currentTimeMillis()) +" Loop ended");
@@ -118,9 +120,10 @@ public class Run {
             Logger.getLogger(Run.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(Run.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ModelException | SAXException ex) {
-            Logger.getLogger(Run.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        } catch (ModelException | SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
 }

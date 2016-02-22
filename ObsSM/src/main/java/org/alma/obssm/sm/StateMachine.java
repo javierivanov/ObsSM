@@ -17,10 +17,6 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
- * 
- * @autor Javier Fuentes j.fuentes.m(at)icloud.com
- * @version 0.1
- * 
  *******************************************************************************/
 
 package org.alma.obssm.sm;
@@ -57,7 +53,7 @@ public class StateMachine {
     
     protected SCXMLExecutor engine;
     protected SCXML stateMachine;
-    protected String keyName;
+    private String keyName;
     
     
     /**
@@ -73,7 +69,6 @@ public class StateMachine {
      */
 	public StateMachine(String xmlFile) throws IOException, ModelException, SAXException
     {
-        
         this.stateMachine = SCXMLParser.parse(new File(xmlFile).toURI().toURL(),
                 new SimpleErrorHandler());
         
@@ -83,7 +78,7 @@ public class StateMachine {
         this.engine.setStateMachine(this.stateMachine);
         this.engine.setSuperStep(true);
         this.engine.setRootContext(new JexlContext());
-        this.engine.addListener(this.stateMachine, new CustomEntryListener());
+        this.engine.addListener(this.stateMachine, new CustomEntryListener(this));
         
         engine.go();
     }

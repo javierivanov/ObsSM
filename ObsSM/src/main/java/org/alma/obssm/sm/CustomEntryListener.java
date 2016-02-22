@@ -16,11 +16,7 @@
  * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
- * 
- * @autor Javier Fuentes j.fuentes.m(at)icloud.com
- * @version 0.1
- * 
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA 
  *******************************************************************************/
 
 package org.alma.obssm.sm;
@@ -37,15 +33,21 @@ import org.apache.commons.scxml.model.TransitionTarget;
  * This class also is able to do whatever thing, e.g. connect to a database or connect to a socket
  * and transmit the transitions and states.
  * @author Javier Fuentes
- * @version 0.1
+ * @version 0.1.1
  *
  */
 public class CustomEntryListener implements SCXMLListener {
-
+	
+	private StateMachine parent = null;
+	
+	public CustomEntryListener(StateMachine parent) {
+		this.parent = parent;
+	}
+	
     @Override
     public void onEntry(TransitionTarget state) {
     	Timestamp ts = new Timestamp(System.currentTimeMillis());
-        System.out.println(ts.toString() + " STATE: " + state.getId());
+        System.out.println(ts.toString() + " ON_ENTRY_STATE, KN: " + parent.getKeyName() + ", TRANSITION: " + state.getId());
     }
 
     @Override

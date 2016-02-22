@@ -17,10 +17,6 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
- * 
- * @autor Javier Fuentes j.fuentes.m(at)icloud.com
- * @version 0.1
- * 
  *******************************************************************************/
 
 package org.alma.obssm.parser;
@@ -34,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.google.gson.Gson;
@@ -48,7 +45,7 @@ import com.google.gson.stream.JsonReader;
  * @version 0.1
  */
 public class Parser {
-    protected Map<String, TransitionConstraints> subjects;
+    protected Map<String, TransitionConstraints> constraints;
     
     
     /**
@@ -62,19 +59,25 @@ public class Parser {
         JsonReader reader = new JsonReader(new FileReader(url));
         JsonElement element = new JsonParser().parse(reader);
         Gson gson = new GsonBuilder().create();
-        this.subjects = new HashMap<>();
+        this.constraints = new HashMap<>();
         
         Set<Entry<String, JsonElement>> se = element.getAsJsonObject().entrySet();
         for (Iterator<Entry<String, JsonElement>> i = se.iterator(); i.hasNext();)
         {
             Entry<String, JsonElement> e = (Entry<String, JsonElement>) i.next();
             TransitionConstraints t = gson.fromJson(e.getValue(), TransitionConstraints.class);
-            this.subjects.put(e.getKey(), t);
+            this.constraints.put(e.getKey(), t);
         }
     }
     
     
-    /**
+    public Map<String, TransitionConstraints> getConstraints() {
+		return constraints;
+	}
+
+
+
+	/**
      * Read a log line and a transition, search for coincidences with the transitions constrains.
      * @param line
      * @param transition
@@ -84,7 +87,7 @@ public class Parser {
     private boolean parseLine(String line, String transition) throws NullPointerException
     {
         
-        TransitionConstraints st = getSubjectTransition(transition);
+        TransitionConstraints st = getTransitionConstraints(transition);
         
         if (!st.and_list.stream().noneMatch((aux) -> (!line.contains(aux)))) {
             return false;
@@ -121,10 +124,10 @@ public class Parser {
      * @return a transitionconstraint
      * @throws NullPointerException
      */
-    private TransitionConstraints getSubjectTransition(String transition) throws NullPointerException
+    private TransitionConstraints getTransitionConstraints(String transition) throws NullPointerException
     {
     	if (transition == null) return null;
-        TransitionConstraints st = this.subjects.get(transition);
+        TransitionConstraints st = this.constraints.get(transition);
         if (st == null)
         {
             throw new NullPointerException("The transition do not exists on the HashMap");
@@ -142,9 +145,12 @@ public class Parser {
     public List<String> getListSearchPattern(String line, String transition) throws NullPointerException
     {
     	System.out.println(transition);
-        TransitionConstraints st = getSubjectTransition(transition);
+        TransitionConstraints st = getTransitionConstraints(transition);
         List<String> list =   new ArrayList<>();
 
+        /**
+         * Complicated conversion by Netbeans.
+         */
         st.search_list.stream().map((pattern) -> Pattern.compile(pattern)).map((p) -> p.matcher(line)).map((m) -> {
             String output = "";
             if (m.find())
@@ -160,4 +166,23 @@ public class Parser {
         return list;
     }
     
+    /**
+     * Returns the keyName found on the line.
+     * @param line
+     * @param transition
+     * @return the keyName or null if not exists.
+     */
+    public String getKeyName(String line, String transition)
+    {
+    	if (transition == null) return null;
+    	String keyName = null;
+    	TransitionConstraints tc = getTransitionConstraints(transition);
+    	Pattern pattern = Pattern.compile(tc.keyName);
+    	Matcher m = pattern.matcher(line);
+    	if (m.find())
+    	{
+    		keyName = m.group();
+    	}
+    	return keyName;
+    }
 }

@@ -1,3 +1,4 @@
+<!-- Version 0.1.1 -->
 <scxml initial="idle" version="0.9" xmlns="http://www.w3.org/2005/07/scxml"><!--   node-size-and-position x=0 y=0 w=1382 h=263  -->
  <state id="idle"><!--   node-size-and-position x=178,5 y=43 w=75 h=75  --><!-- node-size-and-position x=1118,5 y=43 w=75 h=75   node-size-and-position x=37,5 y=43 w=75 h=75 -->
   <transition event="array.creation" target="ArrayCreatedState"></transition>
