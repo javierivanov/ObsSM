@@ -30,7 +30,8 @@ import java.util.MissingFormatArgumentException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.alma.obssm.net.ServerLineReader;
+import org.alma.obssm.net.LineReader;
+import org.alma.obssm.net.LineReaderImpl2;
 import org.alma.obssm.parser.Parser;
 import org.alma.obssm.sm.StateMachineManager;
 import org.apache.commons.scxml.model.ModelException;
@@ -45,6 +46,12 @@ import org.xml.sax.SAXException;
  */
 public class Run {
 
+	/*
+	 * Some filter options. If the array is empty, it will show everything.
+	 */
+	public static final String KEYNAME_FILTER[] = {};
+	public static final boolean SHOW_TIMESTAMP = false;
+	
 	/**
 	 * Main function. Initialize the Run class..
 	 * @param args
@@ -88,41 +95,51 @@ public class Run {
     {
         try {
         	/**
-        	 * Setting up.
+        	 * Setting up server and models files.
         	 */
-            ServerLineReader slr = new ServerLineReader(port);
+            LineReader lr = new LineReaderImpl2(port);
             System.out.println(new Timestamp(System.currentTimeMillis()) +" SM Server on the line!");
             Parser p = new Parser(filepathname + "/transitions.json");
-            
-            System.out.println(p.getConstraints());
             
             StateMachineManager smm = new StateMachineManager(filepathname + "/model.xml");
             /**
              * First state machine. It will wait for a keyName
              */
 			smm.addNewStateMachine();
-            
-            System.out.println(new Timestamp(System.currentTimeMillis()) +" Loop started and waiting for logs on port: " + slr.getServerSocket().getLocalPort());
-            
+
+			
+            System.out.println(new Timestamp(System.currentTimeMillis()) +" Loop started and waiting for logs on port: " + port);
             while (true)
             {
-            	String line = slr.waitForLine();
+            	/*
+            	 * Init connection
+            	 */
+            	if(!lr.isCommunicationActive()) lr.startCommunication();
+            	/*
+            	 * Reads a line
+            	 */
+            	String line = lr.waitForLine();
+            	if (line == null) continue;
             	if (line.equals("EOF")) break;
-            	
+            	/*
+            	 * Parse the read line.
+            	 */
             	String parsedAction = p.getParseAction(line, smm.getAllPossiblesTransitions());
     			String keyName = p.getKeyName(line, parsedAction);
     			smm.findAndTriggerAction(parsedAction, keyName);
             }
-
+            
+            lr.endCommunication();
             System.out.println(new Timestamp(System.currentTimeMillis()) +" Loop ended");
 
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Run.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(Run.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ModelException | SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+        } catch (ModelException | SAXException ex) {
+        	Logger.getLogger(Run.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (InterruptedException ex) {
+			Logger.getLogger(Run.class.getName()).log(Level.SEVERE, null, ex);
 		}
     }
 

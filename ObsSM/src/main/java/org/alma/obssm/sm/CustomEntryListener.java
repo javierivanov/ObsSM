@@ -23,6 +23,7 @@ package org.alma.obssm.sm;
 
 import java.sql.Timestamp;
 
+import org.alma.obssm.Run;
 import org.apache.commons.scxml.SCXMLListener;
 import org.apache.commons.scxml.model.Transition;
 import org.apache.commons.scxml.model.TransitionTarget;
@@ -47,7 +48,20 @@ public class CustomEntryListener implements SCXMLListener {
     @Override
     public void onEntry(TransitionTarget state) {
     	Timestamp ts = new Timestamp(System.currentTimeMillis());
-        System.out.println(ts.toString() + " ON_ENTRY_STATE, KN: " + parent.getKeyName() + ", TRANSITION: " + state.getId());
+    	if (Run.KEYNAME_FILTER.length > 0)
+    	{
+    		boolean show = false;
+    		for (String a: Run.KEYNAME_FILTER)
+    		{
+    			if (a.equals(parent.getKeyName())) show = true;
+    		}
+    		if (!show) return;
+    	}
+    	String t="";
+    	
+    	if (Run.SHOW_TIMESTAMP) t = ts.toString();
+    	
+        System.out.println(t + " ON_ENTRY_STATE, KN: " + parent.getKeyName() + ", STATE: " + state.getId());
     }
 
     @Override
