@@ -110,7 +110,13 @@ public class StateMachineManager {
 			if (aux.getKeyName() == null) newOne = aux;
 			else if (aux.getKeyName().equals(keyName))
 			{
-				aux.fireEvent(transition);
+				if(aux.fireEvent(transition))
+				{
+					/*
+					 * For final states, the SM will be removed from the list.
+					 */
+					this.stateMachines.remove(aux);
+				}
 				/**
 				 * If it finds the keyName, raise the event and the method has to stop.
 				 */
@@ -118,7 +124,18 @@ public class StateMachineManager {
 			}
 		}
 		newOne.setKeyName(keyName);
-		newOne.fireEvent(transition);
+		if (newOne.fireEvent(transition))
+		{
+			/*
+			 * For final states (on this case, could be a error final state), the SM will be removed from the list.
+			 */
+			this.stateMachines.remove(newOne);
+		}
+		/*
+		 * New SM, waiting for a new instance.
+		 */
 		addNewStateMachine();
 	}
+	
+	
 }

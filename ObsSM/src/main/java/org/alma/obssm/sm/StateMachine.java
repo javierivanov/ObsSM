@@ -51,8 +51,8 @@ import org.xml.sax.SAXException;
 public class StateMachine {
     
     
-    protected SCXMLExecutor engine;
-    protected SCXML stateMachine;
+    private SCXMLExecutor engine;
+    private SCXML stateMachine;
     private String keyName;
     
     
@@ -97,7 +97,7 @@ public class StateMachine {
         TriggerEvent[] evts = {new TriggerEvent(event,
                 TriggerEvent.SIGNAL_EVENT, null)};
         engine.triggerEvents(evts);
-        
+        if (engine.getCurrentStatus().isFinal()) System.out.println(keyName+ "dead");
         return engine.getCurrentStatus().isFinal();
     }
     
@@ -169,7 +169,6 @@ public class StateMachine {
 	public void setKeyName(String keyName) {
 		this.keyName = keyName;
 	}
-
 
 
 	@Override

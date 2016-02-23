@@ -21,54 +21,62 @@
 
 package org.alma.obssm.net;
 
-
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
 
 
+
 /**
- * Socket connection layer. It will requires more attention later.
- * 
- * TO DO:
- * 	Create a more standard communication layer.
+ * Line reader implementation
  * 
  * @author Javier Fuentes
- * @version 0.1
+ * @version 0.2
  *
  */
-public class ServerLineReader implements LineReader{
-    private ServerSocket serverSocket;
+public class LineReaderImpl2 implements LineReader {
 
-    public ServerSocket getServerSocket() {
-		return serverSocket;
+	private Socket socket;
+	private ServerSocket server;
+	private Scanner scanner;
+	private boolean active;
+	
+	public LineReaderImpl2(int port) throws IOException{
+		this.server = new ServerSocket(port);
+		this.active = false;
 	}
 
-	public ServerLineReader(int port) throws IOException {
-        this.serverSocket = new ServerSocket(port);
-    }
-
-    public String waitForLine() throws IOException
-    {
-        Socket client = this.serverSocket.accept();
-        Scanner s = new Scanner(client.getInputStream());
-        String out = s.nextLine();
-        s.close();
-        client.close();
-        return out;
-    }
+	@Override
+	public String waitForLine() throws IOException, InterruptedException {
+		if(!this.scanner.hasNextLine())
+		{
+			active = false;
+			return null;
+		};
+		String line = this.scanner.nextLine();
+		return line;
+	}
 
 	@Override
 	public void endCommunication() throws IOException {
-		this.serverSocket.close();
+		if (this.socket == null) return;
+		this.socket.close();
 	}
-	public boolean isCommunicationActive()
-	{
-		return true;
-	}
+
 	@Override
 	public void startCommunication() throws IOException {
-		// TODO Auto-generated method stub
+		this.endCommunication();
+		this.socket = this.server.accept();
+		this.scanner = new Scanner(new BufferedInputStream(this.socket.getInputStream()));
+		this.active = true;
 	}
+
+	@Override
+	public boolean isCommunicationActive() {
+		return active;
+		
+	}
+
 }

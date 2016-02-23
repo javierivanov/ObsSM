@@ -1,19 +1,42 @@
-<!-- Version 0.1.1 -->
-<scxml initial="idle" version="0.9" xmlns="http://www.w3.org/2005/07/scxml"><!--   node-size-and-position x=0 y=0 w=1382 h=263  -->
- <state id="idle"><!--   node-size-and-position x=178,5 y=43 w=75 h=75  --><!-- node-size-and-position x=1118,5 y=43 w=75 h=75   node-size-and-position x=37,5 y=43 w=75 h=75 -->
+<!-- Version 0.2 -->
+<scxml initial="idle" version="0.9" xmlns="http://www.w3.org/2005/07/scxml">
+ <state id="idle">
   <transition event="array.creation" target="ArrayCreatedState"></transition>
  </state>
- <state id="ArrayCreatedState"><!--   node-size-and-position x=161 y=168 w=110 h=75  -->
+ <state id="ArrayCreatedState">
     <transition target="ComponentsDeliveringState" event="component.delivered"></transition>
+    <transition target="ERROR" event="array.creation"></transition>
  </state>
  <state id="ComponentsDeliveringState">
    <transition target="ComponentsDeliveringState" event="component.delivered"></transition>
+   <transition target="ObservationStartedState" event="observation.start"></transition>
+   <transition target="ERROR" event="array.creation"></transition>
  </state>
- <state id="ArrayDestroyedState"><!--   node-size-and-position x=334 y=43 w=120 h=75  --></state>
- <state id="ObservationStartedState"><!--   node-size-and-position x=866 y=43 w=150 h=75  --></state>
- <state id="ObservationEndedState"><!--   node-size-and-position x=666 y=43 w=140 h=75  --></state>
- <state id="SubScanStartedState"><!--   node-size-and-position x=1242 y=43 w=120 h=75  --></state>
- <state id="FakeScanState"><!--   node-size-and-position x=516 y=43 w=90 h=75  --></state>
- <state id="ScanStartedState"><!--   node-size-and-position x=1078 y=43 w=100 h=75  --></state>
- <state id="FailureState"><!--   node-size-and-position x=20 y=43 w=80 h=75  --></state>
+ <state id="ArrayDestroyedState"></state>
+ <state id="ObservationStartedState">
+    <transition target="ObservationEndedState" event="observation.stop"></transition>
+    <transition target="ScanStartedState" event="scan.start"></transition>
+    <transition target="ERROR" event="array.creation"></transition>
+ </state>
+ 
+ <state id="SubScanStartedState">
+    <transition target="SubScanStartedState" event="subscan.start"></transition>
+    <transition target="ScanStartedState" event="scan.start"></transition>
+    <transition target="ObservationEndedState" event="observation.stop"></transition>
+    <transition target="ERROR" event="array.creation"></transition>
+ </state>
+ <state id="ObservationEndedState">
+    <transition target="ArrayDestroyedState" event="array.destruction"></transition>
+    <transition target="ObservationStartedState" event="observation.start"></transition>
+    <transition target="ERROR" event="array.creation"></transition>
+ </state>
+ <state id="ScanStartedState">
+    <transition target="SubScanStartedState" event="subscan.start"></transition>
+    <transition target="ObservationEndedState" event="observation.stop"></transition>
+    <transition target="ERROR" event="array.creation"></transition>
+ </state>
+ 
+ <state id="ERROR">
+ </state>
+ 
 </scxml>
