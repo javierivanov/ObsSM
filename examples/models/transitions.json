@@ -1,13 +1,13 @@
 //Version 0.2
 {
-  "array.creation":
+    "array.creation":
     {
        "and_list": ["component CONTROL/Array", "activated and initialized in"],
        "or_list": [],
        "search_list": ["(Array)\\d+"],
        "keyName":"(Array)\\d+"
     },
-  "component.delivered":
+    "mount.free":
     {
        "and_list": ["has successfully delivered a component", "MountController"],
        "or_list": [],
