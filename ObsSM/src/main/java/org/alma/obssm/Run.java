@@ -25,8 +25,11 @@ package org.alma.obssm;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.sql.Timestamp;
 import java.util.MissingFormatArgumentException;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -63,6 +66,7 @@ public class Run {
     	{
     		throw new MissingFormatArgumentException("The model path is required");
     	}
+    	
 
     	File f = new File(args[0]);
 
@@ -90,7 +94,7 @@ public class Run {
 
     /**
      * Constructor of the class, who runs the interpreter
-     */
+     */  
     public Run(String filepathname, int port)
     {
         try {
@@ -107,7 +111,6 @@ public class Run {
              */
 			smm.addNewStateMachine();
 
-			
             System.out.println(new Timestamp(System.currentTimeMillis()) +" Loop started and waiting for logs on port: " + port);
             while (true)
             {
