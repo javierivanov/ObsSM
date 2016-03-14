@@ -1,42 +1,55 @@
 <!-- Version 0.2 -->
-<scxml initial="idle" version="0.9" xmlns="http://www.w3.org/2005/07/scxml">
+<scxml initial="idle" final="ArrayDestroyedState" version="0.9" xmlns="http://www.w3.org/2005/07/scxml">
+
  <state id="idle">
   <transition event="array.creation" target="ArrayCreatedState"></transition>
  </state>
+
  <state id="ArrayCreatedState">
-    <transition target="ComponentsDeliveringState" event="component.delivered"></transition>
-    <transition target="ERROR" event="array.creation"></transition>
+    <transition target="ObservationStartedState" event="observation.start"></transition>
+    <transition target="ArrayDestroyedState" event="array.destruction"></transition>
  </state>
- <state id="ComponentsDeliveringState">
-   <transition target="ComponentsDeliveringState" event="component.delivered"></transition>
-   <transition target="ObservationStartedState" event="observation.start"></transition>
-   <transition target="ERROR" event="array.creation"></transition>
+
+ <state id="FreeingMountState">
+   <transition target="FreeingMountState" event="mount.free"></transition>
+   <transition target="ArrayDestroyedState" event="array.destruction"></transition>
+   <transition target="ObservationEndedState" event="observation.stop"></transition>
  </state>
- <state id="ArrayDestroyedState"></state>
+
+ <final id="ArrayDestroyedState">
+ </final>
+
  <state id="ObservationStartedState">
     <transition target="ObservationEndedState" event="observation.stop"></transition>
+    <transition target="MissingScan-SubScanStartedState" event="subscan.start"></transition>
     <transition target="ScanStartedState" event="scan.start"></transition>
-    <transition target="ERROR" event="array.creation"></transition>
  </state>
- 
+
  <state id="SubScanStartedState">
     <transition target="SubScanStartedState" event="subscan.start"></transition>
     <transition target="ScanStartedState" event="scan.start"></transition>
     <transition target="ObservationEndedState" event="observation.stop"></transition>
-    <transition target="ERROR" event="array.creation"></transition>
+    <transition target="FreeingMountState" event="mount.free"></transition>
  </state>
+
+ <state id="MissingScan-SubScanStartedState">
+    <transition target="SubScanStartedState" event="subscan.start"></transition>
+    <transition target="ScanStartedState" event="scan.start"></transition>
+    <transition target="ObservationEndedState" event="observation.stop"></transition>
+ </state>
+
  <state id="ObservationEndedState">
-    <transition target="ArrayDestroyedState" event="array.destruction"></transition>
     <transition target="ObservationStartedState" event="observation.start"></transition>
-    <transition target="ERROR" event="array.creation"></transition>
+    <transition target="FreeingMountState" event="mount.free"></transition>
+    <transition target="ArrayDestroyedState" event="array.destruction"></transition>
  </state>
+
  <state id="ScanStartedState">
     <transition target="SubScanStartedState" event="subscan.start"></transition>
     <transition target="ObservationEndedState" event="observation.stop"></transition>
-    <transition target="ERROR" event="array.creation"></transition>
+    <transition target="FreeingMountState" event="mount.free"></transition>
  </state>
- 
- <state id="ERROR">
- </state>
- 
+
+
 </scxml>
+

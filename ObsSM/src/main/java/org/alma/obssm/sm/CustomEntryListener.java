@@ -60,7 +60,10 @@ public class CustomEntryListener implements SCXMLListener {
     	String t="";
     	
     	if (Run.SHOW_TIMESTAMP) t = ts.toString();
-    	
+    	/*
+    	 * Don not showing idles states!
+    	 */
+    	if (state.getId().equals("idle")) return;
         System.out.println(t + " ON_ENTRY_STATE, KN: " + parent.getKeyName() + ", STATE: " + state.getId());
     }
 

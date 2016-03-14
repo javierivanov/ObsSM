@@ -97,7 +97,6 @@ public class StateMachine {
         TriggerEvent[] evts = {new TriggerEvent(event,
                 TriggerEvent.SIGNAL_EVENT, null)};
         engine.triggerEvents(evts);
-        if (engine.getCurrentStatus().isFinal()) System.out.println(keyName+ "dead");
         return engine.getCurrentStatus().isFinal();
     }
     
