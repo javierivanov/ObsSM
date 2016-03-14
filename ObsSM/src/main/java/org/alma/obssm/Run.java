@@ -49,7 +49,7 @@ public class Run {
     /*
      * Some filter options. If the array is empty, it will show everything.
      */
-    public static String KEYNAME_FILTER[] = {"Array011"};
+    public static String KEYNAME_FILTER[] = {};
     public static boolean SHOW_TIMESTAMP = false;
 
     /**
@@ -63,14 +63,14 @@ public class Run {
     	{
     		throw new MissingFormatArgumentException("The model path is required");
     	}
-        
+
     	File f = new File(args[0]);
 
     	if (!f.isDirectory())
     	{
     		throw new FileNotFoundException("The model and transitions folder has not been found");
     	}
-    	
+
     	if (!new File(args[0]+"/model.xml").exists() || !new File(args[0]+"/transitions.json").exists())
     	{
     		throw new FileNotFoundException("File models (model.xml and transitions.json) have not been found on path: " + f.getAbsolutePath());
@@ -92,7 +92,7 @@ public class Run {
      * Constructor of the class, who runs the interpreter
      * @param filepathname
      * @param port
-     */  
+     */
     public Run(String filepathname, int port)
     {
         try {
@@ -102,7 +102,7 @@ public class Run {
             LineReader lr = new LineReaderImpl2(port);
             System.out.println(new Timestamp(System.currentTimeMillis()) +" SM Server on the line!");
             Parser p = new Parser(filepathname + "/transitions.json");
-            
+
             StateMachineManager smm = new StateMachineManager(filepathname + "/model.xml");
             /**
              * First state machine. It will wait for a keyName
@@ -129,7 +129,7 @@ public class Run {
     			String keyName = p.getKeyName(line, parsedAction);
     			smm.findAndTriggerAction(parsedAction, keyName);
             }
-            
+
             lr.endCommunication();
             System.out.println(new Timestamp(System.currentTimeMillis()) +" Loop ended");
 
