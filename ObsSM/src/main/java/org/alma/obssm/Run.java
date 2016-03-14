@@ -25,11 +25,8 @@ package org.alma.obssm;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.sql.Timestamp;
 import java.util.MissingFormatArgumentException;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,25 +46,24 @@ import org.xml.sax.SAXException;
  */
 public class Run {
 
-	/*
-	 * Some filter options. If the array is empty, it will show everything.
-	 */
-	public static final String KEYNAME_FILTER[] = {};
-	public static final boolean SHOW_TIMESTAMP = false;
-	
-	/**
-	 * Main function. Initialize the Run class..
-	 * @param args
-	 * @throws FileNotFoundException
-	 */
+    /*
+     * Some filter options. If the array is empty, it will show everything.
+     */
+    public static String KEYNAME_FILTER[] = {"Array011"};
+    public static boolean SHOW_TIMESTAMP = false;
+
+    /**
+     * Main function. Initialize the Run class..
+     * @param args
+     * @throws FileNotFoundException
+     */
     public static void main(String args[]) throws FileNotFoundException
     {
     	if (args.length == 0)
     	{
     		throw new MissingFormatArgumentException("The model path is required");
     	}
-    	
-
+        
     	File f = new File(args[0]);
 
     	if (!f.isDirectory())
@@ -94,6 +90,8 @@ public class Run {
 
     /**
      * Constructor of the class, who runs the interpreter
+     * @param filepathname
+     * @param port
      */  
     public Run(String filepathname, int port)
     {
@@ -139,11 +137,9 @@ public class Run {
             Logger.getLogger(Run.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(Run.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ModelException | SAXException ex) {
-        	Logger.getLogger(Run.class.getName()).log(Level.SEVERE, null, ex);
-		} catch (InterruptedException ex) {
-			Logger.getLogger(Run.class.getName()).log(Level.SEVERE, null, ex);
-		}
+        } catch (ModelException | SAXException | InterruptedException ex) {
+            Logger.getLogger(Run.class.getName()).log(Level.SEVERE, null, ex);
+	}
     }
 
 }

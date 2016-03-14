@@ -47,6 +47,7 @@
  <state id="ScanStartedState">
     <transition target="SubScanStartedState" event="subscan.start"></transition>
     <transition target="ObservationEndedState" event="observation.stop"></transition>
+    <transition target="FreeingMountState" event="mount.free"></transition>
  </state>
 
 
