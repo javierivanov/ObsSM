@@ -1,0 +1,53 @@
+<scxml initial="idle">
+<state id="idle">
+	<transition event="array.creation" target="ArrayCreatedState" />
+</state>
+
+<final id="ArrayDestroyedState" />
+<state id="SubscanStartedState">
+	<transition event="mount.release" target="MountReleasedState" />
+	<transition event="scan.start" target="ScanStartedState" />
+	<transition event="observation.stop" target="ObservationStopedState" />
+</state>
+
+<state id="ScanStartedState">
+	<transition event="mount.release" target="MountReleasedState" />
+	<transition event="observation.stop" target="ObservationStopedState" />
+	<transition event="array.creation" target="ArrayCreatedState" />
+	<transition event="subscan.start" target="SubscanStartedState" />
+</state>
+
+<state id="ArrayCreatedState">
+	<transition event="scan.start" target="ScanStartedState" />
+	<transition event="array.destruction" target="ArrayDestroyedState" />
+	<transition event="mount.release" target="MountReleasedState" />
+	<transition event="singledish.start" target="SingledishStartedState" />
+	<transition event="interferometry.start" target="InterferometryStartedState" />
+</state>
+
+<state id="SingledishStartedState">
+	<transition event="mount.release" target="MountReleasedState" />
+	<transition event="scan.start" target="ScanStartedState" />
+	<transition event="observation.stop" target="ObservationStopedState" />
+</state>
+
+<state id="ObservationStopedState">
+	<transition event="array.destruction" target="ArrayDestroyedState" />
+	<transition event="scan.start" target="ScanStartedState" />
+	<transition event="singledish.start" target="SingledishStartedState" />
+	<transition event="mount.release" target="MountReleasedState" />
+	<transition event="array.creation" target="ArrayCreatedState" />
+	<transition event="interferometry.start" target="InterferometryStartedState" />
+</state>
+
+<state id="InterferometryStartedState">
+	<transition event="scan.start" target="ScanStartedState" />
+	<transition event="mount.release" target="MountReleasedState" />
+	<transition event="observation.stop" target="ObservationStopedState" />
+</state>
+
+<state id="MountReleasedState">
+	<transition event="observation.stop" target="ObservationStopedState" />
+</state>
+
+</scxml>

@@ -108,7 +108,10 @@ class LogWorld:
             return
         for agent in self.agents:
             if agent.keyName == kn:
-                self.parseLogLine(agent, line)
-                return
+                if self.isTerminal(agent.state):
+                    self.agents.remove(agent)
+                else:
+                    self.parseLogLine(agent, line)
+                    return
         agent = Agent(kn, s)
         self.agents.append(agent)

@@ -10,7 +10,7 @@
     },
 
     {
-       "stateName": "mount.free",
+       "stateName": "mount.release",
        "and_list": ["has successfully delivered a component", "MountController"],
        "or_list": [],
        "search_list": ["(Array)\\d+"],
@@ -19,7 +19,7 @@
     },
 
     {
-      "stateName":"interferometry.observation.start",
+      "stateName":"interferometry.start",
        "and_list": ["Interferometry observing mode starting"],
        "or_list": [],
        "search_list": ["(Array)\\d+"],
@@ -27,7 +27,7 @@
        "stateType": "transition"
     },
     {
-      "stateName":"singledish.observation.start",
+      "stateName":"singledish.start",
        "and_list": ["Single dish observing mode starting"],
        "or_list": [],
        "search_list": ["(Array)\\d+"],

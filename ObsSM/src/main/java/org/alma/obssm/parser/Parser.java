@@ -25,7 +25,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -35,6 +34,7 @@ import java.util.regex.Pattern;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
@@ -42,7 +42,7 @@ import com.google.gson.stream.JsonReader;
 /**
  * This class parse the log with the transitions constrains on the JSON file.
  * @author Javier Fuentes
- * @version 0.2
+ * @version 0.3
  */
 public class Parser {
     protected Map<String, TransitionConstraints> constraints;
@@ -51,7 +51,7 @@ public class Parser {
     /**
      * Constructor, initialize the JSON constraints file.
      *  
-     * @param url
+     * @param url json file
      * @throws FileNotFoundException
      */
     public Parser(String url) throws FileNotFoundException
@@ -59,21 +59,21 @@ public class Parser {
         JsonReader reader = new JsonReader(new FileReader(url));
         JsonElement element = new JsonParser().parse(reader);
         Gson gson = new GsonBuilder().create();
+        
         this.constraints = new HashMap<>();
         
-        Set<Entry<String, JsonElement>> se = element.getAsJsonObject().entrySet();
-        for (Iterator<Entry<String, JsonElement>> i = se.iterator(); i.hasNext();)
-        {
-            Entry<String, JsonElement> e = (Entry<String, JsonElement>) i.next();
-            TransitionConstraints t = gson.fromJson(e.getValue(), TransitionConstraints.class);
-            this.constraints.put(e.getKey(), t);
+        JsonArray arr = element.getAsJsonArray();
+        
+        for (int i=0; i < arr.size(); i++){
+            TransitionConstraints t = gson.fromJson(arr.get(i), TransitionConstraints.class);
+            this.constraints.put(t.stateName, t);
         }
     }
     
     
     public Map<String, TransitionConstraints> getConstraints() {
-		return constraints;
-	}
+        return constraints;
+    }
 
 
 

@@ -40,7 +40,7 @@ import org.xml.sax.SAXException;
 /**
  * Main class, initialize the State Machines and Parsers and runs the interpreter only.
  *
- * @version 0.2
+ * @version 0.3
  * @author Javier Fuentes
  *
  */
@@ -85,7 +85,7 @@ public class Run {
 
 
         @SuppressWarnings("unused")
-		Run run = new Run(f.getPath(), port);
+        Run run = new Run(f.getPath(), port);
     }
 
     /**
@@ -107,7 +107,7 @@ public class Run {
             /**
              * First state machine. It will wait for a keyName
              */
-			smm.addNewStateMachine();
+            smm.addNewStateMachine();
 
             System.out.println(new Timestamp(System.currentTimeMillis()) +" Loop started and waiting for logs on port: " + port);
             while (true)
