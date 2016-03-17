@@ -22,6 +22,8 @@ def sendFile(file):
     f = open(sys.argv[1]+"/"+file)
     lines = f.readlines()
     for i in lines:
+        time.sleep(0.001)
+        print(i)
         sock.sendall(i.encode('utf-8'))
 
 dirs= os.listdir(sys.argv[1])

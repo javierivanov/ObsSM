@@ -1,5 +1,4 @@
-/**
- * *****************************************************************************
+/*******************************************************************************
  * ALMA - Atacama Large Millimeter Array
  * Copyright (c) AUI - Associated Universities Inc., 2016
  * (in the framework of the ALMA collaboration).
@@ -18,28 +17,27 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
- ******************************************************************************
- */
-package org.alma.obssm.net;
+ *******************************************************************************/
 
-import java.io.IOException;
+package org.alma.obssm;
+
+import org.alma.obssm.gui.ObsSMPanel;
+import org.alma.obssm.net.LineReader;
+import org.alma.obssm.parser.Parser;
+import org.alma.obssm.sm.StateMachineManager;
 
 /**
- * This interface provides a basic communication layer.
  *
- * @author Javier Fuentes
- * @version 0.3
- *
+ * @author javier
  */
-public interface LineReader {
-
-    public String waitForLine() throws IOException, InterruptedException;
-
-    public void endCommunication() throws IOException;
-
-    public void interrupt();
-
-    public void startCommunication() throws IOException;
-
-    public boolean isCommunicationActive();
+public class Manager {
+    public StateMachineManager smm;
+    public LineReader lr;
+    public ObsSMPanel osmPanel;
+    public Parser parser;
+    public Thread mainThread;
+    public Manager()
+    {
+        osmPanel = new ObsSMPanel(this);
+    }
 }

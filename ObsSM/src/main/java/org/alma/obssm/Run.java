@@ -49,7 +49,7 @@ public class Run {
     /*
      * Some filter options. If the array is empty, it will show everything.
      */
-    public static String KEYNAME_FILTER[] = {"Array011"};
+    public static String KEYNAME_FILTER[] = {};
     public static boolean SHOW_TIMESTAMP = false;
 
     /**
@@ -58,7 +58,11 @@ public class Run {
      * @throws FileNotFoundException
      */
     public static void main(String args[]) throws FileNotFoundException
-    {
+    {        
+        new Manager().osmPanel.setVisible(true);
+        
+        /*
+        
     	if (args.length == 0)
     	{
     		throw new MissingFormatArgumentException("The model path is required");
@@ -86,6 +90,7 @@ public class Run {
 
         @SuppressWarnings("unused")
         Run run = new Run(f.getPath(), port);
+        */
     }
 
     /**
@@ -104,6 +109,7 @@ public class Run {
             Parser p = new Parser(filepathname + "/transitions.json");
             
             StateMachineManager smm = new StateMachineManager(filepathname + "/model.xml");
+            
             /**
              * First state machine. It will wait for a keyName
              */

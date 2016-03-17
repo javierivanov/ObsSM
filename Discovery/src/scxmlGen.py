@@ -21,7 +21,8 @@ def transitionToState(transition):
 
 
 def createSCXML(transitions):
-    scxml = et.Element("scxml", {'initial': 'idle'})
+    attr = {'initial': 'idle', 'version': '0.9', 'xmlns': "http://  www.w3.org/2005/07/scxml"}
+    scxml = et.Element("scxml", attr)
     # States
     states = {}
     idle = et.SubElement(scxml, 'state', attrib={'id': 'idle'})
@@ -45,7 +46,8 @@ def createSCXML(transitions):
             attr = {}
             attr['target'] = transitionToState(i.state_from["stateName"])
             attr['event'] = i.state_from["stateName"]
-            et.SubElement(idle, 'transition', attr)
+            aux = et.SubElement(idle, 'transition', attr)
+            aux.text = ' '
 
     # transitions
     for i in transitions:
@@ -54,5 +56,6 @@ def createSCXML(transitions):
             attr = {}
             attr['target'] = transitionToState(j["stateName"])
             attr['event'] = j["stateName"]
-            et.SubElement(states[n], 'transition', attr)
+            aux = et.SubElement(states[n], 'transition', attr)
+            aux.text = ' '
     return str(et.tostring(scxml).decode('utf-8')).replace('/>', '/>\n').replace('><', '>\n<').replace('</state>', '</state>\n').replace('<transition', '\t<transition')

@@ -1,4 +1,5 @@
-/*******************************************************************************
+/**
+ * *****************************************************************************
  * ALMA - Atacama Large Millimeter Array
  * Copyright (c) AUI - Associated Universities Inc., 2016
  * (in the framework of the ALMA collaboration).
@@ -17,9 +18,8 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
- *******************************************************************************/
-
-
+ ******************************************************************************
+ */
 package org.alma.obssm.sm;
 
 import java.io.IOException;
@@ -34,108 +34,117 @@ import org.xml.sax.SAXException;
 
 /**
  * This class manages State Machines which are currently active.
- * 
+ *
  * @author Javier Fuentes
  * @version 0.2
  * @since 0.2
  */
-
-
 public class StateMachineManager {
-	private List<StateMachine> stateMachines;
-	private String xmlpath;
-	
-	public StateMachineManager(String xmlpath) {
-		this.xmlpath = xmlpath;
-		this.stateMachines = new ArrayList<>();
-	}
-	
-	/**
-	 * Creates a new State Machine
-	 * @throws IOException
-	 * @throws ModelException
-	 * @throws SAXException
-	 */
-	public void addNewStateMachine() throws IOException, ModelException, SAXException
-	{
-		this.stateMachines.add(new StateMachine(this.xmlpath));
-	}
-	
-	/**
-	 * Get State Machine list
-	 * @return StateMachine List
-	 */
-	public List<StateMachine> getStateMachines()
-	{
-		return this.stateMachines;
-	}
-	
-	public List<String> getAllPossiblesTransitions()
-	{
-		/**
-		 * Listing all possibles transitions.
-		 */
-		List<String> out = new ArrayList<>();
-		for (Iterator<StateMachine> iter = this.stateMachines.iterator(); iter.hasNext();)
-		{
-			StateMachine aux = iter.next();
-			out.addAll(aux.getTransitionsStringList());
-		}
-		/**
-		 * Removing duplicates
-		 */
-		Set<String> hs = new HashSet<>();
-		hs.addAll(out);
-		out.clear();
-		out.addAll(hs);
-		return out;
-	}
-	
-	
-	/**
-	 * Search for the specific keyName SM and fire the event, if the keyName does not exists it will assign a new one.
-	 * @param transition
-	 * @param keyName
-	 * @throws ModelException
-	 * @throws SAXException 
-	 * @throws IOException 
-	 */
-	public void findAndTriggerAction(String transition, String keyName) throws ModelException, IOException, SAXException
-	{
-		if (transition == null) return;
-		StateMachine newOne = null;
-		for  (Iterator<StateMachine> iter = this.stateMachines.iterator(); iter.hasNext();)
-		{
-			StateMachine aux = iter.next();
-			if (aux.getKeyName() == null) newOne = aux;
-			else if (aux.getKeyName().equals(keyName))
-			{
-				if(aux.fireEvent(transition))
-				{
-					/*
-					 * For final states, the SM will be removed from the list.
-					 */
-					this.stateMachines.remove(aux);
-				}
-				/**
-				 * If it finds the keyName, raise the event and the method has to stop.
-				 */
-				return;
-			}
-		}
-		newOne.setKeyName(keyName);
-		if (newOne.fireEvent(transition))
-		{
-			/*
-			 * For final states (on this case, could be a error final state), the SM will be removed from the list.
-			 */
-			this.stateMachines.remove(newOne);
-		}
-		/*
-		 * New SM, waiting for a new instance.
-		 */
-		addNewStateMachine();
-	}
-	
-	
+
+    public final static int ACTION_FOUND = 1;
+    public final static int ACTION_NOT_FOUND = 2;
+    public final static int NEW_SM_REQUIRED = 3;
+
+    private List<StateMachine> stateMachines;
+    private String xmlpath;
+
+    public StateMachineManager(String xmlpath) {
+        this.xmlpath = xmlpath;
+        this.stateMachines = new ArrayList<>();
+    }
+
+    /**
+     * Creates a new State Machine
+     *
+     * @throws IOException
+     * @throws ModelException
+     * @throws SAXException
+     */
+    public void addNewStateMachine() throws IOException, ModelException, SAXException {
+        this.stateMachines.add(new StateMachine(this.xmlpath));
+    }
+
+    public void addNewStateMachine(EntryListener listener) throws IOException, ModelException, SAXException {
+        this.stateMachines.add(new StateMachine(this.xmlpath, listener));
+    }
+
+    public boolean isSMIdleAvailable() {
+        return this.stateMachines.stream().anyMatch((s) -> ("idle".equals(s.getCurrentStateId())));
+    }
+
+    /**
+     * Get State Machine list
+     *
+     * @return StateMachine List
+     */
+    public List<StateMachine> getStateMachines() {
+        return this.stateMachines;
+    }
+
+    public List<String> getAllPossiblesTransitions() {
+        /**
+         * Listing all possibles transitions.
+         */
+        List<String> out = new ArrayList<>();
+        for (Iterator<StateMachine> iter = this.stateMachines.iterator(); iter.hasNext();) {
+            StateMachine aux = iter.next();
+            out.addAll(aux.getTransitionsStringList());
+        }
+        /**
+         * Removing duplicates
+         */
+        Set<String> hs = new HashSet<>();
+        hs.addAll(out);
+        out.clear();
+        out.addAll(hs);
+        return out;
+    }
+
+    /**
+     * Search for the specific keyName SM and fire the event, if the keyName
+     * does not exists it will assign a new one.
+     *
+     * @param transition
+     * @param keyName
+     * @throws ModelException
+     * @throws SAXException
+     * @throws IOException
+     */
+    public int findAndTriggerAction(String transition, String keyName) throws ModelException, IOException, SAXException {
+        if (transition == null) {
+            return ACTION_NOT_FOUND;
+        }
+        StateMachine newOne = null;
+        for (Iterator<StateMachine> iter = this.stateMachines.iterator(); iter.hasNext();) {
+            StateMachine aux = iter.next();
+            if (aux.getKeyName() == null) {
+                newOne = aux;
+            } else if (aux.getKeyName().equals(keyName)) {
+                if (aux.fireEvent(transition)) {
+                    /**
+                     * For final states, the SM will be removed from the list.
+                     */
+                    this.stateMachines.remove(aux);
+                }
+                /**
+                 * If it finds the keyName, raise the event and the method has
+                 * to stop.
+                 */
+                return ACTION_FOUND;
+            }
+        }
+        newOne.setKeyName(keyName);
+        if (newOne.fireEvent(transition)) {
+            /**
+             * For final states (on this case, could be a error final state),
+             * the SM will be removed from the list.
+             */
+            this.stateMachines.remove(newOne);
+        }
+        /**
+         * New SM, waiting for a new instance.
+         */
+        return NEW_SM_REQUIRED;
+    }
+
 }

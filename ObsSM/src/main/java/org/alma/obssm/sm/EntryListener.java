@@ -20,26 +20,24 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  ******************************************************************************
  */
-package org.alma.obssm.net;
+package org.alma.obssm.sm;
 
-import java.io.IOException;
+import org.apache.commons.scxml.SCXMLListener;
 
 /**
- * This interface provides a basic communication layer.
  *
  * @author Javier Fuentes
  * @version 0.3
- *
  */
-public interface LineReader {
+public abstract class EntryListener implements SCXMLListener {
 
-    public String waitForLine() throws IOException, InterruptedException;
+    protected StateMachine parent = null;
+    
+    public void setParent(StateMachine parent) {
+        this.parent = parent;
+    }
 
-    public void endCommunication() throws IOException;
-
-    public void interrupt();
-
-    public void startCommunication() throws IOException;
-
-    public boolean isCommunicationActive();
+    public StateMachine getParent() {
+        return this.parent;
+    }
 }
