@@ -28,7 +28,8 @@ import org.alma.obssm.sm.StateMachineManager;
 
 /**
  *
- * @author javier
+ * @author Javier Fuentes
+ * @version 0.3
  */
 public class Manager {
     public StateMachineManager smm;

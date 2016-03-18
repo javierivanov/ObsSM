@@ -1,16 +1,35 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+/*******************************************************************************
+ * ALMA - Atacama Large Millimeter Array
+ * Copyright (c) AUI - Associated Universities Inc., 2016
+ * (in the framework of the ALMA collaboration).
+ * All rights reserved.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+ *******************************************************************************/
+
 package org.alma.obssm.gui;
 
 import java.awt.Color;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -24,12 +43,10 @@ import javax.swing.plaf.metal.MetalLookAndFeel;
 import org.alma.obssm.Manager;
 import org.alma.obssm.net.LineReaderImpl2;
 import org.alma.obssm.parser.Parser;
-import org.alma.obssm.sm.EntryListener;
 import org.alma.obssm.sm.GuiEntryListener;
+import org.alma.obssm.sm.StateMachine;
 import org.alma.obssm.sm.StateMachineManager;
 import org.apache.commons.scxml.model.ModelException;
-import org.apache.commons.scxml.model.Transition;
-import org.apache.commons.scxml.model.TransitionTarget;
 import org.xml.sax.SAXException;
 
 /**
@@ -42,8 +59,8 @@ public class ObsSMPanel extends javax.swing.JFrame {
      * Creates new form Panel
      */
     private Manager m;
-    
-    private String xmlFileName,jsonFileName;
+
+    private String xmlFileName, jsonFileName;
 
     public ObsSMPanel(Manager m) {
         this.m = m;
@@ -65,19 +82,41 @@ public class ObsSMPanel extends javax.swing.JFrame {
         /**
          * Default files
          */
-        //if (JOptionPane.showConfirmDialog(this, "Search for files in ../models/ ?") == JOptionPane.OK_OPTION) {
-            try {
-                m.smm = new StateMachineManager("../models/model.xml");
-                xmlFileLabel.setText("model.xml");
-                xmlFileName = "../models/model.xml";
-                xmlFileLabel.setForeground(Color.green);
-                m.parser = new Parser("../models/states.json");
-                jsonFileLabel.setText("states.json");
-                jsonFileName =  "../models/states.json";
-                jsonFileLabel.setForeground(Color.green);
-            } catch (Exception e) {
+        if (JOptionPane.showConfirmDialog(this, "Search for files in ../models/ ?") == JOptionPane.OK_OPTION) {
+        try {
+            m.smm = new StateMachineManager("../models/model.xml");
+            xmlFileLabel.setText("model.xml");
+            xmlFileName = "../models/model.xml";
+            xmlFileLabel.setForeground(Color.green);
+            m.parser = new Parser("../models/states.json");
+            jsonFileLabel.setText("states.json");
+            jsonFileName = "../models/states.json";
+            jsonFileLabel.setForeground(Color.green);
+        } catch (Exception e) {
+        }
+        }
+        
+        checkActiveArrays();
+    }
+
+    private void checkActiveArrays() {
+        new Thread(() -> {
+            while (true) {
+                DefaultListModel dlm = new DefaultListModel();
+                if (m.smm != null) {
+                    Consumer<StateMachine> c = s -> dlm.addElement(s.getKeyName() + " -> " + s.getCurrentStateId());
+                    Predicate<StateMachine> p = s -> s.getKeyName() != null;
+                    m.smm.getStateMachines().stream().filter(p).forEach(c);
+                }
+                
+                arraysActiveList.setModel(dlm);
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException ex) {
+                    return;
+                }
             }
-        //}
+        }).start();
     }
 
     /**
@@ -167,11 +206,7 @@ public class ObsSMPanel extends javax.swing.JFrame {
             }
         });
 
-        arraysActiveList.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = {};
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
+        arraysActiveList.setModel(new javax.swing.DefaultListModel<String>());
         jScrollPane2.setViewportView(arraysActiveList);
 
         jLabel3.setText("Active Arrays");
@@ -180,55 +215,58 @@ public class ObsSMPanel extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(36, 36, 36)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jsonFileLabel)
-                        .addGap(18, 18, 18)
-                        .addComponent(jsonFileButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 232, Short.MAX_VALUE)
-                        .addComponent(xmlFileLabel)
-                        .addGap(18, 18, 18)
-                        .addComponent(xmlFileButton)
-                        .addGap(18, 18, 18))))
             .addComponent(jSeparator1)
+            .addComponent(jSeparator2)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(34, 34, 34)
+                        .addGap(36, 36, 36)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jsonFileLabel)
+                                .addGap(18, 18, 18)
+                                .addComponent(jsonFileButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(xmlFileLabel)
+                                .addGap(18, 18, 18)
+                                .addComponent(xmlFileButton))))
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel4)
+                                .addGap(34, 34, 34)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel4)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(portSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jLabel2))
+                                .addGap(18, 18, 18))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(arrayComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(arrayProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(startButton)
                                 .addGap(18, 18, 18)
-                                .addComponent(portSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel2))
-                        .addGap(18, 18, 18))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(arrayComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(startButton)
-                        .addGap(18, 18, 18)
-                        .addComponent(stopButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(restartButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(statusLabel))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3)))
-                    .addComponent(arrayProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addComponent(jSeparator2)
+                                .addComponent(stopButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(restartButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(statusLabel)
+                                .addGap(51, 51, 51))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel3)
+                                        .addGap(0, 0, Short.MAX_VALUE))
+                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE))))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -321,30 +359,37 @@ public class ObsSMPanel extends javax.swing.JFrame {
                     m.lr.startCommunication();
                     statusLabel.setText("Connected");
                     while (m.lr.isCommunicationActive()) {
+                        statusLabel.setText("Listening data");
                         String line = m.lr.waitForLine();
-                        if (line != null){
-                            if ("EOF".equals(line)) break;
+                        if (line != null) {
+                            if ("EOF".equals(line)) {
+                                stopButtonActionPerformed(null);
+                                statusLabel.setText("EOF reached");
+                                break;
+                            }
                             String event = "";
                             String keyName = "";
-                            
-                            if (!m.smm.isSMIdleAvailable()) m.smm.addNewStateMachine(new GuiEntryListener(m));
-                            
+
+                            if (!m.smm.isSMIdleAvailable()) {
+                                m.smm.addNewStateMachine(new GuiEntryListener(m));
+                            }
+
                             event = m.parser.getParseAction(line, m.smm.getAllPossiblesTransitions());
                             keyName = m.parser.getKeyName(line, event);
-                            
+
                             m.smm.findAndTriggerAction(event, keyName);
-                            
+
                         }
-                        
+
                     }
                 } catch (IOException | InterruptedException | ModelException | SAXException ex) {
                     Logger.getLogger(ObsSMPanel.class.getName()).log(Level.SEVERE, null, ex);
-                    statusLabel.setText("Something goes wrong: "+ex.getMessage());
+                    statusLabel.setText("Something goes wrong: " + ex.getMessage());
                 }
             }
         });
         m.mainThread.start();
-        
+
         jsonFileButton.setEnabled(false);
         xmlFileButton.setEnabled(false);
         startButton.setEnabled(false);
@@ -357,16 +402,21 @@ public class ObsSMPanel extends javax.swing.JFrame {
         xmlFileButton.setEnabled(true);
         startButton.setEnabled(true);
         stopButton.setEnabled(false);
-
+        statusLabel.setText("Stoped");
         m.lr.interrupt();
+        try {
+            m.lr.endCommunication();
+        } catch (IOException ex) {
+            Logger.getLogger(ObsSMPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
         m.mainThread.interrupt();
-        
+
     }//GEN-LAST:event_stopButtonActionPerformed
 
     private void restartButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restartButtonActionPerformed
         // TODO add your handling code here:
         stopButtonActionPerformed(null);
-        arrayComboBox.setModel(new DefaultComboBoxModel<String>());
+        arrayComboBox.setModel(new DefaultComboBoxModel<>());
         arrayProgressBar.setValue(0);
         arrayProgressBar.setString("");
         arrayTextArea.setText("");

@@ -2,14 +2,14 @@
 
 import logworld
 import sys
-from scxmlGen import *
+from scxmlGen import createSCXML
 
-log = logworld.LogWorld("states.json")
+log = logworld.LogWorld(sys.argv[1])
 
-f = open(sys.argv[1], "r")
+f = open(sys.argv[2], "r")
 
 [log.logDispatcher(x) for x in f.readlines()]
 
-#[print(x) for x in log.transitions]
+# [print(x) for x in log.transitions]
 
 print(createSCXML(log.transitions))

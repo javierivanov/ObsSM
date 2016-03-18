@@ -1,4 +1,4 @@
-<scxml initial="idle" version="0.9" xmlns="http://www.w3.org/2005/07/scxml">
+<scxml initial="idle" final="ArrayDestroyedState" version="0.9" xmlns="http://www.w3.org/2005/07/scxml">
 <state id="idle">
 	<transition event="array.creation" target="ArrayCreatedState"> </transition>
 </state>
@@ -24,7 +24,7 @@
 	<transition event="observation.stop" target="ObservationStopedState"> </transition>
 </state>
 
-<final id="ArrayDestroyedState" />
+<final id="ArrayDestroyedState"></final>
 <state id="ArrayCreatedState">
 	<transition event="interferometry.start" target="InterferometryStartedState"> </transition>
 	<transition event="array.destruction" target="ArrayDestroyedState"> </transition>
