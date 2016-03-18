@@ -13,7 +13,7 @@ python3 Discovery/src/main.py [states.json file] [Log training file]
 ```
 It generates a xml file, so you can save it with:
 ```
-python3 Discovery/src/main.py ../../models/states.json [Log training file] > ../../models/model.xml
+python3 Discovery/src/main.py models/states.json [Log training file] > models/model.xml
 ```
 
 #Compiling Process
@@ -41,12 +41,12 @@ mvn clean dependency:copy-dependencies package
 
 #Execute the interpreter
 ```
-java -cp "target/ObsSM-0.2.jar:target/dependency/*" org.alma.obssm.Run /path/to/folder/model/ [listener port(default 8888)]
+java -cp "target/ObsSM-0.3.jar:target/dependency/*" org.alma.obssm.Run /path/to/folder/model/ [listener port(default 8888)]
 ```
 
 #Execute the new built-in GUI
 ```
-java -cp "target/ObsSM-0.2.jar:target/dependency/*" org.alma.obssm.Run 
+java -cp "target/ObsSM-0.3.jar:target/dependency/*" org.alma.obssm.Run 
 ```
 
 
@@ -61,5 +61,5 @@ You can build your own implementation on another language.
 
 * To run the log sender:
 ```bash
-python3 logSenderV2.py [folder with plain text date ordered files]
+python3 scripts/logSenderV2.py [folder with plain text date ordered files]
 ```
