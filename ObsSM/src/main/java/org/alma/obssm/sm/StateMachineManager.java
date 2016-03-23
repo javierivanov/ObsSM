@@ -41,7 +41,7 @@ import org.xml.sax.SAXException;
  */
 public class StateMachineManager {
 
-    public final static int ACTION_FOUND = 1;
+    public final static int ACTION_TRIGGERED = 1;
     public final static int ACTION_NOT_FOUND = 2;
     public final static int NEW_SM_REQUIRED = 3;
 
@@ -69,7 +69,7 @@ public class StateMachineManager {
     }
 
     public boolean isSMIdleAvailable() {
-        return this.stateMachines.stream().anyMatch((s) -> ("idle".equals(s.getCurrentStateId())));
+        return this.stateMachines.stream().anyMatch((s) -> s.getKeyName() == null);
     }
 
     /**
@@ -110,11 +110,13 @@ public class StateMachineManager {
      * @throws SAXException
      * @throws IOException
      */
-    public int findAndTriggerAction(String transition, String keyName) throws ModelException, IOException, SAXException {
+    public int findAndTriggerAction2(String transition, String keyName) throws ModelException, IOException, SAXException {
         if (transition == null) {
             return ACTION_NOT_FOUND;
         }
+        
         StateMachine newOne = null;
+        
         for (Iterator<StateMachine> iter = this.stateMachines.iterator(); iter.hasNext();) {
             StateMachine aux = iter.next();
             if (aux.getKeyName() == null) {
@@ -130,9 +132,10 @@ public class StateMachineManager {
                  * If it finds the keyName, raise the event and the method has
                  * to stop.
                  */
-                return ACTION_FOUND;
+                return ACTION_TRIGGERED;
             }
         }
+        
         newOne.setKeyName(keyName);
         if (newOne.fireEvent(transition)) {
             /**
@@ -145,6 +148,39 @@ public class StateMachineManager {
          * New SM, waiting for a new instance.
          */
         return NEW_SM_REQUIRED;
+    }
+    
+    public int findAndTriggerAction(String transition, String keyName) throws ModelException, IOException, SAXException {
+        if (transition == null) {
+            return ACTION_NOT_FOUND;
+        }
+        
+        
+        for (StateMachine aux : this.stateMachines) {
+            if (aux.getKeyName() != null) {
+                if (aux.getKeyName().equals(keyName)) {
+                    if (aux.fireEvent(transition)) {
+                        this.stateMachines.remove(aux);
+                    }
+                    return ACTION_TRIGGERED;
+                }
+            }
+        }
+
+        
+        StateMachine m = this.stateMachines.stream()
+                .filter((StateMachine s )-> s.getKeyName() == null)
+                .findFirst().get();
+        
+        if (m.getTransitionsStringList().stream().anyMatch((t) -> t.equals(transition))) {
+            m.setKeyName(keyName);
+            if (m.fireEvent(transition)) {
+                this.stateMachines.remove(m);
+            }
+            return NEW_SM_REQUIRED;
+        }
+        
+        return ACTION_NOT_FOUND;
     }
 
 }

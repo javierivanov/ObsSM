@@ -8,7 +8,6 @@ package org.alma.obssm.sm;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListModel;
 import org.alma.obssm.Manager;
 import org.apache.commons.scxml.model.Transition;
 import org.apache.commons.scxml.model.TransitionTarget;
@@ -71,7 +70,7 @@ public class GuiEntryListener extends EntryListener {
 
     @Override
     public void onTransition(TransitionTarget from, TransitionTarget to, Transition transition) {
-
+        
     }
 
 }

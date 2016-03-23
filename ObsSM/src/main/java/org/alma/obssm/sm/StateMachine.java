@@ -102,10 +102,9 @@ public class StateMachine {
         if (event == null) {
             return engine.getCurrentStatus().isFinal();
         }
+        engine.triggerEvent(new TriggerEvent(event,
+            TriggerEvent.SIGNAL_EVENT, null));
 
-        TriggerEvent[] evts = {new TriggerEvent(event,
-            TriggerEvent.SIGNAL_EVENT, null)};
-        engine.triggerEvents(evts);
         return engine.getCurrentStatus().isFinal();
     }
 
