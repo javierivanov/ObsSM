@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
 import urllib.request as urllib
-import pickle
 import os
 from datetime import date, timedelta
 import gzip
-import threading
-import time
 from tempfile import NamedTemporaryFile
+import logworld
+import sys
+from scxmlGen import createSCXML
 
 base_url = 'http://computing-logs.aiv.alma.cl/AOS/SYSTEM/'
-dfrom, dto = date(2016, 1, 31), date(2016, 2, 1)
-dfilters = ('Emergency', 'Alert', 'Critical', 'Error')
-threads_size = 20
+dfrom, dto = date(2016, 3, 17), date(2016, 3, 18)
 base_folder = "data/"
 list_days = list()
+log = logworld.LogWorld(sys.argv[1])
+data_files_map = {}
 
 
 def perdelta(start, end, delta):
@@ -38,43 +38,33 @@ def get_files_per_day(day):
     return list_per_day
 
 
-def data_process(day, file_):
+def download_file(day, file_):
     url_ = base_url + day + '/' + file_
-    if not os.path.isfile(base_folder + file_):
-        response = urllib.urlopen(url_)
-        temp_data = response.read()
-        temp_file = open(base_folder + file_, "wb")
-        temp_file.write(temp_data)
-        temp_file.flush()
-        temp_file.close()
-    temp_file = gzip.open(base_folder + file_, "rb")
-    lines = temp_file.readlines()
-    results = list()
-    for aux in lines:
-        startwith = False
-        for i in dfilters:
-            if aux.startswith(b'<' + i.encode('utf-8')):
-                startwith = True
-        if startwith:
-            results.append(aux)
+    response = urllib.urlopen(url_)
+    temp_data = response.read()
+    temp_file = NamedTemporaryFile(mode='w+b', delete=False)
+    temp_file.write(temp_data)
+    temp_file.flush()
     temp_file.close()
-    os.remove(base_folder + file_)
-    fOut = open(base_folder + file_ + ".bin", "wb")
-    pickle.dump(results, fOut)
-    fOut.flush()
-    fOut.close()
+    data_files_map.update({file_: temp_file.name})
 
 
-def worker(id_):
-    counter = id_
-    while counter < len(list_days):
-        print(list_days[counter])
-        files_ = get_files_per_day(list_days[counter])
-        for i in files_:
-            data_process(list_days[counter], i)
-        counter += threads_size
+def data_process(file_):
+    temp_file_g = gzip.open(file_, "rb")
+    lines = temp_file_g.readlines()
+    for a in lines:
+        i = str(a)
+        log.logDispatcher(i)
+    temp_file_g.close()
+    os.unlink(file_)
 
 
-for i in range(0, threads_size):
-    t = threading.Thread(target=worker, args=(i,))
-    t.start()
+for i in list_days:
+    for h in get_files_per_day(i)[:10]:
+        download_file(i, h)
+        data_process(data_files_map[h])
+        [print(x) for x in log.transitions]
+        print()
+        print()
+
+# print(createSCXML(log.transitions))

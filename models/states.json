@@ -1,10 +1,9 @@
-
-  [
+[
     {
        "stateName":"array.creation",
-       "and_list": ["component CONTROL/Array", "activated and initialized in"],
+       "and_list": [],
        "or_list": [],
-       "search_list": ["(Array)\\d+"],
+       "search_list": ["(component CONTROL\/Array[0-9][0-9][0-9] activated and initialized)"],
        "keyName":"(Array\\d+)",
        "stateType": "initial"
     },
@@ -13,7 +12,7 @@
        "stateName": "mount.release",
        "and_list": ["has successfully delivered a component", "MountController"],
        "or_list": [],
-       "search_list": ["(Array)\\d+"],
+       "search_list": [],
        "keyName":"(Array\\d+)",
        "stateType": "transition"
     },
@@ -22,23 +21,39 @@
       "stateName":"interferometry.start",
        "and_list": ["Interferometry observing mode starting"],
        "or_list": [],
-       "search_list": ["(Array)\\d+"],
+       "search_list": [],
        "keyName":"(Array\\d+)",
        "stateType": "transition"
     },
     {
       "stateName":"singledish.start",
-       "and_list": ["Single dish observing mode starting"],
+       "and_list": ["Single dish observing mode starting up."],
        "or_list": [],
-       "search_list": ["(Array)\\d+"],
+       "search_list": [],
+       "keyName":"(Array\\d+)",
+       "stateType": "transition"
+    },
+    {
+      "stateName":"holography.start",
+       "and_list": ["Tower holography observing mode starting up"],
+       "or_list": [],
+       "search_list": [],
+       "keyName":"(Array\\d+)",
+       "stateType": "transition"
+    },
+    {
+      "stateName":"vlbi.start",
+       "and_list": ["VLBI observing mode starting."],
+       "or_list": [],
+       "search_list": [],
        "keyName":"(Array\\d+)",
        "stateType": "transition"
     },
     {
        "stateName":"observation.stop",
        "and_list": [],
-       "or_list": ["to archive ASDM", "Waiting for ASDM to be archived","Previous execution block hasn't been properly finished.", "Waiting for DataCapturer"],
-       "search_list": ["(Array)\\d+"],
+       "or_list": ["to archive ASDM", "Waiting for ASDM to be archived","Previous execution block hasn't been properly finished."],
+       "search_list": [],
        "keyName":"(Array\\d+)",
        "stateType": "transition"
     },
@@ -47,7 +62,7 @@
        "stateName": "scan.start",
        "and_list": ["with scan intent"],
        "or_list": [],
-       "search_list": ["(Array)\\d+"],
+       "search_list": [],
        "keyName":"(Array\\d+)",
        "stateType": "transition"
     },
@@ -56,7 +71,7 @@
        "stateName": "subscan.start",
        "and_list": ["sub-scan", "has an intent of"],
        "or_list": [],
-       "search_list": ["(Array)\\d+"],
+       "search_list": [],
        "keyName":"(Array\\d+)",
        "stateType": "transition"
     },
@@ -64,8 +79,8 @@
       "stateName": "array.destruction",
        "and_list": ["client 'CONTROL/MASTER' has successfully delivered a component release request for curl=CONTROL/Array"],
        "or_list": [],
-       "search_list": ["(Array)\\d+"],
+       "search_list": [],
        "keyName":"(Array\\d+)",
        "stateType": "final"
     }
-  ]
+]

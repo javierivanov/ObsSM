@@ -85,7 +85,12 @@ public class Parser {
     private boolean parseLine(String line, String transition) throws NullPointerException {
 
         TransitionConstraints st = getTransitionConstraints(transition);
-
+        
+        if (st.search_list.size() > 0) {
+            return st.search_list.stream().anyMatch((s) -> Pattern.compile(s)
+                    .matcher(line).find());
+        }
+        
         if (!st.and_list.stream().noneMatch((aux) -> (!line.contains(aux)))) {
             return false;
         }

@@ -34,11 +34,12 @@ class Transition:
         return None
 
     def __str__(self):
-        out = "========================START=TRANSITION========================"
+        out = "=========================START=TRANSITION=========================="
         out += "\nstate_from:\t" + str(self.state_from["stateName"]) + "\n"
         out += "states_to:\t" + str([x["stateName"] for x in self.states_to]) + "\n"
         out += "T:\t\t" + str([float(x) / float(self.counter) for x in self.values]) + "\n"
-        out += "========================END=TRANSITION========================="
+        out += "counter:\t" + str(self.counter) + "\n"
+        out += "=========================END=TRANSITION=========================="
         return out
 
 
@@ -89,29 +90,36 @@ class LogWorld:
                 return i.getTransition(state_to)
         return None
 
-    def parseLogLine(self, agent, line):
-        states = self.getPossibleStates(agent.state)
-        for ss in states:
+    def parseLogLine(self, line):
+        for ss in self.states:
+            if len(ss["search_list"]) > 0:
+                for i in ss["search_list"]:
+                    m = re.search(i, line)
+                    if m is not None:
+                        return ss
             if len([x for x in ss["and_list"] if x in line]) == len(ss["and_list"]):
                 if len(ss["and_list"]) > 0:
-                    self.fireTransition(agent, ss)
-                    return
+                    return ss
             if len([x for x in ss["or_list"] if x in line]) >= 1:
-                self.fireTransition(agent, ss)
+                return ss
+        return None
 
     def logDispatcher(self, line):
-        s = self.getStartState()
-        kn = re.search(s['keyName'], line)
-        if kn is not None:
-            kn = kn.group(0)
-        else:
-            return
-        for agent in self.agents:
-            if agent.keyName == kn:
-                if self.isTerminal(agent.state):
-                    self.agents.remove(agent)
-                else:
-                    self.parseLogLine(agent, line)
-                    return
-        agent = Agent(kn, s)
-        self.agents.append(agent)
+        for a in self.agents:
+            kn = re.search(a.state["keyName"], line)
+            if kn is not None:
+                s = self.parseLogLine(line)
+                if s is not None:
+                    if s["stateType"] == "initial":
+                        self.agents.remove(a)
+                        break
+                    self.fireTransition(a, s)
+            if self.isTerminal(a.state):
+                self.agents.remove(a)
+                return
+        a = Agent(None, self.getStartState())
+        s = self.parseLogLine(line)
+        if s is not None:
+            if s["stateType"] == "initial":
+                a.keyName = re.search(a.state["keyName"], line).group(0)
+                self.agents.append(a)
