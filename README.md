@@ -1,22 +1,23 @@
 # ObsSM 0.3 version
 ALMA Log's State Machine Parser
-##Notice
-This is a new version, it has not been finished yet.
 
-#Transition Discovery
+#Discovery: Transitions
 
 This is a new application to discover transitions into the log to generate a SCXML model.
 
 ##Usage:
 ```
-python3 Discovery/src/main.py [states.json file] [Log training file]
+python2 Discovery/src/main.py -v [states.json file]
 ```
-It generates a xml file, so you can save it with:
+It generates a xml document, so you can save it using:
 ```
-python3 Discovery/src/main.py models/states.json [Log training file] > models/model.xml
+python2 Discovery/src/main.py -scxml [states.json file] > [model file]
 ```
+#ObsSM: Interpreter
 
-#Compiling Process
+##Compiling process
+
+The interpreter is designed to work on java version >= 1.7
 
 * Download sources https://github.com/javierivanov/ObsSM/archive/obssm-0.3.zip
 * Unzip files
@@ -46,20 +47,24 @@ java -cp "target/ObsSM-0.3.jar:target/dependency/*" org.alma.obssm.Run /path/to/
 
 #Execute the new built-in GUI
 ```
-java -cp "target/ObsSM-0.3.jar:target/dependency/*" org.alma.obssm.Run 
+java -cp "target/ObsSM-0.3.jar:target/dependency/*" org.alma.obssm.Run
 ```
 
 
-The SCXML model must be named model.xml and the transitions constraints must be named transitions.json and both of them have to be on the same folder.
+The SCXML model must be named model.xml and the transitions constraints must be
+named transitions.json and both of them have to be on the same folder.
 
 #How to send logs to the interpreter
 
 
-You can send line logs through the `logSenderV2.py` script.
+You can send line logs through the `logSender.py` script.
 If you want to use another port, host, python version or whatever, the scritp is very easy to modify (few lines).
 You can build your own implementation on another language.
 
+* New on this version 0.3: it will send the xml logs available on the web repo
+ of ALMA servers. So, you will be able to analyze the state of the arrays on near real time.
+ 
 * To run the log sender:
-```bash
-python3 scripts/logSenderV2.py [folder with plain text date ordered files]
+```
+python scripts/logSender.py
 ```
