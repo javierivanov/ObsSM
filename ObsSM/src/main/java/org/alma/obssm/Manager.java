@@ -28,18 +28,33 @@ import org.alma.obssm.parser.Parser;
 import org.alma.obssm.sm.StateMachineManager;
 
 /**
- *
+ * This class manages all components, with the purpose of interconnecting 
+ * objects between them.
+ * 
+ * TO DO: Allow to launch a console mode operation.
+ * 
  * @author Javier Fuentes
  * @version 0.3
+ * @see StateMachineManager
+ * @see LineReader
+ * @see ObsSMPanel
+ * @see Parser
+ *  
  */
+
+
 public class Manager {
     public StateMachineManager smm;
     public LineReader lr;
     public ObsSMPanel osmPanel;
     public Parser parser;
     public Thread mainThread;
-    public Manager()
-    {
+    
+    /**
+     * This constructor launches the Panel for visual operation.
+     */
+    public Manager() {
+        
         osmPanel = new ObsSMPanel(this);
     }
 }

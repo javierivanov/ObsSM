@@ -25,7 +25,8 @@ package org.alma.obssm.sm;
 import org.apache.commons.scxml.SCXMLListener;
 
 /**
- *
+ * This abstract class allows to inherit it, to create your owns actions on States changes.
+ * Moreover its possible to call the parent of the state machine to obtain the keyName and others components.
  * @author Javier Fuentes
  * @version 0.3
  */

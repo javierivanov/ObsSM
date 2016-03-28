@@ -41,8 +41,10 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 import org.alma.obssm.Manager;
+import org.alma.obssm.net.LineReader;
 import org.alma.obssm.net.LineReaderImpl2;
 import org.alma.obssm.parser.Parser;
+import org.alma.obssm.sm.EntryListener;
 import org.alma.obssm.sm.GuiEntryListener;
 import org.alma.obssm.sm.StateMachine;
 import org.alma.obssm.sm.StateMachineManager;
@@ -51,12 +53,13 @@ import org.xml.sax.SAXException;
 
 /**
  *
- * @author javier
+ * @author Javier Fuentes
+ * @version 0.3
  */
 public class ObsSMPanel extends javax.swing.JFrame {
 
     /**
-     * Creates new form Panel
+     * Creates new a form Panel.
      */
     private Manager m;
 
@@ -65,7 +68,10 @@ public class ObsSMPanel extends javax.swing.JFrame {
     public ObsSMPanel(Manager m) {
         this.m = m;
         try {
-            /* Standard look and feel */
+            
+            /**
+             * Standard look and feel.
+             */
             UIManager.setLookAndFeel(new MetalLookAndFeel());
         } catch (UnsupportedLookAndFeelException ex) {
             Logger.getLogger(ObsSMPanel.class.getName()).log(Level.SEVERE, null, ex);
@@ -74,13 +80,15 @@ public class ObsSMPanel extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         stopButton.setEnabled(false);
         portSpinner.setValue(8888);
+        
         /**
-         * Remove thousand separator
+         * Remove thousand separator.
          */
         portSpinner.setEditor(new JSpinner.NumberEditor(portSpinner, "#"));
         statusLabel.setText("Waiting for Start!");
+        
         /**
-         * Default files
+         * Default files.
          */
         if (JOptionPane.showConfirmDialog(this, "Search for files in ../models/ ?") == JOptionPane.OK_OPTION) {
         try {
@@ -96,9 +104,17 @@ public class ObsSMPanel extends javax.swing.JFrame {
         }
         }
         
+        /**
+         * Runs a thread checking for active Arrays.
+         */
         checkActiveArrays();
     }
-
+    
+    
+    /**
+     * This method start a thread to check periodically is there a 
+     * new active Array, it must be launched once.
+     */
     private void checkActiveArrays() {
         new Thread(() -> {
             while (true) {
@@ -345,6 +361,21 @@ public class ObsSMPanel extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jsonFileButtonActionPerformed
 
+    /**
+     * This method is executed when start Button is clicked. 
+     * It defines basics steps in order to run the server and read the logs lines.
+     * 
+     * In addition when the @StateMachineManager is instantiated, the listener used is 
+     * @GuiEntryListener, this listener could be modified and inherited by other Listener.
+     * 
+     * @param evt NULL
+     * 
+     * @see StateMachineManager
+     * @see LineReaderImpl2
+     * @see LineReader
+     * @see EntryListener
+     * @see GuiEntryListener
+     */
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
         // TODO add your handling code here:
         if (m.smm == null && m.parser == null) {

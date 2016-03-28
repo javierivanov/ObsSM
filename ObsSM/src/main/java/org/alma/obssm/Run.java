@@ -40,10 +40,13 @@ import org.xml.sax.SAXException;
 /**
  * Main class, initialize the State Machines and Parsers and runs the
  * interpreter only.
+ * 
+ * TO DO: Upgrade to allow to run with the Manager class.
  *
  * @version 0.3
  * @author Javier Fuentes
  *
+ * @see Manager
  */
 public class Run {
 

@@ -33,13 +33,39 @@ import java.io.IOException;
  */
 public interface LineReader {
 
+    /**
+     * This method has to lock the execution until a line is delivered.
+     * 
+     * @return A line read from the sender
+     * @throws IOException
+     * @throws InterruptedException 
+     */
     public String waitForLine() throws IOException, InterruptedException;
 
+    
+    /**
+     * This method has to end the communications.
+     * 
+     * @throws IOException 
+     */
     public void endCommunication() throws IOException;
 
+    /**
+     * This method has to interrupt the communication and unlock the waitForLine method.
+     */
     public void interrupt();
-
+    
+    /**
+     * This method has to initialize the communications.
+     * 
+     * @throws IOException 
+     */
     public void startCommunication() throws IOException;
 
+    
+    /**
+     * This method has to check the status of the communication.
+     * @return true if is connected, false otherwise.
+     */
     public boolean isCommunicationActive();
 }

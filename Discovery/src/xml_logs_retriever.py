@@ -9,7 +9,7 @@ import sys
 from scxmlGen import createSCXML
 
 base_url = 'http://computing-logs.aiv.alma.cl/AOS/SYSTEM/'
-dfrom, dto = date(2016, 3, 17), date(2016, 3, 18)
+dfrom, dto = date(2016, 3, 23), date(2016, 3, 24)
 base_folder = "data/"
 list_days = list()
 log = logworld.LogWorld(sys.argv[1])
@@ -61,10 +61,9 @@ def data_process(file_):
 
 for i in list_days:
     for h in get_files_per_day(i)[:10]:
+        print(h)
         download_file(i, h)
         data_process(data_files_map[h])
         [print(x) for x in log.transitions]
-        print()
-        print()
 
-# print(createSCXML(log.transitions))
+print(createSCXML(log.transitions))

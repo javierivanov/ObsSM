@@ -36,8 +36,7 @@ import org.xml.sax.SAXException;
  * This class manages State Machines which are currently active.
  *
  * @author Javier Fuentes
- * @version 0.2
- * @since 0.2
+ * @version 0.3
  */
 public class StateMachineManager {
 
@@ -150,6 +149,20 @@ public class StateMachineManager {
         return NEW_SM_REQUIRED;
     }
     
+    
+    /**
+     * 
+     * Finds a transition on the state machines which has the specific keyNamem
+     * if the state machine does not exists, it will return a new SM is required.
+     * 
+     * 
+     * @param transition
+     * @param keyName
+     * @return ACTION_TRIGGERED, NEW_SM_REQUIRED, ACTION_NOT_FOUND
+     * @throws ModelException
+     * @throws IOException
+     * @throws SAXException 
+     */
     public int findAndTriggerAction(String transition, String keyName) throws ModelException, IOException, SAXException {
         if (transition == null) {
             return ACTION_NOT_FOUND;

@@ -30,11 +30,15 @@ import java.util.Scanner;
 /**
  * Socket connection layer. It will requires more attention later.
  *
+ * @deprecated 
  * TO DO: Create a more standard communication layer.
+ * 
  *
  * @author Javier Fuentes
  * @version 0.1
  *
+ * @see LineReader
+ * @see LineReaderImpl2
  */
 public class ServerLineReader implements LineReader {
 
