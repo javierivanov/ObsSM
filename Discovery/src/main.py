@@ -1,15 +1,23 @@
 #!/usr/bin/env python3
 
-import logworld
+
+from datetime import date
+from xml_log_processor import XMLLogProcessor
 import sys
+
 from scxmlGen import createSCXML
 
-log = logworld.LogWorld(sys.argv[1])
+date_from = date(2016, 3, 17)
+date_to = date(2016, 3, 18)
+jsonfile = "../../models/states.json"
 
-f = open(sys.argv[2], "r")
+if len(sys.argv) > 1:
+    jsonfile = sys.argv[1]
 
-[log.logDispatcher(x) for x in f.readlines()]
+processor = XMLLogProcessor(date_from, date_to, jsonfile)
 
-# [print(x) for x in log.transitions]
+transitions = processor.get_transitions()
 
-print(createSCXML(log.transitions))
+[print(x) for x in transitions]
+
+print(createSCXML(transitions))

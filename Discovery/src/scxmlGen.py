@@ -21,6 +21,7 @@ def transitionToState(transition):
 
 
 def createSCXML(transitions):
+    '''Returns a SCXML document using the transitions'''
     attr = {'initial': 'idle', 'version': '0.9', 'xmlns': "http://  www.w3.org/2005/07/scxml"}
     scxml = et.Element("scxml", attr)
     # States

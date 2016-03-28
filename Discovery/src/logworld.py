@@ -1,3 +1,8 @@
+'''
+This file contains all the logic to discovers transitions.
+
+'''
+
 import json
 import re
 
@@ -12,6 +17,7 @@ def getJSONString(transitions):
 
 
 class Transition:
+    '''Defines a transition between one state to many states.'''
     def __init__(self, state_from):
         self.state_from = state_from
         self.states_to = []
@@ -44,7 +50,7 @@ class Transition:
 
 
 class Agent:
-
+    '''Defines an Agent who has a state and keyName'''
     def __init__(self, keyName, state):
         self.keyName = keyName
         self.state = state
@@ -54,7 +60,7 @@ class Agent:
 
 
 class LogWorld:
-
+    '''Defines the logic of logs parsing'''
     def __init__(self, statesFile):
         f = open(statesFile, "r")
         self.states = json.loads("".join(f.readlines()))
@@ -105,6 +111,12 @@ class LogWorld:
         return None
 
     def logDispatcher(self, line):
+        '''
+        Decides if a line correspond with an Agent, if is not add a new Agent
+        then execute parseLogLine who return the name of the action and then fire the transition.
+
+        If the parseLogLine returns None, it means that there is not a transition.
+        '''
         for a in self.agents:
             kn = re.search(a.state["keyName"], line)
             if kn is not None:
