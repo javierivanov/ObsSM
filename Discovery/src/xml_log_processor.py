@@ -1,4 +1,5 @@
-import urllib.request as urllib
+# import urllib.request as urllib
+import urllib2 as urllib
 import os
 from datetime import timedelta
 import gzip

@@ -103,10 +103,10 @@ class LogWorld:
                     m = re.search(i, line)
                     if m is not None:
                         return ss
-            if len([x for x in ss["and_list"] if x in line]) == len(ss["and_list"]):
+            if len([x for x in ss["and_list"] if str(x) in str(line)]) == len(ss["and_list"]):
                 if len(ss["and_list"]) > 0:
                     return ss
-            if len([x for x in ss["or_list"] if x in line]) >= 1:
+            if len([x for x in ss["or_list"] if str(x) in str(line)]) >= 1:
                 return ss
         return None
 

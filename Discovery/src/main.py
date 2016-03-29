@@ -18,6 +18,7 @@ processor = XMLLogProcessor(date_from, date_to, jsonfile)
 
 transitions = processor.get_transitions()
 
-[print(x) for x in transitions]
+for i in transitions:
+    print(i)
 
 print(createSCXML(transitions))
