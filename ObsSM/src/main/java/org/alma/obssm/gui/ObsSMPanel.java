@@ -51,7 +51,7 @@ import org.xml.sax.SAXException;
 
 /**
  *
- * @author Javier Fuentes
+ * @author Javier Fuentes j.fuentes.m@icloud.com
  * @version 0.3
  */
 public class ObsSMPanel extends javax.swing.JFrame {
@@ -59,14 +59,31 @@ public class ObsSMPanel extends javax.swing.JFrame {
     /**
      * Creates new a form Panel.
      */
-    private Manager m;
+    private final Manager m;
 
     private String xmlFileName, jsonFileName;
 
     public ObsSMPanel(Manager m) {
         this.m = m;
+        
+        
+        /**
+         * Setup custom components.
+         */
+        componentsSetup();
+        
+        /**
+         * Runs a thread checking for active Arrays.
+         */
+        checkActiveArrays();
+    }
+    
+    
+    /**
+     * Setup for customs components.
+     */
+    private void componentsSetup() {
         try {
-            
             /**
              * Standard look and feel.
              */
@@ -89,25 +106,20 @@ public class ObsSMPanel extends javax.swing.JFrame {
          * Default files.
          */
         if (JOptionPane.showConfirmDialog(this, "Search for files in ../models/ ?") == JOptionPane.OK_OPTION) {
-        try {
-            m.smm = new StateMachineManager("../models/model.xml");
-            xmlFileLabel.setText("model.xml");
-            xmlFileName = "../models/model.xml";
-            xmlFileLabel.setForeground(Color.green);
-            m.parser = new Parser("../models/states.json");
-            jsonFileLabel.setText("states.json");
-            jsonFileName = "../models/states.json";
-            jsonFileLabel.setForeground(Color.green);
-        } catch (Exception e) {
-        }
+            try {
+                m.smm = new StateMachineManager("../models/model.xml");
+                xmlFileLabel.setText("model.xml");
+                xmlFileName = "../models/model.xml";
+                xmlFileLabel.setForeground(Color.green);
+                m.parser = new Parser("../models/states.json");
+                jsonFileLabel.setText("states.json");
+                jsonFileName = "../models/states.json";
+                jsonFileLabel.setForeground(Color.green);
+            } catch (Exception e) {
+            }
         }
         
-        /**
-         * Runs a thread checking for active Arrays.
-         */
-        checkActiveArrays();
     }
-    
     
     /**
      * This method start a thread to check periodically is there a 

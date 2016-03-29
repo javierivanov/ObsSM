@@ -45,7 +45,7 @@ import org.xml.sax.SAXException;
  * This class define a State Machine(SM) executor, who decides the legality of
  * the transitions and change its own state when its correct.
  *
- * @author Javier Fuentes
+ * @author Javier Fuentes j.fuentes.m@icloud.com
  * @version 0.3
  *
  */

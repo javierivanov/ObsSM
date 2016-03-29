@@ -33,14 +33,14 @@ import org.apache.commons.scxml.model.TransitionTarget;
  *
  * Gui Implementation of EntryListener.
  * 
- * @author Javier Fuentes
+ * @author Javier Fuentes j.fuentes.m@icloud.com
  * @version 0.3
  * 
  * @see EntryListener
  */
 public class GuiEntryListener extends EntryListener {
 
-    private Manager m;
+    private final Manager m;
     private String dataList = "";
 
     public GuiEntryListener(Manager m) {

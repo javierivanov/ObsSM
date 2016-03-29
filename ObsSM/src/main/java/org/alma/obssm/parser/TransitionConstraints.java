@@ -33,7 +33,7 @@ import java.util.Objects;
  * pattern on the log. keyname is the identifier of the SM
  *
  * @author Javier Fuentes
- * @version 0.3
+ * @version 0.3 j.fuentes.m@icloud.com
  *
  */
 public class TransitionConstraints {
@@ -69,10 +69,7 @@ public class TransitionConstraints {
             return false;
         }
         final TransitionConstraints other = (TransitionConstraints) obj;
-        if (!Objects.equals(this.stateName, other.stateName)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.stateName, other.stateName);
     }
 
 }

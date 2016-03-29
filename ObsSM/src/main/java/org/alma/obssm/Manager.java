@@ -33,7 +33,7 @@ import org.alma.obssm.sm.StateMachineManager;
  * 
  * TO DO: Allow to launch a console mode operation.
  * 
- * @author Javier Fuentes
+ * @author Javier Fuentes j.fuentes.m@icloud.com
  * @version 0.3
  * @see StateMachineManager
  * @see LineReader

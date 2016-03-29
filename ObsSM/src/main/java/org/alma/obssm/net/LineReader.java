@@ -27,7 +27,7 @@ import java.io.IOException;
 /**
  * This interface provides a basic communication layer.
  *
- * @author Javier Fuentes
+ * @author Javier Fuentes j.fuentes.m@icloud.com
  * @version 0.3
  *
  */

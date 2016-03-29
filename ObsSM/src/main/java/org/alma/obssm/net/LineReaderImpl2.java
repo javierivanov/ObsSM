@@ -31,14 +31,14 @@ import java.util.Scanner;
 /**
  * Line reader implementation
  *
- * @author Javier Fuentes
+ * @author Javier Fuentes j.fuentes.m@icloud.com
  * @version 0.2
  *
  */
 public class LineReaderImpl2 implements LineReader {
 
     private Socket socket;
-    private ServerSocket server;
+    private final ServerSocket server;
     private Scanner scanner;
     private boolean active;
 
@@ -52,7 +52,7 @@ public class LineReaderImpl2 implements LineReader {
         if (!this.scanner.hasNextLine()) {
             active = false;
             return null;
-        };
+        }
         String line = this.scanner.nextLine();
         return line;
     }

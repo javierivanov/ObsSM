@@ -24,7 +24,6 @@ package org.alma.obssm.parser;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +40,7 @@ import com.google.gson.stream.JsonReader;
 /**
  * This class parse the log with the transitions constrains on the JSON file.
  *
- * @author Javier Fuentes
+ * @author Javier Fuentes j.fuentes.m@icloud.com
  * @version 0.3
  */
 public class Parser {

@@ -44,7 +44,7 @@ import org.xml.sax.SAXException;
  * TO DO: Upgrade to allow to run with the Manager class.
  *
  * @version 0.3
- * @author Javier Fuentes
+ * @author Javier Fuentes j.fuentes.m@icloud.com
  *
  * @see Manager
  */
