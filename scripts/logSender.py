@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import socket
-from urllib import request as urllib
+#from urllib import request as urllib
+import urllib2 as urllib
 import sys
 import os
 import ntplib
@@ -12,6 +13,7 @@ from tempfile import NamedTemporaryFile
 base_url = 'http://computing-logs.aiv.alma.cl/AOS/SYSTEM/'
 x = ntplib.NTPClient()
 dt = datetime.datetime.utcfromtimestamp(x.request('ntp.shoa.cl').tx_time)
+
 # defaults vars
 host = "localhost"
 port = 8888
