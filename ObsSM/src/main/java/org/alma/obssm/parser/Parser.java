@@ -87,19 +87,25 @@ public class Parser {
         TransitionConstraints st = getTransitionConstraints(transition);
         
         if (st.search_list.size() > 0) {
-            return st.search_list.stream().anyMatch((s) -> Pattern.compile(s)
-                    .matcher(line).find());
-        }
-        
-        if (!st.and_list.stream().noneMatch((aux) -> (!line.contains(aux)))) {
+            
+            for (String s: st.search_list) {
+                if (Pattern.compile(s).matcher(line).find()) return true;
+            }
             return false;
         }
-
-        if (st.or_list.stream().anyMatch((aux) -> (line.contains(aux)))) {
-            return true;
+        
+        for (String s: st.and_list) {
+            if (!line.contains(s)) return false;
         }
-
-        return st.or_list.isEmpty();
+        
+        if (st.or_list.isEmpty()) return true;
+        
+        for (String s: st.or_list) {
+            if (line.contains(s)) return true;
+        }
+        
+        return false;
+        
     }
 
     /**
@@ -136,36 +142,6 @@ public class Parser {
             throw new NullPointerException("The transition do not exists on the HashMap");
         }
         return st;
-    }
-
-    /**
-     * Returns a list with all regexpr matchings fields.
-     *
-     * @param line
-     * @param transition
-     * @return
-     * @throws NullPointerException
-     */
-    public List<String> getListSearchPattern(String line, String transition) throws NullPointerException {
-        System.out.println(transition);
-        TransitionConstraints st = getTransitionConstraints(transition);
-        List<String> list = new ArrayList<>();
-
-        /**
-         * Complicated conversion by Netbeans.
-         */
-        st.search_list.stream().map((pattern) -> Pattern.compile(pattern)).map((p) -> p.matcher(line)).map((m) -> {
-            String output = "";
-            if (m.find()) {
-                output = m.group();
-                System.out.println(output);
-            }
-            return output;
-        }).forEach((output) -> {
-            list.add(output);
-        });
-
-        return list;
     }
 
     /**

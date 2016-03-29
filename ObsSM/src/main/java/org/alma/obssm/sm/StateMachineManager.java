@@ -68,7 +68,10 @@ public class StateMachineManager {
     }
 
     public boolean isSMIdleAvailable() {
-        return this.stateMachines.stream().anyMatch((s) -> s.getKeyName() == null);
+        for (StateMachine s: this.stateMachines) {
+            if (s.getKeyName() == null) return true;
+        }
+        return false;
     }
 
     /**
@@ -105,6 +108,7 @@ public class StateMachineManager {
      *
      * @param transition
      * @param keyName
+     * @return ACTION_TRIGGERED, ACTION_NOT_FOUND, NEW_SM_REQUIRED
      * @throws ModelException
      * @throws SAXException
      * @throws IOException
@@ -116,8 +120,7 @@ public class StateMachineManager {
         
         StateMachine newOne = null;
         
-        for (Iterator<StateMachine> iter = this.stateMachines.iterator(); iter.hasNext();) {
-            StateMachine aux = iter.next();
+        for (StateMachine aux : this.stateMachines) {
             if (aux.getKeyName() == null) {
                 newOne = aux;
             } else if (aux.getKeyName().equals(keyName)) {
@@ -180,17 +183,23 @@ public class StateMachineManager {
             }
         }
 
-        
-        StateMachine m = this.stateMachines.stream()
-                .filter((StateMachine s )-> s.getKeyName() == null)
-                .findFirst().get();
-        
-        if (m.getTransitionsStringList().stream().anyMatch((t) -> t.equals(transition))) {
-            m.setKeyName(keyName);
-            if (m.fireEvent(transition)) {
-                this.stateMachines.remove(m);
+        StateMachine m = null;
+        for (StateMachine s: this.stateMachines) {
+            if (s.getKeyName() == null) {
+                m = s;
             }
-            return NEW_SM_REQUIRED;
+        }
+        
+        if (m == null) return ACTION_NOT_FOUND;
+        
+        for (String s: m.getTransitionsStringList()) {
+            if (s.equals(transition)) {
+                m.setKeyName(keyName);
+                if (m.fireEvent(transition)) {
+                    this.stateMachines.remove(m);
+                }
+                return NEW_SM_REQUIRED;
+            }
         }
         
         return ACTION_NOT_FOUND;

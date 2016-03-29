@@ -24,8 +24,6 @@ package org.alma.obssm.gui;
 import java.awt.Color;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
@@ -116,20 +114,25 @@ public class ObsSMPanel extends javax.swing.JFrame {
      * new active Array, it must be launched once.
      */
     private void checkActiveArrays() {
-        new Thread(() -> {
-            while (true) {
-                DefaultListModel dlm = new DefaultListModel();
-                if (m.smm != null) {
-                    Consumer<StateMachine> c = s -> dlm.addElement(s.getKeyName() + " -> " + s.getCurrentStateId());
-                    Predicate<StateMachine> p = s -> s.getKeyName() != null;
-                    m.smm.getStateMachines().stream().filter(p).forEach(c);
-                }
-                
-                arraysActiveList.setModel(dlm);
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException ex) {
-                    return;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    DefaultListModel dlm = new DefaultListModel();
+                    if (m.smm != null) {
+                        for (StateMachine m: m.smm.getStateMachines()) {
+                            if (m.getKeyName() != null) {
+                                dlm.addElement(m.getKeyName() + " -> " + m.getCurrentStateId());
+                            }
+                        }
+                    }
+
+                    arraysActiveList.setModel(dlm);
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException ex) {
+                        return;
+                    }
                 }
             }
         }).start();
@@ -205,7 +208,7 @@ public class ObsSMPanel extends javax.swing.JFrame {
             }
         });
 
-        arrayComboBox.setModel(new javax.swing.DefaultComboBoxModel<>());
+        arrayComboBox.setModel(new javax.swing.DefaultComboBoxModel<String>());
 
         arrayTextArea.setColumns(20);
         arrayTextArea.setRows(5);
@@ -448,7 +451,7 @@ public class ObsSMPanel extends javax.swing.JFrame {
     private void restartButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restartButtonActionPerformed
         // TODO add your handling code here:
         stopButtonActionPerformed(null);
-        arrayComboBox.setModel(new DefaultComboBoxModel<>());
+        arrayComboBox.setModel(new DefaultComboBoxModel<String>());
         arrayProgressBar.setValue(0);
         arrayProgressBar.setString("");
         arrayTextArea.setText("");

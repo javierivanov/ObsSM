@@ -49,7 +49,7 @@ public class GuiEntryListener extends EntryListener {
 
     @Override
     public void onEntry(TransitionTarget state) {
-        String k = parent.getKeyName();
+        final String k = parent.getKeyName();
         if (k == null) {
             return;
         }

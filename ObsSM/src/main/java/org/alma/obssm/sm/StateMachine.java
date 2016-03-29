@@ -129,9 +129,10 @@ public class StateMachine {
         List<Transition> transitions = getCurrentState().getTransitionsList();
         List<String> list = new ArrayList<>();
 
-        transitions.stream().forEach((t) -> {
+        for (Transition t: transitions) {
             list.add(t.getEvent());
-        });
+        }
+        
         return list;
     }
 
