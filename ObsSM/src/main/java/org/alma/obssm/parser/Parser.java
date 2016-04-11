@@ -64,7 +64,7 @@ public class Parser {
 
         for (int i = 0; i < arr.size(); i++) {
             TransitionConstraints t = gson.fromJson(arr.get(i), TransitionConstraints.class);
-            this.constraints.put(t.stateName, t);
+            this.constraints.put(t.eventName, t);
         }
     }
 

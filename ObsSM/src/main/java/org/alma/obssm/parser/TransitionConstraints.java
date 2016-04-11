@@ -38,8 +38,8 @@ import java.util.Objects;
  */
 public class TransitionConstraints {
 
-    public String stateName;
-    public String stateType;
+    public String eventName;
+    public String eventType;
     public List<String> and_list;
     public List<String> or_list;
     public List<String> search_list;
@@ -47,13 +47,13 @@ public class TransitionConstraints {
 
     @Override
     public String toString() {
-        return "TransitionConstraints{" + "stateName=" + stateName + ", stateType=" + stateType + ", and_list=" + and_list + ", or_list=" + or_list + ", search_list=" + search_list + ", keyName=" + keyName + '}';
+        return "TransitionConstraints{" + "eventName=" + eventName + ", eventType=" + eventType + ", and_list=" + and_list + ", or_list=" + or_list + ", search_list=" + search_list + ", keyName=" + keyName + '}';
     }
 
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 59 * hash + Objects.hashCode(this.stateName);
+        hash = 59 * hash + Objects.hashCode(this.eventName);
         return hash;
     }
 
@@ -69,7 +69,7 @@ public class TransitionConstraints {
             return false;
         }
         final TransitionConstraints other = (TransitionConstraints) obj;
-        return Objects.equals(this.stateName, other.stateName);
+        return Objects.equals(this.eventName, other.eventName);
     }
 
 }
