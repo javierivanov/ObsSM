@@ -57,7 +57,7 @@ class XMLLogProcessor:
 
     def get_transitions(self):
         for i in self.list_days:
-            for h in self.get_files_per_day(i):
+            for h in self.get_files_per_day(i)[:7]:
                 # print("Downloading file: " + h)
                 self.download_file(i, h)
                 # print("Processing data")
