@@ -1,0 +1,148 @@
+[
+    {
+       "eventName":"array.creation",
+       "and_list": [],
+       "or_list": [],
+       "search_list": ["(component CONTROL\/Array[0-9][0-9][0-9] activated and initialized)"],
+       "keyName":"(Array\\d+)",
+       "eventType": "initial"
+    },
+    {
+        "eventName": "InterferometeryObservingMode.init",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(Interferometry observing mode starting.)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "InterferometeryObservingMode.initializeControllers",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(InterferometryObservingModeImpl)", "(initializeControllers)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "InterferometeryObservingMode.cleanUp",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(InterferometryObservingModeImpl)", "(Interferometry observing mode shutting down.)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "InterferometeryObservingMode.doScanSequence",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(InterferometryObservingModeImpl)", "(Starting doScanSequence)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "InterferometeryObservingMode.doSubscanSequence",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(InterferometryObservingModeImpl)", "(Starting doSubscanSequence)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "ObservingMode.beginScan",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(ObservingModeBaseImpl)", "(logBeginScan)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "ObservingMode.startThread",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(startThread)", "(ObservingModeBaseImpl)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "ObservingMode.estimateExecutionTime",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(ObservingModeBaseImpl)", "(estimateExecutionTime)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "ObservingMode.endScan",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(ObservingModeBaseImpl)", "(endScan)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "ObservingMode.endSubscan",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(ObservingModeBaseImpl)", "(endSubscan)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "ObservingMode.beginSubscan",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(ObservingModeBaseImpl)", "(beginSubscan)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "ObservingMode.shutdownObservingMode",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(ObservingModeBaseImpl)", "(shutdownObservingMode)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "final"
+    },
+
+    {
+       "eventName": "mount.release",
+       "and_list": ["has successfully delivered a component", "MountController"],
+       "or_list": [],
+       "search_list": [],
+       "keyName":"(Array\\d+)",
+       "eventType": "transition"
+    },
+    {
+       "eventName":"Observation.stop",
+       "and_list": [],
+       "or_list": ["to archive ASDM", "Waiting for ASDM to be archived","Previous execution block hasn't been properly finished."],
+       "search_list": [],
+       "keyName":"(Array\\d+)",
+       "eventType": "transition"
+    },
+
+    {
+      "eventName": "Array.destruction",
+       "and_list": ["client 'CONTROL/MASTER' has successfully delivered a component release request for curl=CONTROL/Array"],
+       "or_list": [],
+       "search_list": [],
+       "keyName":"(Array\\d+)",
+       "eventType": "final"
+    },
+    {
+       "eventName": "AutomaticArray.initialize",
+       "and_list": [],
+       "or_list": [],
+       "search_list": ["(initialize called)", "(alma.Control.Array.AutomaticArrayImpl2)"],
+       "keyName":"(Array\\d+)",
+       "eventType": "transition"
+    },
+    {
+       "eventName": "OperationalArray.observe",
+       "and_list": [],
+       "or_list": [],
+       "search_list": ["({alma.Control.Array.AutomaticArrayOperationalState::observe})"],
+       "keyName":"(Array\\d+)",
+       "eventType": "transition"
+    }
+]

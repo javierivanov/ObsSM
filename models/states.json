@@ -1,15 +1,6 @@
 [
     {
-       "eventName":"array.creation",
-       "and_list": [],
-       "or_list": [],
-       "search_list": ["(component CONTROL\/Array[0-9][0-9][0-9] activated and initialized)"],
-       "keyName":"(Array\\d+)",
-       "eventType": "initial"
-    },
-
-    {
-       "eventName": "mount.release",
+       "eventName": "Mount.release",
        "and_list": ["has successfully delivered a component", "MountController"],
        "or_list": [],
        "search_list": [],
@@ -18,7 +9,7 @@
     },
 
     {
-      "eventName":"interferometry.start",
+      "eventName":"Interferometry.start",
        "and_list": ["Interferometry observing mode starting"],
        "or_list": [],
        "search_list": [],
@@ -26,7 +17,7 @@
        "eventType": "transition"
     },
     {
-      "eventName":"singledish.start",
+      "eventName":"SingleDish.start",
        "and_list": ["Single dish observing mode starting up."],
        "or_list": [],
        "search_list": [],
@@ -34,7 +25,7 @@
        "eventType": "transition"
     },
     {
-      "eventName":"holography.start",
+      "eventName":"Holography.start",
        "and_list": ["Tower holography observing mode starting up"],
        "or_list": [],
        "search_list": [],
@@ -42,7 +33,7 @@
        "eventType": "transition"
     },
     {
-      "eventName":"vlbi.start",
+      "eventName":"VLBI.start",
        "and_list": ["VLBI observing mode starting."],
        "or_list": [],
        "search_list": [],
@@ -50,7 +41,7 @@
        "eventType": "transition"
     },
     {
-       "eventName":"observation.stop",
+       "eventName":"Observation.stop",
        "and_list": [],
        "or_list": ["to archive ASDM", "Waiting for ASDM to be archived","Previous execution block hasn't been properly finished."],
        "search_list": [],
@@ -59,7 +50,7 @@
     },
 
     {
-       "eventName": "scan.start",
+       "eventName": "Scan.start",
        "and_list": ["with scan intent"],
        "or_list": [],
        "search_list": [],
@@ -68,7 +59,7 @@
     },
 
     {
-       "eventName": "subscan.start",
+       "eventName": "SubScan.start",
        "and_list": ["sub-scan", "has an intent of"],
        "or_list": [],
        "search_list": [],
@@ -76,58 +67,26 @@
        "eventType": "transition"
     },
     {
-      "eventName": "array.destruction",
-       "and_list": ["client 'CONTROL/MASTER' has successfully delivered a component release request for curl=CONTROL/Array"],
+      "eventName": "AutomaticArray.destruction",
+       "and_list": [],
        "or_list": [],
-       "search_list": [],
+       "search_list": ["(Deactivating offshoots.)", "(ArrayStateBase)"],
        "keyName":"(Array\\d+)",
        "eventType": "final"
     },
     {
-       "eventName": "execblock.start",
+       "eventName": "AutomaticArray.initialize",
        "and_list": [],
        "or_list": [],
-       "search_list": ["(Sending ExecBlockStartedEvent)"],
+       "search_list": ["(initialize called)", "(AutomaticArrayImpl2)"],
        "keyName":"(Array\\d+)",
-       "eventType": "transition"
+       "eventType": "initial"
     },
     {
-       "eventName": "DCScan.start",
-       "and_list": [],
-       "or_list": [],
-       "search_list": ["(DCImpl.startScan)"],
-       "keyName":"(Array\\d+)",
-       "eventType": "transition"
-    },
-    {
-       "eventName": "SBConf.set",
-       "and_list": [],
-       "or_list": [],
-       "search_list": ["(DCImpl.setSBConfig: sessionEntRef=)"],
-       "keyName":"(Array\\d+)",
-       "eventType": "transition"
-    },
-    {
-       "eventName": "automaticarray.initialize",
-       "and_list": [],
-       "or_list": [],
-       "search_list": ["(initialize called)", "(alma.Control.Array.AutomaticArrayImpl2)"],
-       "keyName":"(Array\\d+)",
-       "eventType": "transition"
-    },
-    {
-       "eventName": "operationalarray.observe",
+       "eventName": "AutomaticArray.observe",
        "and_list": [],
        "or_list": [],
        "search_list": ["({alma.Control.Array.AutomaticArrayOperationalState::observe})"],
-       "keyName":"(Array\\d+)",
-       "eventType": "transition"
-    },
-    {
-       "eventName": "SBexecutor.run",
-       "and_list": [],
-       "or_list": [],
-       "search_list": ["(Beginning SB execution)", "(alma.Control.Array.AutomaticArrayOperationalState$SBExecutor)"],
        "keyName":"(Array\\d+)",
        "eventType": "transition"
     }

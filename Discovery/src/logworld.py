@@ -133,5 +133,11 @@ class LogWorld:
         s = self.parseLogLine(line)
         if s is not None:
             if s["eventType"] == "initial":
-                a.keyName = re.search(a.state["keyName"], line).group(0)
+                a.keyName = re.search(a.state["keyName"], line)
+                if a.keyName is not None:
+                    a.keyName = a.keyName.group(0)
+                else:
+                    print ("SOMETHING WRONG WITH THIS SHIT")
+                    print (line)
+                    return
                 self.agents.append(a)

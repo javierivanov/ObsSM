@@ -2,9 +2,11 @@
 import urllib2 as urllib
 import os
 from datetime import timedelta
+import time
 import gzip
 from tempfile import NamedTemporaryFile
 import logworld
+from scxmlGen import createSCXML
 
 
 class XMLLogProcessor:
@@ -47,8 +49,11 @@ class XMLLogProcessor:
         self.data_files_map.update({file_: temp_file.name})
 
     def data_process(self, file_):
+        print ("\tUncompressing file")
         temp_file_g = gzip.open(file_, "rb")
+        print("\tReading lines")
         lines = temp_file_g.readlines()
+        print("\tRead")
         for a in lines:
             i = str(a)
             self.log.logDispatcher(i)
@@ -60,6 +65,12 @@ class XMLLogProcessor:
             for h in self.get_files_per_day(i):
                 print("Downloading file: " + h)
                 self.download_file(i, h)
-                print("Processing data")
+                print("\tProcessing data")
                 self.data_process(self.data_files_map[h])
+                aux_f = open("model_aux.xml","w")
+                aux_f.write(createSCXML(self.log.transitions))
+                aux_f.flush()
+                aux_f.close()
+                for x in self.log.transitions:
+                    print(x)
         return self.log.transitions

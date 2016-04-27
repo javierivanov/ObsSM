@@ -1,28 +1,19 @@
 from xml.etree import ElementTree as et
 
 
-verbToPast = {}
-verbToPast["start"] = "started"
-verbToPast["stop"] = "stoped"
-verbToPast["creation"] = "created"
-verbToPast["destruction"] = "destroyed"
-verbToPast["release"] = "released"
-
 
 def transitionToState(transition):
     l = str(transition).split('.')
-    aux = ""
-    for i in l:
-        if i in verbToPast.keys():
-            aux += str(verbToPast[i]).capitalize()
-        else:
-            aux += str(i).capitalize()
+    aux = l[0] + l[1].capitalize()
     return aux + "State"
 
+def transitionToTransition(transition):
+    l = str(transition).split('.')
+    return l[1]
 
 def createSCXML(transitions):
     '''Returns a SCXML document using the transitions'''
-    attr = {'initial': 'idle', 'version': '0.9', 'xmlns': "http://  www.w3.org/2005/07/scxml"}
+    attr = {'initial': 'idle', 'version': '0.9', 'xmlns': "http://www.w3.org/2005/07/scxml"}
     scxml = et.Element("scxml", attr)
     # States
     states = {}
@@ -56,7 +47,7 @@ def createSCXML(transitions):
         for j in i.states_to:
             attr = {}
             attr['target'] = transitionToState(j["eventName"])
-            attr['event'] = j["eventName"]
+            attr['event'] = transitionToTransition(j["eventName"])
             aux = et.SubElement(states[n], 'transition', attr)
             aux.text = ' '
     return str(et.tostring(scxml).decode('utf-8')).replace('/>', '/>\n').replace('><', '>\n<').replace('</state>', '</state>\n').replace('<transition', '\t<transition')
