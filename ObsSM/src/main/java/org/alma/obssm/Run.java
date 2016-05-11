@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.alma.obssm.net.ElasticSearchImpl;
 
 import org.alma.obssm.net.LineReader;
 import org.alma.obssm.net.LineReaderImpl2;
@@ -63,8 +64,9 @@ public class Run {
      * @throws FileNotFoundException
      */
     public static void main(String args[]) throws FileNotFoundException {
+        
         if (args.length == 0) {
-            new Manager().osmPanel.setVisible(true);
+            new Manager().osmPanel2.setVisible(true);
             return;
         }
 
@@ -86,7 +88,6 @@ public class Run {
 
         @SuppressWarnings("unused")
         Run run = new Run(f.getPath(), port);
-
     }
 
     /**

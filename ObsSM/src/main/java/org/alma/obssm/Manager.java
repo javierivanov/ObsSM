@@ -23,6 +23,7 @@
 package org.alma.obssm;
 
 import org.alma.obssm.gui.ObsSMPanel;
+import org.alma.obssm.gui.ObsSMPanel2;
 import org.alma.obssm.net.LineReader;
 import org.alma.obssm.parser.Parser;
 import org.alma.obssm.sm.StateMachineManager;
@@ -42,11 +43,11 @@ import org.alma.obssm.sm.StateMachineManager;
  *  
  */
 
-
 public class Manager {
     public StateMachineManager smm;
     public LineReader lr;
     public ObsSMPanel osmPanel;
+    public ObsSMPanel2 osmPanel2;
     public Parser parser;
     public Thread mainThread;
     
@@ -55,6 +56,6 @@ public class Manager {
      */
     public Manager() {
         
-        osmPanel = new ObsSMPanel(this);
+        osmPanel2 = new ObsSMPanel2(this);
     }
 }

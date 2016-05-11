@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 import socket
 #from urllib import request as urllib
 import urllib2 as urllib
@@ -56,9 +56,10 @@ def data_process(day, file):
     f.flush()
     f.close()
     tmp = gzip.open(f.name, "rb")
-    os.unlink(f.name)
     for i in tmp.readlines():
         sock.sendall(i)
+    tmp.close()
+    os.unlink(f.name)
 
 last_record = []
 while True:
@@ -69,4 +70,3 @@ while True:
             last_record.append(i)
             data_process(datetimeToStr(dt), i)
             print(i)
-    time.sleep(10)

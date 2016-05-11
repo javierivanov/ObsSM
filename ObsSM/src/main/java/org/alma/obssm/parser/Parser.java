@@ -138,7 +138,7 @@ public class Parser {
         }
         TransitionConstraints st = this.constraints.get(transition);
         if (st == null) {
-            throw new NullPointerException("The transition do not exists on the HashMap");
+            throw new NullPointerException("The transition("+transition+") do not exists on the HashMap");
         }
         return st;
     }
