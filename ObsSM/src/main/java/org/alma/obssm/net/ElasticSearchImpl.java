@@ -78,7 +78,7 @@ public class ElasticSearchImpl implements LineReader {
         
         //Getting indices
         a = sendAndGetData("http://elk-master.osf.alma.cl:9200/aos-*/_field_stats?level=indices",
-                "{\"fields\":[\"@timestamp\"],\"index_constraints\":{\"@timestamp\":{\"max_value\":{\"gte\":"+toEpoch(timeStampStart)+",\"format\":\"epoch_millis\"},\"min_value\":{\"lte\":"+toEpoch(timeStampEnd)+",\"format\":\"epoch_millis\"}}}}",
+                "{\"fields\":[\"@timestamp\"],\"index_constraints\":{\"@timestamp\":{\"max_value\":{\"gte\":\""+(timeStampStart)+"\",\"format\":\"strict_date_hour_minute_second_millis\"},\"min_value\":{\"lte\":\""+(timeStampEnd)+"\",\"format\":\"strict_date_hour_minute_second_millis\"}}}}",
                 "POST");
         r = new InputStreamReader(a);
         Set<String> iresponse = getIndices(r);
@@ -86,7 +86,7 @@ public class ElasticSearchImpl implements LineReader {
         for (String s : iresponse) {
             Logger.getLogger(ElasticSearchImpl.class.getName()).log(Level.INFO,"gotten index: "+s);
             //Getting hits for each index " + s + "
-            a = sendAndGetData("http://elk-master.osf.alma.cl:9200/" + s + "/_search", "{\"query\":{\"filtered\":{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"" + query + "\"}},\"filter\":{\"bool\":{\"must\":[{\"query\":{\"match\":{\"Process\":{\"query\":\"CONTROL/ACC/javaContainer\",\"type\":\"phrase\"}}}},{\"query\":{\"match\":{\"Host\":{\"query\":\"gas01\",\"type\":\"phrase\"}}}},{\"range\":{\"@timestamp\":{\"gte\":"+toEpoch(timeStampStart)+",\"lte\":"+toEpoch(timeStampEnd)+",\"format\":\"epoch_millis\"}}}],\"must_not\":[]}}}},\"size\":1000,\"sort\":[{\"@timestamp\":{\"order\":\"asc\",\"unmapped_type\":\"boolean\"}}],\"fields\":[\"*\",\"_source\"],\"script_fields\":{},\"fielddata_fields\":[\"TimeStamp\",\"@timestamp\"]}", "POST");
+            a = sendAndGetData("http://elk-master.osf.alma.cl:9200/" + s + "/_search", "{\"query\":{\"filtered\":{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"" + query + "\"}},\"filter\":{\"bool\":{\"must\":[{\"query\":{\"match\":{\"Process\":{\"query\":\"CONTROL/ACC/javaContainer\",\"type\":\"phrase\"}}}},{\"query\":{\"match\":{\"Host\":{\"query\":\"gas01\",\"type\":\"phrase\"}}}},{\"range\":{\"@timestamp\":{\"gte\":\""+(timeStampStart)+"\",\"lte\":\""+(timeStampEnd)+"\",\"format\":\"strict_date_hour_minute_second_millis\"}}}],\"must_not\":[]}}}},\"size\":1000,\"sort\":[{\"@timestamp\":{\"order\":\"asc\",\"unmapped_type\":\"boolean\"}}],\"fields\":[\"*\",\"_source\"],\"script_fields\":{},\"fielddata_fields\":[\"TimeStamp\",\"@timestamp\"]}", "POST");
             r = new InputStreamReader(a);
             List<Hit> response = getHits(r);
             
@@ -129,7 +129,9 @@ public class ElasticSearchImpl implements LineReader {
         }
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         Date date = df.parse(timeStamp);
+        
         long epoch = date.getTime();
+        System.out.println(timeStamp + " " + epoch);
         return String.valueOf(epoch);
     }
 
@@ -161,14 +163,8 @@ public class ElasticSearchImpl implements LineReader {
     }
 
     @Override
-    public void startCommunication() throws IOException {
-        try {
-            getData();
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(ElasticSearchImpl.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ParseException ex) {
-            Logger.getLogger(ElasticSearchImpl.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public void startCommunication() throws IOException, MalformedURLException, ParseException {
+        getData();
     }
 
     @Override

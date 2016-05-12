@@ -95,4 +95,9 @@ public class GuiEntryListener extends EntryListener {
         
     }
 
+    @Override
+    public void onTransition(TransitionTarget from, TransitionTarget to, Transition transition, String array, String timeStamp, String logline) {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

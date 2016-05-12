@@ -112,7 +112,8 @@ public class StateMachineManager {
      * @throws SAXException
      * @throws IOException
      */
-    public int findAndTriggerAction2(String transition, String keyName) throws ModelException, IOException, SAXException {
+    @Deprecated
+    public int findAndTriggerActionOld(String transition, String keyName) throws ModelException, IOException, SAXException {
         if (transition == null) {
             return ACTION_NOT_FOUND;
         }

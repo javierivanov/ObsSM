@@ -24,6 +24,8 @@ package org.alma.obssm.gui;
 import java.awt.Color;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
@@ -436,6 +438,8 @@ public class ObsSMPanel extends javax.swing.JFrame {
                 } catch (IOException | InterruptedException | ModelException | SAXException ex) {
                     Logger.getLogger(ObsSMPanel.class.getName()).log(Level.SEVERE, null, ex);
                     statusLabel.setText("Something goes wrong: " + ex.getMessage());
+                } catch (ParseException ex) {
+                    Logger.getLogger(ObsSMPanel.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });

@@ -45,8 +45,17 @@ import com.google.gson.stream.JsonReader;
  */
 public class Parser {
 
-    protected Map<String, TransitionConstraints> constraints;
-
+    public Map<String, TransitionConstraints> constraints;
+    
+    
+    /**
+     * Vars required for the EntryListener to obtain extra data.
+     */
+    public static String savedTimeStamp;
+    public static String savedArray;
+    public static String savedEvent;
+    public static String savedLogLine;
+    
     /**
      * Constructor, initialize the JSON constraints file.
      *
@@ -163,4 +172,15 @@ public class Parser {
         }
         return keyName;
     }
+    
+    public void saveExtraData(String line, String keyName, String event) {
+        Parser.savedArray = keyName;
+        Parser.savedEvent = event;
+        Parser.savedLogLine = line;
+        Pattern pattern = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.\\d{3})");
+        Matcher m = pattern.matcher(line);
+        Parser.savedTimeStamp = "";
+        if (m.find()) Parser.savedTimeStamp = m.group();
+    }
+    
 }

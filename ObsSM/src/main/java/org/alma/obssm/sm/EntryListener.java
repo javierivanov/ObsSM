@@ -22,7 +22,11 @@
  */
 package org.alma.obssm.sm;
 
+import org.alma.obssm.Manager;
+import org.alma.obssm.parser.Parser;
 import org.apache.commons.scxml.SCXMLListener;
+import org.apache.commons.scxml.model.Transition;
+import org.apache.commons.scxml.model.TransitionTarget;
 
 /**
  * This abstract class allows to inherit it, to create your owns actions on States changes.
@@ -34,6 +38,22 @@ import org.apache.commons.scxml.SCXMLListener;
 public abstract class EntryListener implements SCXMLListener {
 
     protected StateMachine parent = null;
+    protected Manager m;
+
+    public EntryListener(Manager m) {
+        this.m = m;
+    }
+
+    public EntryListener() {
+    }
+
+    @Override
+    public void onTransition(TransitionTarget from, TransitionTarget to, Transition transition) {
+        onTransition(from, to, transition, Parser.savedArray, Parser.savedTimeStamp, Parser.savedLogLine);
+    }
+    
+    
+    public abstract void onTransition(TransitionTarget from, TransitionTarget to, Transition transition, String array, String timeStamp, String logLine);
     
     public void setParent(StateMachine parent) {
         this.parent = parent;
