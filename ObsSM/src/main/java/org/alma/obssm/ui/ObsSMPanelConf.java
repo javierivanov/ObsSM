@@ -1,9 +1,25 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package org.alma.obssm.gui;
+/*******************************************************************************
+ * ALMA - Atacama Large Millimeter Array
+ * Copyright (c) AUI - Associated Universities Inc., 2016
+ * (in the framework of the ALMA collaboration).
+ * All rights reserved.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+ *******************************************************************************/
+
+package org.alma.obssm.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -18,13 +34,16 @@ import org.alma.obssm.Manager;
 
 /**
  *
- * @author javier
+ * Configuration graphical interface.
+ * 
+ * @version 0.4
+ * @author Javier Fuentes j.fuentes.m@icloud.com
  */
-public class ObsSMPanelConf2 extends JFrame {
+public class ObsSMPanelConf extends JFrame {
 
     final private Manager m;
 
-    public ObsSMPanelConf2(Manager m) {
+    public ObsSMPanelConf(Manager m) {
         super("Configuration Pane");
         this.m = m;
         initialize();

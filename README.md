@@ -1,9 +1,9 @@
-# ObsSM 0.3 version
+# ObsSM 0.4 version
 ALMA Log's State Machine Parser
 
 #Discovery: Transitions
 
-This is a new application to discover transitions into the log to generate a SCXML model.
+This is an application to discover transitions into the log, generating a SCXML model.
 
 ##Usage:
 
@@ -22,17 +22,18 @@ python2 Discovery/src/main.py [states.json file] > [model file]
 
 The interpreter works on java version >= 1.7
 
-* Download sources https://github.com/javierivanov/ObsSM/archive/obssm-0.3.zip
+* Download sources https://github.com/javierivanov/ObsSM/archive/master.zip
 * Unzip files
 
 ```
-unzip obssm-0.3.zip
+wget https://github.com/javierivanov/ObsSM/archive/master.zip
+unzip master.zip
 ```
 
 * Enter to the project folder
 
 ```
-cd ObsSM-obssm-0.3/ObsSM/
+cd ObsSM-master/ObsSM/
 ```
 
 * Compile using Maven
@@ -45,21 +46,17 @@ mvn clean dependency:copy-dependencies package
 
 ##Execute the interpreter
 ```
-java -cp "target/ObsSM-0.3.jar:target/dependency/*" org.alma.obssm.Run /path/to/folder/model/ [listener port(default 8888)]
+java -cp "target/ObsSM-0.4.jar:target/dependency/*" org.alma.obssm.Run
 ```
 
-##Execute the built-in GUI
-```
-java -cp "target/ObsSM-0.3.jar:target/dependency/*" org.alma.obssm.Run
-```
-
-
-The SCXML model must be named model.xml and the transitions constraints must be
-named states.json and both of them have to be on the same folder.
 
 #How to send logs to the interpreter
 
-You can send line logs through the `logSender.py` script.
+ObsSM includes a built-in ElasticSearch retriever, and search data directly from the ELK server.
+
+
+* Not available yet!
+Also you can send line logs through the `logSender.py` script.
 If you want to use another port, host, python version or whatever, the scritp is very easy to modify (few lines).
 You can build your own implementation on another language.
 

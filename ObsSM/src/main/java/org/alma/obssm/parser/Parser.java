@@ -41,7 +41,7 @@ import com.google.gson.stream.JsonReader;
  * This class parse the log with the transitions constrains on the JSON file.
  *
  * @author Javier Fuentes j.fuentes.m@icloud.com
- * @version 0.3
+ * @version 0.4
  */
 public class Parser {
 

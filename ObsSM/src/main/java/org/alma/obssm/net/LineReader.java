@@ -30,7 +30,7 @@ import java.text.ParseException;
  * This interface provides a basic communication layer.
  *
  * @author Javier Fuentes j.fuentes.m@icloud.com
- * @version 0.3
+ * @version 0.4
  *
  */
 public interface LineReader {

@@ -34,7 +34,7 @@ import org.apache.commons.scxml.model.TransitionTarget;
  * database or connect to a socket and transmit the transitions and states.
  *
  * @author Javier Fuentes j.fuentes.m@icloud.com
- * @version 0.3
+ * @version 0.4
  *
  */
 public class CustomEntryListener extends EntryListener {

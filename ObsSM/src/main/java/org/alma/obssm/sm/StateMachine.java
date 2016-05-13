@@ -47,7 +47,7 @@ import org.xml.sax.SAXException;
  * the transitions and change its own state when its correct.
  *
  * @author Javier Fuentes j.fuentes.m@icloud.com
- * @version 0.3
+ * @version 0.4
  *
  */
 public class StateMachine {

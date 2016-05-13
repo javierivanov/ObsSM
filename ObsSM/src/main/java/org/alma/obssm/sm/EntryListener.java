@@ -33,7 +33,7 @@ import org.apache.commons.scxml.model.TransitionTarget;
  * Moreover its possible to call the parent of the state machine to obtain the keyName and others components.
  * 
  * @author Javier Fuentes j.fuentes.m@icloud.com
- * @version 0.3
+ * @version 0.4
  */
 public abstract class EntryListener implements SCXMLListener {
 
