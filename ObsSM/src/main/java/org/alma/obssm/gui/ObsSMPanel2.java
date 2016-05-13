@@ -8,14 +8,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.text.ParseException;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -74,6 +78,8 @@ public class ObsSMPanel2 extends JFrame {
     private ObsSMPanelConf2 confPanel;
 
     private boolean dataSaved;
+    
+    private Thread mainThread;
 
     public ObsSMPanel2(Manager m) {
         super("ObsSM2 Panel");
@@ -82,8 +88,7 @@ public class ObsSMPanel2 extends JFrame {
         initializeListeners();
         confPanel = new ObsSMPanelConf2(m);
         dataSaved = true;
-        
-        
+
         try {
             //Default files
             m.parser = new Parser(ObsSMPanel2.class.getResource("/models/log_translate.json").getFile());
@@ -92,12 +97,11 @@ public class ObsSMPanel2 extends JFrame {
             Logger.getLogger(ObsSMPanel2.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(m.osmPanel2, "SM SCXML Model or JSON Log translator files are Missing!");
         }
-        
+
     }
 
-    
     /**
-     * 
+     *
      * Sets of all visual objects
      */
     private void initialize() {
@@ -150,7 +154,7 @@ public class ObsSMPanel2 extends JFrame {
     }
 
     /**
-     * 
+     *
      * Sets of all menubar objects
      */
     private void setMenuBar() {
@@ -177,7 +181,6 @@ public class ObsSMPanel2 extends JFrame {
         setJMenuBar(menuBar);
     }
 
-    
     /**
      * Listeners for all interaction objects
      */
@@ -213,6 +216,7 @@ public class ObsSMPanel2 extends JFrame {
         saveItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                dataSaved = false;
                 saveData();
             }
         });
@@ -258,7 +262,7 @@ public class ObsSMPanel2 extends JFrame {
     }
 
     /**
-     * 
+     *
      * Prevents unexpected window closing without saving.
      */
     public void appClosing() {
@@ -277,17 +281,24 @@ public class ObsSMPanel2 extends JFrame {
     }
 
     public void stopThreadSearch() {
-
+        
+        try {
+            m.lr.endCommunication();
+            m.lr.interrupt();
+            mainThread.interrupt();
+        } catch (IOException ex) {
+            Logger.getLogger(ObsSMPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
 
-    
     /**
-     * 
+     *
      * Starts the main thread and search data.
      */
     public void startThreadSearch() {
-        
-        Thread t = new Thread(new Runnable() {
+
+        mainThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -309,7 +320,9 @@ public class ObsSMPanel2 extends JFrame {
                         String line = m.lr.waitForLine();
                         System.out.println(line);
                         if (line != null) {
-                            if ("EOF".equals(line)) break;
+                            if ("EOF".equals(line)) {
+                                break;
+                            }
                             String event;
                             String keyName;
 
@@ -320,24 +333,54 @@ public class ObsSMPanel2 extends JFrame {
                             event = m.parser.getParseAction(line, m.smm.getAllPossiblesTransitions());
                             keyName = m.parser.getKeyName(line, event);
                             m.parser.saveExtraData(line, keyName, event);
-                            
+
                             m.smm.findAndTriggerAction(event, keyName);
                         }
                     }
                     statusLabel.setText("Loop ended: data in table!");
-                } catch(HeadlessException | IOException | ParseException | InterruptedException | ModelException | SAXException ex) {
+                } catch (HeadlessException | IOException | ParseException | InterruptedException | ModelException | SAXException ex) {
                     Logger.getLogger(ObsSMPanel2.class.getName()).log(Level.SEVERE, null, ex);
                     statusLabel.setText("Something wrong, check the logs!");
                 }
             }
         });
-        
-        t.start();
-        
+
+        mainThread.start();
     }
 
     public void saveData() {
-
+        if (dataSaved) {
+            return;
+        }
+        JFileChooser f = new JFileChooser();
+        
+        if (f.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+            File fg = f.getSelectedFile();
+            Logger.getLogger(ObsSMPanel2.class.getName()).log(Level.INFO, "File is going to be written");
+            FileWriter fw = null;
+            try {
+                fg = new File(fg.toString() + ".csv");
+                fg.createNewFile();
+                fw = new FileWriter(fg);
+                for (int row = 0; row < tablemodel.getRowCount(); row++) {
+                    StringBuilder sb = new StringBuilder();
+                    for (int col = 0; col < tablemodel.getColumnCount(); col++) {
+                        sb.append(tablemodel.getValueAt(row, col)).append(";");
+                    }
+                    sb.append("\n");
+                    fw.append(sb);
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(ObsSMPanel2.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                try {
+                    fw.close();
+                    dataSaved = true;
+                } catch (IOException ex) {
+                    Logger.getLogger(ObsSMPanel2.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
     }
 
 }
