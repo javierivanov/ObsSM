@@ -34,7 +34,7 @@ import java.util.Scanner;
  * TO DO: Create a more standard communication layer.
  * 
  *
- * @author Javier Fuentes
+ * @author Javier Fuentes j.fuentes.m@icloud.com
  * @version 0.1
  *
  * @see LineReader

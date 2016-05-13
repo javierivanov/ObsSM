@@ -12,7 +12,7 @@ def getJSONString(transitions):
     for t in transitions:
         for i in range(0, len(t.states_to)):
             val = float(t.values[i]) / float(t.counter)
-            out.append((t.state_from["stateName"], t.states_to[i]["stateName"], val))
+            out.append((t.state_from["eventName"], t.states_to[i]["eventName"], val))
     return json.dumps(out)
 
 
@@ -41,8 +41,8 @@ class Transition:
 
     def __str__(self):
         out = "=========================START=TRANSITION=========================="
-        out += "\nstate_from:\t" + str(self.state_from["stateName"]) + "\n"
-        out += "states_to:\t" + str([x["stateName"] for x in self.states_to]) + "\n"
+        out += "\nstate_from:\t" + str(self.state_from["eventName"]) + "\n"
+        out += "states_to:\t" + str([x["eventName"] for x in self.states_to]) + "\n"
         out += "T:\t\t" + str([float(x) / float(self.counter) for x in self.values]) + "\n"
         out += "counter:\t" + str(self.counter) + "\n"
         out += "=========================END=TRANSITION=========================="
@@ -68,13 +68,13 @@ class LogWorld:
         self.transitions = []
 
     def isTerminal(self, state):
-        return state["stateType"] == "final"
+        return state["eventType"] == "final"
 
     def getStartState(self):
-        return [x for x in self.states if x["stateType"] == "initial"][0]
+        return [x for x in self.states if x["eventType"] == "initial"][0]
 
     def getPossibleStates(self, state):
-        v = "stateName"
+        v = "eventName"
         return [x for x in self.states if state[v] is not x[v]]
 
     def fireTransition(self, agent, state_to):
@@ -122,7 +122,7 @@ class LogWorld:
             if kn is not None:
                 s = self.parseLogLine(line)
                 if s is not None:
-                    if s["stateType"] == "initial":
+                    if s["eventType"] == "initial":
                         self.agents.remove(a)
                         break
                     self.fireTransition(a, s)
@@ -132,6 +132,12 @@ class LogWorld:
         a = Agent(None, self.getStartState())
         s = self.parseLogLine(line)
         if s is not None:
-            if s["stateType"] == "initial":
-                a.keyName = re.search(a.state["keyName"], line).group(0)
+            if s["eventType"] == "initial":
+                a.keyName = re.search(a.state["keyName"], line)
+                if a.keyName is not None:
+                    a.keyName = a.keyName.group(0)
+                else:
+                    print ("SOMETHING WRONG WITH THIS SHIT")
+                    print (line)
+                    return
                 self.agents.append(a)

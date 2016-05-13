@@ -33,7 +33,7 @@ import org.apache.commons.scxml.model.TransitionTarget;
  * transition. This class also is able to do whatever thing, e.g. connect to a
  * database or connect to a socket and transmit the transitions and states.
  *
- * @author Javier Fuentes
+ * @author Javier Fuentes j.fuentes.m@icloud.com
  * @version 0.3
  *
  */
@@ -73,8 +73,8 @@ public class CustomEntryListener extends EntryListener {
     }
 
     @Override
-    public void onTransition(TransitionTarget from, TransitionTarget to, Transition transition) {
-        //sthrow new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void onTransition(TransitionTarget from, TransitionTarget to, Transition transition, String array, String timeStamp, String logline) {
+        System.out.println("EVENT: " + transition.getEvent() + " TO: " + to.getId() + " FROM: " + from.getId() + " TS: " + timeStamp);
     }
 
 }

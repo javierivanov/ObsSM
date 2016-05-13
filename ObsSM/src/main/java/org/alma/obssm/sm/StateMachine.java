@@ -25,6 +25,7 @@ package org.alma.obssm.sm;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.apache.commons.scxml.SCXMLExecutor;
@@ -45,7 +46,7 @@ import org.xml.sax.SAXException;
  * This class define a State Machine(SM) executor, who decides the legality of
  * the transitions and change its own state when its correct.
  *
- * @author Javier Fuentes
+ * @author Javier Fuentes j.fuentes.m@icloud.com
  * @version 0.3
  *
  */
@@ -54,7 +55,12 @@ public class StateMachine {
     private SCXMLExecutor engine;
     private SCXML stateMachine;
     private String keyName;
-
+    
+    /**
+     * Useful var to remember all the actions executed before.
+     */
+    public List<String> historyEvents;
+    
     /**
      * Constructor of the class, initialize the engine and the model and runs
      * the engine also uses a Listener who can triggers events on states
@@ -87,8 +93,8 @@ public class StateMachine {
         this.engine.setRootContext(new JexlContext());
         this.engine.addListener(this.stateMachine, listener);
         listener.setParent(this);
-
-        engine.go();
+        this.historyEvents = new LinkedList<>();
+        this.engine.go();
     }
 
     /**
@@ -104,7 +110,8 @@ public class StateMachine {
         }
         engine.triggerEvent(new TriggerEvent(event,
             TriggerEvent.SIGNAL_EVENT, null));
-
+        //To remember...
+        this.historyEvents.add(event);
         return engine.getCurrentStatus().isFinal();
     }
 

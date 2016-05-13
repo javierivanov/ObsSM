@@ -23,11 +23,13 @@
 package org.alma.obssm.net;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.text.ParseException;
 
 /**
  * This interface provides a basic communication layer.
  *
- * @author Javier Fuentes
+ * @author Javier Fuentes j.fuentes.m@icloud.com
  * @version 0.3
  *
  */
@@ -59,8 +61,10 @@ public interface LineReader {
      * This method has to initialize the communications.
      * 
      * @throws IOException 
+     * @throws java.net.MalformedURLException 
+     * @throws java.text.ParseException 
      */
-    public void startCommunication() throws IOException;
+    public void startCommunication() throws IOException, MalformedURLException, ParseException;
 
     
     /**

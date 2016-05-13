@@ -20,12 +20,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  ******************************************************************************
  */
+
 package org.alma.obssm.sm;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -35,7 +35,7 @@ import org.xml.sax.SAXException;
 /**
  * This class manages State Machines which are currently active.
  *
- * @author Javier Fuentes
+ * @author Javier Fuentes j.fuentes.m@icloud.com
  * @version 0.3
  */
 public class StateMachineManager {
@@ -44,8 +44,8 @@ public class StateMachineManager {
     public final static int ACTION_NOT_FOUND = 2;
     public final static int NEW_SM_REQUIRED = 3;
 
-    private List<StateMachine> stateMachines;
-    private String xmlpath;
+    private final List<StateMachine> stateMachines;
+    private final String xmlpath;
 
     public StateMachineManager(String xmlpath) {
         this.xmlpath = xmlpath;
@@ -88,8 +88,7 @@ public class StateMachineManager {
          * Listing all possibles transitions.
          */
         List<String> out = new ArrayList<>();
-        for (Iterator<StateMachine> iter = this.stateMachines.iterator(); iter.hasNext();) {
-            StateMachine aux = iter.next();
+        for (StateMachine aux : this.stateMachines) {
             out.addAll(aux.getTransitionsStringList());
         }
         /**
@@ -113,7 +112,8 @@ public class StateMachineManager {
      * @throws SAXException
      * @throws IOException
      */
-    public int findAndTriggerAction2(String transition, String keyName) throws ModelException, IOException, SAXException {
+    @Deprecated
+    public int findAndTriggerActionOld(String transition, String keyName) throws ModelException, IOException, SAXException {
         if (transition == null) {
             return ACTION_NOT_FOUND;
         }
@@ -137,6 +137,7 @@ public class StateMachineManager {
                 return ACTION_TRIGGERED;
             }
         }
+        if (newOne == null) throw new NullPointerException("Null state machine");
         
         newOne.setKeyName(keyName);
         if (newOne.fireEvent(transition)) {

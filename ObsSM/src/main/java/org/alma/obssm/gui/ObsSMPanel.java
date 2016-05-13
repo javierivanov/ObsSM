@@ -24,9 +24,10 @@ package org.alma.obssm.gui;
 import java.awt.Color;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -51,7 +52,7 @@ import org.xml.sax.SAXException;
 
 /**
  *
- * @author Javier Fuentes
+ * @author Javier Fuentes j.fuentes.m@icloud.com
  * @version 0.3
  */
 public class ObsSMPanel extends javax.swing.JFrame {
@@ -59,14 +60,33 @@ public class ObsSMPanel extends javax.swing.JFrame {
     /**
      * Creates new a form Panel.
      */
-    private Manager m;
+    private final Manager m;
 
     private String xmlFileName, jsonFileName;
-
+    
+    private GuiStatesBase LISTENING_STATE, STOPED_STATE;
+    
+    private GuiStatesBase STATE;
+    
     public ObsSMPanel(Manager m) {
         this.m = m;
+        LISTENING_STATE = new GuiListeningState(m);
+        STOPED_STATE = new GuiStopedState(m);
+        
+        STATE = STOPED_STATE;
+        componentsSetup();
+        /**
+         * Runs a thread checking for active Arrays.
+         */
+        checkActiveArrays();
+    }
+    
+    
+    /**
+     * Setup for customs components.
+     */
+    private void componentsSetup() {
         try {
-            
             /**
              * Standard look and feel.
              */
@@ -84,30 +104,24 @@ public class ObsSMPanel extends javax.swing.JFrame {
          */
         portSpinner.setEditor(new JSpinner.NumberEditor(portSpinner, "#"));
         statusLabel.setText("Waiting for Start!");
-        
+        restartButton.setEnabled(false);
         /**
          * Default files.
          */
-        if (JOptionPane.showConfirmDialog(this, "Search for files in ../models/ ?") == JOptionPane.OK_OPTION) {
-        try {
-            m.smm = new StateMachineManager("../models/model.xml");
-            xmlFileLabel.setText("model.xml");
-            xmlFileName = "../models/model.xml";
-            xmlFileLabel.setForeground(Color.green);
-            m.parser = new Parser("../models/states.json");
-            jsonFileLabel.setText("states.json");
-            jsonFileName = "../models/states.json";
-            jsonFileLabel.setForeground(Color.green);
-        } catch (Exception e) {
-        }
-        }
-        
-        /**
-         * Runs a thread checking for active Arrays.
-         */
-        checkActiveArrays();
+        //if (JOptionPane.showConfirmDialog(this, "Search for files in ../models/ ?") == JOptionPane.OK_OPTION) {
+            try {
+                m.smm = new StateMachineManager("../models/model_interferometry.xml");
+                xmlFileLabel.setText("model_interferometry.xml");
+                xmlFileName = "../models/model_interferometry.xml";
+                xmlFileLabel.setForeground(Color.green);
+                m.parser = new Parser("../models/log_translate_interferometry.json");
+                jsonFileLabel.setText("log_translate_interferometry.json");
+                jsonFileName = "../models/log_translate_interferometry.json";
+                jsonFileLabel.setForeground(Color.green);
+            } catch (Exception e) {
+            }
+        //}
     }
-    
     
     /**
      * This method start a thread to check periodically is there a 
@@ -218,7 +232,7 @@ public class ObsSMPanel extends javax.swing.JFrame {
 
         statusLabel.setText("jLabel3");
 
-        restartButton.setText("Restart");
+        restartButton.setText("Clean");
         restartButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 restartButtonActionPerformed(evt);
@@ -385,6 +399,10 @@ public class ObsSMPanel extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "You have to select json and xml files first");
             return;
         }
+        
+        STATE.startListening();
+        STATE = LISTENING_STATE;
+        
         m.mainThread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -420,24 +438,18 @@ public class ObsSMPanel extends javax.swing.JFrame {
                 } catch (IOException | InterruptedException | ModelException | SAXException ex) {
                     Logger.getLogger(ObsSMPanel.class.getName()).log(Level.SEVERE, null, ex);
                     statusLabel.setText("Something goes wrong: " + ex.getMessage());
+                } catch (ParseException ex) {
+                    Logger.getLogger(ObsSMPanel.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
         m.mainThread.start();
-
-        jsonFileButton.setEnabled(false);
-        xmlFileButton.setEnabled(false);
-        startButton.setEnabled(false);
-        stopButton.setEnabled(true);
     }//GEN-LAST:event_startButtonActionPerformed
 
     private void stopButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopButtonActionPerformed
         // TODO add your handling code here:
-        jsonFileButton.setEnabled(true);
-        xmlFileButton.setEnabled(true);
-        startButton.setEnabled(true);
-        stopButton.setEnabled(false);
-        statusLabel.setText("Stoped");
+        STATE.stopListening();
+        STATE = STOPED_STATE;
         m.lr.interrupt();
         try {
             m.lr.endCommunication();
@@ -450,12 +462,17 @@ public class ObsSMPanel extends javax.swing.JFrame {
 
     private void restartButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restartButtonActionPerformed
         // TODO add your handling code here:
-        stopButtonActionPerformed(null);
-        arrayComboBox.setModel(new DefaultComboBoxModel<String>());
-        arrayProgressBar.setValue(0);
-        arrayProgressBar.setString("");
-        arrayTextArea.setText("");
-        statusLabel.setText("Restarted");
+        STATE.reset();
+        STATE = STOPED_STATE;
+        
+        m.lr.interrupt();
+        try {
+            m.lr.endCommunication();
+        } catch (IOException ex) {
+            Logger.getLogger(ObsSMPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        m.mainThread.interrupt();
+        
         m.smm = new StateMachineManager(xmlFileName);
         try {
             m.parser = new Parser(jsonFileName);
@@ -479,26 +496,26 @@ public class ObsSMPanel extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<String> arrayComboBox;
-    private javax.swing.JProgressBar arrayProgressBar;
-    private javax.swing.JTextArea arrayTextArea;
-    private javax.swing.JList<String> arraysActiveList;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JSeparator jSeparator2;
-    private javax.swing.JButton jsonFileButton;
-    private javax.swing.JLabel jsonFileLabel;
-    private javax.swing.JSpinner portSpinner;
-    private javax.swing.JButton restartButton;
-    private javax.swing.JButton startButton;
-    private javax.swing.JLabel statusLabel;
-    private javax.swing.JButton stopButton;
-    private javax.swing.JButton xmlFileButton;
-    private javax.swing.JLabel xmlFileLabel;
+    public javax.swing.JComboBox<String> arrayComboBox;
+    public javax.swing.JProgressBar arrayProgressBar;
+    public javax.swing.JTextArea arrayTextArea;
+    public javax.swing.JList<String> arraysActiveList;
+    public javax.swing.JLabel jLabel1;
+    public javax.swing.JLabel jLabel2;
+    public javax.swing.JLabel jLabel3;
+    public javax.swing.JLabel jLabel4;
+    public javax.swing.JScrollPane jScrollPane1;
+    public javax.swing.JScrollPane jScrollPane2;
+    public javax.swing.JSeparator jSeparator1;
+    public javax.swing.JSeparator jSeparator2;
+    public javax.swing.JButton jsonFileButton;
+    public javax.swing.JLabel jsonFileLabel;
+    public javax.swing.JSpinner portSpinner;
+    public javax.swing.JButton restartButton;
+    public javax.swing.JButton startButton;
+    public javax.swing.JLabel statusLabel;
+    public javax.swing.JButton stopButton;
+    public javax.swing.JButton xmlFileButton;
+    public javax.swing.JLabel xmlFileLabel;
     // End of variables declaration//GEN-END:variables
 }

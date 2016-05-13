@@ -20,13 +20,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  ******************************************************************************
  */
-
 package org.alma.obssm;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,11 +41,11 @@ import org.xml.sax.SAXException;
 /**
  * Main class, initialize the State Machines and Parsers and runs the
  * interpreter only.
- * 
+ *
  * TO DO: Upgrade to allow to run with the Manager class.
  *
  * @version 0.3
- * @author Javier Fuentes
+ * @author Javier Fuentes j.fuentes.m@icloud.com
  *
  * @see Manager
  */
@@ -63,8 +64,9 @@ public class Run {
      * @throws FileNotFoundException
      */
     public static void main(String args[]) throws FileNotFoundException {
+
         if (args.length == 0) {
-            new Manager().osmPanel.setVisible(true);
+            new Manager().osmPanel2.setVisible(true);
             return;
         }
 
@@ -84,9 +86,12 @@ public class Run {
             port = Integer.parseInt(args[1]);
         }
 
-        @SuppressWarnings("unused")
-        Run run = new Run(f.getPath(), port);
-
+        try {
+            @SuppressWarnings("unused")
+            Run run = new Run(f.getPath(), port);
+        } catch (MalformedURLException | ParseException ex) {
+            Logger.getLogger(Run.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -95,7 +100,7 @@ public class Run {
      * @param filepathname
      * @param port
      */
-    public Run(String filepathname, int port) {
+    public Run(String filepathname, int port) throws MalformedURLException, ParseException {
         try {
             /**
              * Setting up server and models files.

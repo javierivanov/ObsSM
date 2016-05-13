@@ -1,0 +1,98 @@
+[
+    {
+        "eventName": "InterferometeryObservingMode.init",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(alma.Control.ObservingModes.InterferometryObservingModeImpl)", "(Interferometry observing mode starting.)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "initial"
+    },
+    {
+        "eventName": "InterferometeryObservingMode.initializeControllers",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(alma.Control.ObservingModes.InterferometryObservingModeImpl)", "(initializeControllers)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "InterferometeryObservingMode.cleanUp",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(alma.Control.ObservingModes.InterferometryObservingModeImpl)", "(Interferometry observing mode shutting down.)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "InterferometeryObservingMode.doScanSequence",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(alma.Control.ObservingModes.InterferometryObservingModeImpl)", "(Starting doScanSequence)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "InterferometeryObservingMode.doSubscanSequence",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(alma.Control.ObservingModes.InterferometryObservingModeImpl)", "(Starting doSubscanSequence)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "ObservingMode.beginScan",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(alma.Control.ObservingModes.ObservingModeBaseImpl)", "(logBeginScan)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "ObservingMode.startThread",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(startThread)", "(alma.Control.ObservingModes.ObservingModeBaseImpl)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "ObservingMode.estimateExecutionTime",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(alma.Control.ObservingModes.ObservingModeBaseImpl)", "(estimateExecutionTime)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "ObservingMode.endScan",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(alma.Control.ObservingModes.ObservingModeBaseImpl)", "(endScan)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "ObservingMode.endSubscan",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(alma.Control.ObservingModes.ObservingModeBaseImpl)", "(endSubscan)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "ObservingMode.beginSubscan",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(alma.Control.ObservingModes.ObservingModeBaseImpl)", "(beginSubscan)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "ObservingMode.shutdownObservingMode",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(alma.Control.ObservingModes.ObservingModeBaseImpl)", "(shutdownObservingMode)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "final"
+    }
+]

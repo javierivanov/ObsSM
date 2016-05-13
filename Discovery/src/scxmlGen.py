@@ -1,40 +1,31 @@
 from xml.etree import ElementTree as et
 
 
-verbToPast = {}
-verbToPast["start"] = "started"
-verbToPast["stop"] = "stoped"
-verbToPast["creation"] = "created"
-verbToPast["destruction"] = "destroyed"
-verbToPast["release"] = "released"
-
 
 def transitionToState(transition):
     l = str(transition).split('.')
-    aux = ""
-    for i in l:
-        if i in verbToPast.keys():
-            aux += str(verbToPast[i]).capitalize()
-        else:
-            aux += str(i).capitalize()
+    aux = l[0] + l[1].capitalize()
     return aux + "State"
 
+def transitionToTransition(transition):
+    l = str(transition).split('.')
+    return l[1]
 
 def createSCXML(transitions):
     '''Returns a SCXML document using the transitions'''
-    attr = {'initial': 'idle', 'version': '0.9', 'xmlns': "http://  www.w3.org/2005/07/scxml"}
+    attr = {'initial': 'idle', 'version': '0.9', 'xmlns': "http://www.w3.org/2005/07/scxml"}
     scxml = et.Element("scxml", attr)
     # States
     states = {}
     idle = et.SubElement(scxml, 'state', attrib={'id': 'idle'})
 
     for i in transitions:
-        states[transitionToState(i.state_from['stateName'])] = None
+        states[transitionToState(i.state_from['eventName'])] = None
         for j in i.states_to:
-            if j['stateType'] == 'final':
-                states[transitionToState(j['stateName'])] = 'final'
+            if j['eventType'] == 'final':
+                states[transitionToState(j['eventName'])] = 'final'
             else:
-                states[transitionToState(j['stateName'])] = None
+                states[transitionToState(j['eventName'])] = None
     for i in states.keys():
         if states[i] == 'final':
             states[i] = et.SubElement(scxml, 'final', {'id': i})
@@ -43,20 +34,20 @@ def createSCXML(transitions):
 
     # idle transition
     for i in transitions:
-        if i.state_from['stateType'] == 'initial':
+        if i.state_from['eventType'] == 'initial':
             attr = {}
-            attr['target'] = transitionToState(i.state_from["stateName"])
-            attr['event'] = i.state_from["stateName"]
+            attr['target'] = transitionToState(i.state_from["eventName"])
+            attr['event'] = i.state_from["eventName"]
             aux = et.SubElement(idle, 'transition', attr)
             aux.text = ' '
 
     # transitions
     for i in transitions:
-        n = transitionToState(i.state_from["stateName"])
+        n = transitionToState(i.state_from["eventName"])
         for j in i.states_to:
             attr = {}
-            attr['target'] = transitionToState(j["stateName"])
-            attr['event'] = j["stateName"]
+            attr['target'] = transitionToState(j["eventName"])
+            attr['event'] = transitionToTransition(j["eventName"])
             aux = et.SubElement(states[n], 'transition', attr)
             aux.text = ' '
     return str(et.tostring(scxml).decode('utf-8')).replace('/>', '/>\n').replace('><', '>\n<').replace('</state>', '</state>\n').replace('<transition', '\t<transition')

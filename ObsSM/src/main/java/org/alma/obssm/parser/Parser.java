@@ -24,7 +24,6 @@ package org.alma.obssm.parser;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,13 +40,22 @@ import com.google.gson.stream.JsonReader;
 /**
  * This class parse the log with the transitions constrains on the JSON file.
  *
- * @author Javier Fuentes
+ * @author Javier Fuentes j.fuentes.m@icloud.com
  * @version 0.3
  */
 public class Parser {
 
-    protected Map<String, TransitionConstraints> constraints;
-
+    public Map<String, TransitionConstraints> constraints;
+    
+    
+    /**
+     * Vars required for the EntryListener to obtain extra data.
+     */
+    public static String savedTimeStamp;
+    public static String savedArray;
+    public static String savedEvent;
+    public static String savedLogLine;
+    
     /**
      * Constructor, initialize the JSON constraints file.
      *
@@ -65,7 +73,7 @@ public class Parser {
 
         for (int i = 0; i < arr.size(); i++) {
             TransitionConstraints t = gson.fromJson(arr.get(i), TransitionConstraints.class);
-            this.constraints.put(t.stateName, t);
+            this.constraints.put(t.eventName, t);
         }
     }
 
@@ -139,7 +147,7 @@ public class Parser {
         }
         TransitionConstraints st = this.constraints.get(transition);
         if (st == null) {
-            throw new NullPointerException("The transition do not exists on the HashMap");
+            throw new NullPointerException("The transition("+transition+") do not exists on the HashMap");
         }
         return st;
     }
@@ -164,4 +172,15 @@ public class Parser {
         }
         return keyName;
     }
+    
+    public void saveExtraData(String line, String keyName, String event) {
+        Parser.savedArray = keyName;
+        Parser.savedEvent = event;
+        Parser.savedLogLine = line;
+        Pattern pattern = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.\\d{3})");
+        Matcher m = pattern.matcher(line);
+        Parser.savedTimeStamp = "";
+        if (m.find()) Parser.savedTimeStamp = m.group();
+    }
+    
 }
