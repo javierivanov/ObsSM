@@ -38,8 +38,10 @@ cd ObsSM-master/ObsSM/
 
 * Compile using Maven
 
-You have to have installed Maven for this step.
-
+**You have to have installed Maven for this step.**
+**You can check this, trying with the command ```mvn```.**
+**Anyway you can install it from here: [https://maven.apache.org]**
+ 
 ```
 mvn clean dependency:copy-dependencies package
 ```
@@ -55,7 +57,7 @@ java -cp "target/ObsSM-0.4.jar:target/dependency/*" org.alma.obssm.Run
 ObsSM includes a built-in ElasticSearch retriever, and search data directly from the ELK server.
 
 
-* Not available yet!
+**Not available yet!**
 Also you can send line logs through the `logSender.py` script.
 If you want to use another port, host, python version or whatever, the scritp is very easy to modify (few lines).
 You can build your own implementation on another language.
