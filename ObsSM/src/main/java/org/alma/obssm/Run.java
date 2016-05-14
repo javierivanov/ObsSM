@@ -34,7 +34,6 @@ package org.alma.obssm;
  * @see Manager
  */
 public class Run {
-
     /*
      * Some filter options. If the array is empty, it will show everything.
      */

@@ -334,6 +334,7 @@ public class ObsSMPanel extends JFrame {
             @Override
             public void run() {
                 try {
+                    
                     m.lr = new ElasticSearchImpl(dfrom.getText(), dto.getText(), query.getText());
                     //Checking the SM Manager and JSON Log parser
                     if (m.smm == null || m.parser == null) {
