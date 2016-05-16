@@ -1,4 +1,5 @@
-/*******************************************************************************
+/**
+ * *****************************************************************************
  * ALMA - Atacama Large Millimeter Array
  * Copyright (c) AUI - Associated Universities Inc., 2016
  * (in the framework of the ALMA collaboration).
@@ -17,8 +18,8 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
- *******************************************************************************/
-
+ ******************************************************************************
+ */
 package org.alma.obssm.ui;
 
 import java.awt.BorderLayout;
@@ -29,16 +30,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -55,6 +54,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.table.DefaultTableModel;
+
 import org.alma.obssm.Manager;
 import org.alma.obssm.net.ElasticSearchImpl;
 import org.alma.obssm.parser.Parser;
@@ -66,13 +66,18 @@ import org.xml.sax.SAXException;
 /**
  *
  * Main graphical interface.
- * 
+ *
  * @version 0.4
  * @author Javier Fuentes Muñoz j.fuentes.m@icloud.com
  */
 public class ObsSMPanel extends JFrame {
 
-    private final Manager m;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+
+    private Manager m;
     private JMenuBar menuBar;
     private JMenu fileMenu;
     private JMenuItem newItem;
@@ -94,38 +99,39 @@ public class ObsSMPanel extends JFrame {
     public JTable table;
 
     JLabel statusLabel;
-    private ObsSMPanelConf confPanel;
+    public ObsSMPanelConf confPanel;
 
     private boolean dataSaved;
-    
-    private Thread mainThread;
 
+    private Thread mainThread;
+    
+    
+    
     public ObsSMPanel(Manager m) {
         super("ObsSM2 Panel");
         this.m = m;
-        initialize();
-        initializeListeners();
-        confPanel = new ObsSMPanelConf(m);
-        dataSaved = true;
-
         //Default files
         try {
             //Right usage of a internal JAR files.
             m.parser = new Parser(m.getResourceFiles("log_translate.json").getAbsolutePath());
             m.smm = new StateMachineManager(m.getResourceFiles("model.xml").getAbsolutePath());
+            m.default_query_base = m.getResourceString("query_base.json");
         } catch (FileNotFoundException ex) {
             Logger.getLogger(ObsSMPanel.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(ObsSMPanel.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            if (m.parser == null || m.smm == null)
-                 JOptionPane.showMessageDialog(m.osmPanel, "SM SCXML Model or JSON Log translator files are Missing!");
+            if (m.parser == null || m.smm == null || m.default_query_base == null) {
+                JOptionPane.showMessageDialog(m.osmPanel, "SM SCXML Model or JSON Log translator files are Missing!");
+            }
         }
-       
+        
+        initialize();
+        initializeListeners();
+        confPanel = new ObsSMPanelConf(m);
+        dataSaved = true;
     }
 
-    
-    
     /**
      *
      * Sets of all visual objects
@@ -168,7 +174,7 @@ public class ObsSMPanel extends JFrame {
 
         JPanel statusPanel = new JPanel();
         statusPanel.setSize(getWidth(), 10);
-        statusLabel = new JLabel("Status fuck yeah!");
+        statusLabel = new JLabel("Status bar!");
         statusPanel.add(statusLabel);
         statusPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
         statusPanel.setPreferredSize(new Dimension(getWidth(), 18));
@@ -306,14 +312,12 @@ public class ObsSMPanel extends JFrame {
         }
     }
 
-    
-    
     /**
-     * 
+     *
      * Stops the current execution!
      */
     public void stopThreadSearch() {
-        
+
         try {
             m.lr.endCommunication();
             m.lr.interrupt();
@@ -321,7 +325,7 @@ public class ObsSMPanel extends JFrame {
         } catch (IOException ex) {
             Logger.getLogger(ObsSMPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
     }
 
     /**
@@ -334,8 +338,11 @@ public class ObsSMPanel extends JFrame {
             @Override
             public void run() {
                 try {
-                    
-                    m.lr = new ElasticSearchImpl(dfrom.getText(), dto.getText(), query.getText());
+                    /**
+                     * TODO: This must be updated!
+                     */
+                    m.lr = new ElasticSearchImpl(dfrom.getText(), dto.getText(), query.getText(), m.default_query_base, m.ELKUrl);
+
                     //Checking the SM Manager and JSON Log parser
                     if (m.smm == null || m.parser == null) {
                         JOptionPane.showMessageDialog(m.osmPanel, "SM SCXML Model or JSON Log translator Missing!");
@@ -386,7 +393,7 @@ public class ObsSMPanel extends JFrame {
             return;
         }
         JFileChooser f = new JFileChooser();
-        
+
         if (f.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
             File fg = f.getSelectedFile();
             Logger.getLogger(ObsSMPanel.class.getName()).log(Level.INFO, "File is going to be written");

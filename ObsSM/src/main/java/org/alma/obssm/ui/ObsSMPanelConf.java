@@ -1,4 +1,5 @@
-/*******************************************************************************
+/**
+ * *****************************************************************************
  * ALMA - Atacama Large Millimeter Array
  * Copyright (c) AUI - Associated Universities Inc., 2016
  * (in the framework of the ALMA collaboration).
@@ -17,78 +18,242 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
- *******************************************************************************/
-
+ ******************************************************************************
+ */
 package org.alma.obssm.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
 import org.alma.obssm.Manager;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
 
 /**
  *
  * Configuration graphical interface.
- * 
+ *
  * @version 0.4
  * @author Javier Fuentes j.fuentes.m@icloud.com
  */
 public class ObsSMPanelConf extends JFrame {
 
-    final private Manager m;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+
+    private Manager m;
+
+    public JLabel show_label;
+    public JLabel scxml_label;
+    public JLabel json_label;
+    public JLabel elkurl_label;
+    public JTextField scxml_file;
+    public JTextField json_file;
+    public JTextField elk_url;
+    public JButton scxml_button;
+    public JButton json_button;
+    public JLabel query_label;
+    public JTextPane query;
+    public JScrollPane query_scroll;
+
+    public JButton save_button, cancel_button;
 
     public ObsSMPanelConf(Manager m) {
-        super("Configuration Pane");
+        super("Configuration Panel");
         this.m = m;
         initialize();
+        initializeListeners();
     }
 
     private void initialize() {
         setAlwaysOnTop(true);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setLocationRelativeTo(null);
-        setSize(300, 300);
+        GridBagConstraints gbc = new GridBagConstraints();
+        setLayout(new GridBagLayout());
         
-        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weighty = 1;
+        gbc.weightx = 1;
+
+        gbc.gridwidth = 3;
+        gbc.gridheight = 1;
+
+        show_label = new JLabel("Configuration Panel:");
+        show_label.setFont(new Font(show_label.getFont().getName(), Font.BOLD, show_label.getFont().getSize() + 6));
+        add(show_label, gbc);
+
+        gbc.gridwidth = 1;
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.fill = GridBagConstraints.BASELINE;
+        scxml_label = new JLabel("SCXML Model file:");
+        add(scxml_label, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        scxml_file = new JTextField("model.xml", 20);
+        add(scxml_file, gbc);
+        gbc.fill = GridBagConstraints.NONE;
+
+        gbc.gridx = 2;
+        gbc.gridy = 1;
+        scxml_button = new JButton("Select file");
+        add(scxml_button, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        json_label = new JLabel("JSON log translate file: ");
+        add(json_label, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        json_file = new JTextField("log_translate.json", 20);
+        add(json_file, gbc);
+        gbc.fill = GridBagConstraints.NONE;
+
+        gbc.gridx = 2;
+        gbc.gridy = 2;
+        json_button = new JButton("Select file");
+        add(json_button, gbc);
+
         
-        mainPanel.setLayout(new FlowLayout());
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        elkurl_label = new JLabel("ElasticSearch URL:");
+        add(elkurl_label, gbc);
 
-        JLabel ScxmlLabel = new JLabel("SCXML Model File:");
-        JLabel JsonLabel = new JLabel("JSON Log Translate File:");
-        JLabel inputLabel = new JLabel("   Input data format   ");
-        JLabel outputLabel = new JLabel("   Output data format   ");
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        elk_url = new JTextField(m.ELKUrl, 20);
+        add(elk_url, gbc);
+        
+        
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.gridheight = 3;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.gridwidth = 1;
+        query_label = new JLabel("<html>Elastic search query:<br><br>"
+                + "<i>You must replace this variables</i><br>"
+                + "<b>$T1</b>: <i>TimeStamp start</i><br>"
+                + "<b>$T2</b>: <i>TimeStamp stop</i><br>"
+                + "<b>$Q</b>: <i>Query</i></html>");
+        add(query_label, gbc);
 
-        JTextField scxmlField = new JTextField("custom", 15);
-        JTextField jsonField = new JTextField("custom", 15);
+        gbc.gridx = 1;
+        gbc.gridy = 4;
+        gbc.gridwidth = 2;
+        gbc.gridheight = 3;
+        gbc.weightx = 0.8;
+        gbc.fill = GridBagConstraints.BOTH;
+        query = new JTextPane();
+        query_scroll = new JScrollPane(query);
+        query.setContentType("text/html");
+        add(query_scroll, gbc);
 
-        String inputOptions[] = {"ElasticSearch ", "XML Logs Server"};
-        String outputOptions[] = {"Table model", "Optionals PLugins"};
-        JComboBox<String> inputList = new JComboBox<>(inputOptions);
-        JComboBox<String> outputList = new JComboBox<>(outputOptions);
+        gbc.weightx = 1;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.fill = GridBagConstraints.CENTER;
 
-        JButton saveButton = new JButton("Save");
-        JButton cancelButton = new JButton("Cancel");
+        gbc.gridx = 1;
+        gbc.gridy = 8;
+        cancel_button = new JButton("Cancel");
+        add(cancel_button, gbc);
 
-        mainPanel.add(ScxmlLabel);
-        mainPanel.add(scxmlField);
-        mainPanel.add(JsonLabel);
-        mainPanel.add(jsonField);
-        mainPanel.add(inputLabel);
-        mainPanel.add(inputList);
-        mainPanel.add(outputLabel);
-        mainPanel.add(outputList);
+        gbc.gridx = 2;
+        gbc.gridy = 8;
+        save_button = new JButton("Save");
+        add(save_button, gbc);
 
-        mainPanel.add(saveButton);
-        mainPanel.add(cancelButton);
-        setMaximumSize(new Dimension(300, 300));
-        setMinimumSize(new Dimension(250, 250));
-        add(mainPanel, BorderLayout.CENTER);
+        
+        
+        pack();
+        setSize((int)(getSize().width*1.3), (int)(getSize().height*1.3));
+        setResizable(false);
     }
 
+    @Override
+    public void setVisible(boolean b) {
+        super.setVisible(b); //To change body of generated methods, choose Tools | Templates.
+        query.setText(toHTML(m.default_query_base));
+        elk_url.setText(m.ELKUrl);
+    }
+    
+    private String toHTML(String input) {
+        input = Jsoup.parse(input).text();
+        StringBuilder htmlOutput = new StringBuilder();
+        htmlOutput.append("<html>");
+        htmlOutput.append(
+                input.replace("\n", "<br>")
+                .replace("$Q", "<b>$Q</b>")
+                .replace("$T1", "<b>$T1</b>")
+                .replace("$T2", "<b>$T2</b>")
+        );
+        htmlOutput.append("</html>");
+        return htmlOutput.toString();
+    }
+    
+    private void toBold() {
+        String in2 = Jsoup.clean(query.getText(), new Whitelist().addTags("br"));
+        in2 = toHTML(in2);
+        query.setText(in2);
+    }
+    
+    private void initializeListeners() {
+        
+        save_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                save();
+            }
+        });
+        
+        cancel_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cancel();
+            }
+        });
+        
+        query.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                toBold();
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                toBold();
+            }
+        });
+    }
+
+    public void save() {
+        String text = Jsoup.parse(query.getText()).text();
+        m.default_query_base = text;
+    }
+
+    public void cancel() {
+        this.setVisible(false);
+    }
 }

@@ -22,6 +22,9 @@
  */
 package org.alma.obssm;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * Main class, initialize the State Machines and Parsers and runs the
  * interpreter only.
@@ -46,7 +49,9 @@ public class Run {
      * @param args
      */
     public static void main(String args[]) {
-        new Manager().osmPanel.setVisible(true);
+        Manager m = new Manager();
+        m.osmPanel.setVisible(true);
+        Logger.getLogger(Run.class.getName()).log(Level.INFO,"Manager Running");
     }
 
 }

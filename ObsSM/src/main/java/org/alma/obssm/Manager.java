@@ -54,6 +54,9 @@ public class Manager {
     public ObsSMPanel osmPanel;
     public Parser parser;
     public Thread mainThread;
+    
+    public String default_query_base = "";
+    public String ELKUrl = "http://elk-master.osf.alma.cl:9200";
 
     /**
      * This constructor launches the Panel for visual operation.
@@ -63,33 +66,56 @@ public class Manager {
         osmPanel = new ObsSMPanel(this);
     }
 
-    
     /**
-     * 
+     *
      * Returns a temporal file for a internal resource.
-     * 
+     *
      * @param file
      * @return temporal file.
-     * @throws IOException 
+     * @throws IOException
      */
     public File getResourceFiles(String file) throws IOException {
         InputStream is = this.getClass().getClassLoader().getResourceAsStream(file);
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
         File f = File.createTempFile("temp-file", ".temp");
 
-        FileWriter fw = new FileWriter(f);
-        String tempLine;
+        try (FileWriter fw = new FileWriter(f)) {
+            String tempLine;
+            
+            while (true) {
+                tempLine = br.readLine();
+                if (tempLine == null) {
+                    break;
+                }
+                fw.append(tempLine);
+            }
+        }
 
+        return f;
+    }
+    
+    /**
+     * 
+     * Return a String with the contents of the resource file.
+     * 
+     * @param file
+     * @return
+     * @throws IOException 
+     */
+
+    public String getResourceString(String file) throws IOException {
+        InputStream is = this.getClass().getClassLoader().getResourceAsStream(file);
+        BufferedReader br = new BufferedReader(new InputStreamReader(is));
+        String tempLine;
+        StringBuilder sb = new StringBuilder();
         while (true) {
             tempLine = br.readLine();
             if (tempLine == null) {
                 break;
             }
-            fw.append(tempLine);
+            sb.append(tempLine);
         }
-
-        fw.close();
-        
-        return f;
+        return sb.toString();
     }
+
 }

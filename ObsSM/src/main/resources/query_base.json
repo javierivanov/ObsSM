@@ -1,0 +1,21 @@
+{"query":
+            {"filtered":
+                {"query":
+                    {"query_string":
+                        {"analyze_wildcard":true,"query":"$Q"}},
+            "filter":
+                    {"bool":
+                        {"must":
+                            [{"query":
+                                    {"match":
+                                        {"Process":
+                                            {"query":"CONTROL/ACC/javaContainer","type":"phrase"}}}},
+                        {"query":
+                                    {"match":
+                                        {"Host":
+                                            {"query":"gas01","type":"phrase"}}}},
+                        {"range":
+                                    {"@timestamp":
+                                        {"gte":"$T1","lte":"$T2","format":"strict_date_hour_minute_second_millis"}}}],
+                    "must_not":[]}}}},"size":1000,"sort":[{"@timestamp":{"order":"asc","unmapped_type":"boolean"}}],
+    "fields":["*","_source"],"script_fields":{},"fielddata_fields":["TimeStamp","@timestamp"]}
