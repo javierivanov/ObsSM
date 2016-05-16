@@ -79,7 +79,7 @@ public class StateMachine {
     }
 
     public StateMachine(String xmlFile) throws IOException, ModelException, SAXException {
-        initialize(xmlFile, new CustomEntryListener());
+        initialize(xmlFile, new CustomEntryListener(null));
     }
 
     private void initialize(String xmlFile, EntryListener listener) throws IOException, ModelException, SAXException {

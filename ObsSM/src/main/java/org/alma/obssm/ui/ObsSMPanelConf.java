@@ -29,13 +29,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.io.File;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import org.alma.obssm.Manager;
+import org.alma.obssm.parser.Parser;
+import org.alma.obssm.sm.StateMachineManager;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 
@@ -53,7 +58,7 @@ public class ObsSMPanelConf extends JFrame {
      */
     private static final long serialVersionUID = 1L;
 
-    private Manager m;
+    private final Manager m;
 
     public JLabel show_label;
     public JLabel scxml_label;
@@ -221,6 +226,20 @@ public class ObsSMPanelConf extends JFrame {
     
     private void initializeListeners() {
         
+        scxml_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                openSCXMLFile();
+            }
+        });
+        
+        json_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                openJSONFile();
+            }
+        });
+        
         save_button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -249,12 +268,35 @@ public class ObsSMPanelConf extends JFrame {
     }
 
     public void save() {
-        String text = Jsoup.parse(query.getText()).text();
-        m.default_query_base = text;
-        m.ELKUrl = elk_url.getText();
+        try {
+            String text = Jsoup.parse(query.getText()).text();
+            m.default_query_base = text;
+            m.ELKUrl = elk_url.getText();
+            m.smm = new StateMachineManager(scxml_file.getText());
+            m.parser = new Parser(json_file.getText());
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
+        }
+        setVisible(false);
     }
 
     public void cancel() {
         this.setVisible(false);
+    }
+    
+    public void openSCXMLFile() {
+        JFileChooser fc = new JFileChooser();
+        if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            File f = fc.getSelectedFile();
+            scxml_file.setText(f.getAbsolutePath());
+        }
+    }
+    
+    public void openJSONFile(){
+        JFileChooser fc = new JFileChooser();
+        if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            File f = fc.getSelectedFile();
+                json_file.setText(f.getAbsolutePath());
+        }
     }
 }

@@ -42,7 +42,7 @@ import java.util.Scanner;
  */
 public class ServerLineReader implements LineReader {
 
-    private ServerSocket serverSocket;
+    private final ServerSocket serverSocket;
 
     public ServerSocket getServerSocket() {
         return serverSocket;
@@ -52,12 +52,12 @@ public class ServerLineReader implements LineReader {
         this.serverSocket = new ServerSocket(port);
     }
 
+    @Override
     public String waitForLine() throws IOException {
-        Socket client = this.serverSocket.accept();
-        Scanner s = new Scanner(client.getInputStream());
-        String out = s.nextLine();
-        s.close();
-        client.close();
+        String out;
+        try (Socket client = this.serverSocket.accept(); Scanner s = new Scanner(client.getInputStream())) {
+            out = s.nextLine();
+        }
         return out;
     }
 
@@ -66,6 +66,7 @@ public class ServerLineReader implements LineReader {
         this.serverSocket.close();
     }
 
+    @Override
     public boolean isCommunicationActive() {
         return true;
     }

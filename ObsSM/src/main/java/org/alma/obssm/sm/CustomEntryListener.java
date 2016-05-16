@@ -23,6 +23,7 @@
 package org.alma.obssm.sm;
 
 import java.sql.Timestamp;
+import org.alma.obssm.Manager;
 
 import org.alma.obssm.Run;
 import org.apache.commons.scxml.model.Transition;
@@ -38,6 +39,10 @@ import org.apache.commons.scxml.model.TransitionTarget;
  *
  */
 public class CustomEntryListener extends EntryListener {
+
+    public CustomEntryListener(Manager m) {
+        super(m);
+    }
 
     @Override
     public void onEntry(TransitionTarget state) {

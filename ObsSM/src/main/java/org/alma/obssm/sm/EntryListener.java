@@ -38,14 +38,12 @@ import org.apache.commons.scxml.model.TransitionTarget;
 public abstract class EntryListener implements SCXMLListener {
 
     protected StateMachine parent = null;
-    protected Manager m;
+    protected final Manager m;
 
     public EntryListener(Manager m) {
         this.m = m;
     }
 
-    public EntryListener() {
-    }
 
     @Override
     public void onTransition(TransitionTarget from, TransitionTarget to, Transition transition) {
