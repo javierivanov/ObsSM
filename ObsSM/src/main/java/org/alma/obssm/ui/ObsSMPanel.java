@@ -36,7 +36,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.Timestamp;
+
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -98,7 +102,7 @@ public class ObsSMPanel extends JFrame {
     private JTextField query;
     private JButton searchButton;
 
-    private JScrollPane scrollTablePane;
+    public JScrollPane scrollTablePane;
     public DefaultTableModel tablemodel;
     public JTable table;
 
@@ -155,10 +159,14 @@ public class ObsSMPanel extends JFrame {
             "State To"};
 
         searchPanel = new JPanel(new FlowLayout());
-        dfrom = new JTextField("2016-04-26T19:41:02.351", 14);
-        dto = new JTextField("2016-04-26T19:50:00.000",14);
+        
+        Timestamp t1 = new Timestamp(System.currentTimeMillis()-60*60*1000);
+        Timestamp t2 = new Timestamp(System.currentTimeMillis());
+        
+        dfrom = new JTextField(t1.toString().replace(" ", "T"), 14);
+        dto = new JTextField(t2.toString().replace(" ", "T"),14);
         queryLabel = new JLabel("Query: ");
-        query = new JTextField("Array: Array032", 14);
+        query = new JTextField("*", 14);
         searchButton = new JButton("GO!");
         
         searchPanel.add(new JLabel("TimeStamp start"));
@@ -175,6 +183,7 @@ public class ObsSMPanel extends JFrame {
         table = new JTable(tablemodel);
         table.setFillsViewportHeight(true);
         scrollTablePane = new JScrollPane(table);
+        
         add(scrollTablePane, BorderLayout.CENTER);
 
         JPanel statusPanel = new JPanel();
@@ -343,6 +352,7 @@ public class ObsSMPanel extends JFrame {
         mainThread = new Thread(new Runnable() {
             @Override
             public void run() {
+                m.osmPanel.searchButton.setEnabled(false);
                 try {
                     /**
                      * TODO: This must be updated!
@@ -364,7 +374,6 @@ public class ObsSMPanel extends JFrame {
                     while (m.lr.isCommunicationActive()) {
                         statusLabel.setText("Listening data...");
                         String line = m.lr.waitForLine();
-                        System.out.println(line);
                         if (line != null) {
                             if ("EOF".equals(line)) {
                                 break;
@@ -379,15 +388,20 @@ public class ObsSMPanel extends JFrame {
                             event = m.parser.getParseAction(line, m.smm.getAllPossiblesTransitions());
                             keyName = m.parser.getKeyName(line, event);
                             m.parser.saveExtraData(line, keyName, event);
-
                             m.smm.findAndTriggerAction(event, keyName);
                         }
                     }
                     statusLabel.setText("Loop ended: data in table!");
-                } catch (HeadlessException | IOException | ParseException | InterruptedException | ModelException | SAXException ex) {
+                } catch (HeadlessException | IOException | ParseException | ModelException | SAXException ex) {
                     Logger.getLogger(ObsSMPanel.class.getName()).log(Level.SEVERE, null, ex);
                     statusLabel.setText("Something wrong, check the logs!");
+                } catch (InterruptedException ex) {
+                    statusLabel.setText("Forced stop!, check the logs!");
+                    Logger.getLogger(ObsSMPanel.class.getName()).log(Level.INFO, null, ex);
+                } finally {
+                    m.osmPanel.searchButton.setEnabled(true);
                 }
+                
             }
         });
 

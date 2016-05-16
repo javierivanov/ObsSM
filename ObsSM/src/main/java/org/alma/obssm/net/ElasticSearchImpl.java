@@ -34,7 +34,6 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -54,11 +53,6 @@ public class ElasticSearchImpl implements LineReader {
     /**
      * ***************GSON CLASSES******************
      */
-    class IndicesResponse {
-
-        HashMap<String, Object> indices;
-    }
-
     class Hit {
 
         HashMap<String, Object> _source;
@@ -77,12 +71,15 @@ public class ElasticSearchImpl implements LineReader {
      * ***************GSON CLASSES******************
      */
 
-    private LinkedList<String> fifoList;
+    private final LinkedList<String> fifoList;
+    private final String timeStampEnd;
+    private final String query;
+    private final String query_base;
+    private final String ELKUrl;
     private String timeStampStart;
-    private String timeStampEnd;
-    private String query;
-    private String query_base;
-    private String ELKUrl;
+    private boolean active = true;
+
+    private Thread thread;
 
     public ElasticSearchImpl(String timeStampStart, String timeStampEnd, String query, String query_base, String ELKUrl) {
         this.timeStampStart = timeStampStart;
@@ -93,59 +90,57 @@ public class ElasticSearchImpl implements LineReader {
         this.fifoList = new LinkedList<>();
     }
 
-    public void setELKUrl(String ELKUrl) {
-        this.ELKUrl = ELKUrl;
-    }
-
-    public String getELKUrl() {
-        return ELKUrl;
-    }
-
-    public void setQuery_base(String query_base) {
-        this.query_base = query_base;
-    }
-
-    public String getQuery_base() {
-        return query_base;
-    }
-
     public void getData() throws IOException, MalformedURLException, ParseException {
 
         //Reusable vars
-        DataInputStream a;
-        Reader r;
+        thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                DataInputStream a;
+                Reader r;
+                while (active) {
+                    try {
+                        //Getting hits for each index " + s + "
+                        String query_base_aux = query_base.replace("$Q", query);
+                        query_base_aux = query_base_aux.replace("$T1", timeStampStart);
+                        query_base_aux = query_base_aux.replace("$T2", timeStampEnd);
+                        a = sendAndGetData(ELKUrl + "/aos-*/_search", query_base_aux, "POST");
+                        r = new InputStreamReader(a);
+                        List<Hit> response = getHits(r);
+                        if (response.isEmpty()) {
+                            break;
+                        }
+                        String lastTimeStampStart = null;
+                        for (Hit h : response) {
+                            //Creating a log line for each  result.
+                            StringBuilder temp = new StringBuilder();
+                            temp.append(h._source.get("TimeStamp")).append(" ");
+                            temp.append(h._source.get("SourceObject")).append(" ");
+                            temp.append(h._source.get("File")).append(" ");
+                            temp.append(h._source.get("Routine")).append(" ");
+                            temp.append(h._source.get("text")).append(" ");
+                            synchronized (fifoList) {
+                                fifoList.add(temp.toString());
+                            }
 
-        //Getting indices
-        a = sendAndGetData(ELKUrl + "/aos-*/_field_stats?level=indices",
-                "{\"fields\":[\"@timestamp\"],\"index_constraints\":{\"@timestamp\":{\"max_value\":{\"gte\":\"" + (timeStampStart) + "\",\"format\":\"strict_date_hour_minute_second_millis\"},\"min_value\":{\"lte\":\"" + (timeStampEnd) + "\",\"format\":\"strict_date_hour_minute_second_millis\"}}}}",
-                "POST");
-        r = new InputStreamReader(a);
-        Set<String> iresponse = getIndices(r);
-
-        for (String s : iresponse) {
-            Logger.getLogger(ElasticSearchImpl.class.getName()).log(Level.INFO, "gotten index: {0}", s);
-            //Getting hits for each index " + s + "
-
-            query_base = query_base.replace("$Q", query);
-            query_base = query_base.replace("$T1", timeStampStart);
-            query_base = query_base.replace("$T2", timeStampEnd);
-            a = sendAndGetData(ELKUrl + "/" + s + "/_search", query_base, "POST");
-            r = new InputStreamReader(a);
-            List<Hit> response = getHits(r);
-
-            for (Hit h : response) {
-                //Creating a log line for each  result.
-                StringBuilder temp = new StringBuilder();
-                temp.append(h._source.get("TimeStamp")).append(" ");
-                temp.append(h._source.get("SourceObject")).append(" ");
-                temp.append(h._source.get("File")).append(" ");
-                temp.append(h._source.get("Routine")).append(" ");
-                temp.append(h._source.get("text")).append(" ");
-
-                fifoList.add(temp.toString());
+                            lastTimeStampStart = (String) h._source.get("TimeStamp");
+                        }
+                        synchronized (fifoList) {
+                            fifoList.notify();
+                        }
+                        if (lastTimeStampStart == null) {
+                            break;
+                        }
+                        if (timeStampStart.equals(lastTimeStampStart)) break;
+                        timeStampStart = lastTimeStampStart;
+                        System.out.println(lastTimeStampStart);
+                    } catch (IOException | ParseException ex) {
+                        Logger.getLogger(ElasticSearchImpl.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             }
-        }
-
+        });
+        thread.start();
     }
 
     private DataInputStream sendAndGetData(String url, String postData, String method) throws MalformedURLException, IOException, ParseException {
@@ -154,22 +149,15 @@ public class ElasticSearchImpl implements LineReader {
         //  CURLOPT_POST
         con.setRequestMethod(method);
         con.setRequestProperty("Content-length", String.valueOf(postData.length()));
-
         con.setDoOutput(true);
         con.setDoInput(true);
 
-        DataOutputStream output = new DataOutputStream(con.getOutputStream());
-        output.writeBytes(postData);
-        output.close();
+        try (DataOutputStream output = new DataOutputStream(con.getOutputStream())) {
+            output.writeBytes(postData);
+        }
 
         // read the response
         return new DataInputStream(con.getInputStream());
-    }
-
-    private Set<String> getIndices(Reader results) {
-        Gson gson = new GsonBuilder().create();
-        IndicesResponse response = gson.fromJson(results, IndicesResponse.class);
-        return response.indices.keySet();
     }
 
     private List<Hit> getHits(Reader results) {
@@ -180,17 +168,24 @@ public class ElasticSearchImpl implements LineReader {
 
     @Override
     public String waitForLine() throws IOException, InterruptedException {
-        return fifoList.removeFirst();
+        synchronized (fifoList) {
+            if (fifoList.isEmpty()) {
+                fifoList.wait();
+            }
+            return fifoList.removeFirst();
+        }
     }
 
     @Override
     public void endCommunication() throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        active = false;
+        thread.interrupt();
     }
 
     @Override
     public void interrupt() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        active = false;
+        thread.interrupt();
     }
 
     @Override
@@ -200,7 +195,7 @@ public class ElasticSearchImpl implements LineReader {
 
     @Override
     public boolean isCommunicationActive() {
-        return !fifoList.isEmpty();
+        return thread.isAlive();
     }
 
 }

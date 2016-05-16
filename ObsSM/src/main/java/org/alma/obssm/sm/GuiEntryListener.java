@@ -50,6 +50,8 @@ public class GuiEntryListener extends EntryListener {
     public void onTransition(TransitionTarget from, TransitionTarget to, Transition transition, String array, String timeStamp, String logline) {
         System.out.println("\tEVENT: " + transition.getEvent() + " TO: " + to.getId());
         m.osmPanel.tablemodel.addRow(new String[]{timeStamp, array, transition.getEvent(), from.getId(), to.getId()});
+        int maximun = m.osmPanel.scrollTablePane.getVerticalScrollBar().getMaximum();
+        m.osmPanel.scrollTablePane.getVerticalScrollBar().setValue(maximun);
     }
 
 }

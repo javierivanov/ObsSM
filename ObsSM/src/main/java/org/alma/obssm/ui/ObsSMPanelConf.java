@@ -251,6 +251,7 @@ public class ObsSMPanelConf extends JFrame {
     public void save() {
         String text = Jsoup.parse(query.getText()).text();
         m.default_query_base = text;
+        m.ELKUrl = elk_url.getText();
     }
 
     public void cancel() {
