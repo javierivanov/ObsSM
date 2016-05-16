@@ -35,6 +35,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
@@ -84,10 +85,11 @@ public class ObsSMPanelConf extends JFrame {
 
     private void initialize() {
         setAlwaysOnTop(true);
+        JPanel panelPrincipal = new JPanel();
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setLocationRelativeTo(null);
         GridBagConstraints gbc = new GridBagConstraints();
-        setLayout(new GridBagLayout());
+        panelPrincipal.setLayout(new GridBagLayout());
         
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -99,7 +101,7 @@ public class ObsSMPanelConf extends JFrame {
 
         show_label = new JLabel("Configuration Panel:");
         show_label.setFont(new Font(show_label.getFont().getName(), Font.BOLD, show_label.getFont().getSize() + 6));
-        add(show_label, gbc);
+        panelPrincipal.add(show_label, gbc);
 
         gbc.gridwidth = 1;
 
@@ -107,49 +109,49 @@ public class ObsSMPanelConf extends JFrame {
         gbc.gridy = 1;
         gbc.fill = GridBagConstraints.BASELINE;
         scxml_label = new JLabel("SCXML Model file:");
-        add(scxml_label, gbc);
+        panelPrincipal.add(scxml_label, gbc);
 
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         scxml_file = new JTextField("model.xml", 20);
-        add(scxml_file, gbc);
+        panelPrincipal.add(scxml_file, gbc);
         gbc.fill = GridBagConstraints.NONE;
 
         gbc.gridx = 2;
         gbc.gridy = 1;
         scxml_button = new JButton("Select file");
-        add(scxml_button, gbc);
+        panelPrincipal.add(scxml_button, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 2;
         json_label = new JLabel("JSON log translate file: ");
-        add(json_label, gbc);
+        panelPrincipal.add(json_label, gbc);
 
         gbc.gridx = 1;
         gbc.gridy = 2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         json_file = new JTextField("log_translate.json", 20);
-        add(json_file, gbc);
+        panelPrincipal.add(json_file, gbc);
         gbc.fill = GridBagConstraints.NONE;
 
         gbc.gridx = 2;
         gbc.gridy = 2;
         json_button = new JButton("Select file");
-        add(json_button, gbc);
+        panelPrincipal.add(json_button, gbc);
 
         
         gbc.gridx = 0;
         gbc.gridy = 3;
         elkurl_label = new JLabel("ElasticSearch URL:");
-        add(elkurl_label, gbc);
+        panelPrincipal.add(elkurl_label, gbc);
 
         gbc.gridx = 1;
         gbc.gridy = 3;
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         elk_url = new JTextField(m.ELKUrl, 20);
-        add(elk_url, gbc);
+        panelPrincipal.add(elk_url, gbc);
         
         
         gbc.gridx = 0;
@@ -162,7 +164,7 @@ public class ObsSMPanelConf extends JFrame {
                 + "<b>$T1</b>: <i>TimeStamp start</i><br>"
                 + "<b>$T2</b>: <i>TimeStamp stop</i><br>"
                 + "<b>$Q</b>: <i>Query</i></html>");
-        add(query_label, gbc);
+        panelPrincipal.add(query_label, gbc);
 
         gbc.gridx = 1;
         gbc.gridy = 4;
@@ -173,7 +175,7 @@ public class ObsSMPanelConf extends JFrame {
         query = new JTextPane();
         query_scroll = new JScrollPane(query);
         query.setContentType("text/html");
-        add(query_scroll, gbc);
+        panelPrincipal.add(query_scroll, gbc);
 
         gbc.weightx = 1;
         gbc.gridwidth = 1;
@@ -183,13 +185,13 @@ public class ObsSMPanelConf extends JFrame {
         gbc.gridx = 1;
         gbc.gridy = 8;
         cancel_button = new JButton("Cancel");
-        add(cancel_button, gbc);
+        panelPrincipal.add(cancel_button, gbc);
 
         gbc.gridx = 2;
         gbc.gridy = 8;
         save_button = new JButton("Save");
-        add(save_button, gbc);
-        
+        panelPrincipal.add(save_button, gbc);
+        add(new JScrollPane(panelPrincipal));
         pack();
         setSize((int)(getSize().width*1.5), (int)(getSize().height*1.5));
         setResizable(false);
