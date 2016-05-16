@@ -28,6 +28,8 @@ import java.awt.FlowLayout;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
@@ -53,6 +55,8 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
 import org.alma.obssm.Manager;
@@ -151,14 +155,15 @@ public class ObsSMPanel extends JFrame {
             "State To"};
 
         searchPanel = new JPanel(new FlowLayout());
-
-        dfrom = new JTextField("2016-04-26T19:41:02.351", 13);
-        dto = new JTextField("2016-04-26T19:50:00.000", 13);
+        dfrom = new JTextField("2016-04-26T19:41:02.351", 14);
+        dto = new JTextField("2016-04-26T19:50:00.000",14);
         queryLabel = new JLabel("Query: ");
-        query = new JTextField("Array: Array032", 13);
+        query = new JTextField("Array: Array032", 14);
         searchButton = new JButton("GO!");
-
+        
+        searchPanel.add(new JLabel("TimeStamp start"));
         searchPanel.add(dfrom);
+        searchPanel.add(new JLabel("TimeStamp end"));
         searchPanel.add(dto);
         searchPanel.add(queryLabel);
         searchPanel.add(query);
@@ -217,6 +222,7 @@ public class ObsSMPanel extends JFrame {
      * Listeners for all interaction objects
      */
     private void initializeListeners() {
+        
         searchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
