@@ -189,19 +189,19 @@ public class ObsSMPanelConf extends JFrame {
         gbc.gridy = 8;
         save_button = new JButton("Save");
         add(save_button, gbc);
-
-        
         
         pack();
-        setSize((int)(getSize().width*1.3), (int)(getSize().height*1.3));
+        setSize((int)(getSize().width*1.5), (int)(getSize().height*1.5));
         setResizable(false);
     }
 
     @Override
     public void setVisible(boolean b) {
+        if (b) {
+            query.setText(toHTML(m.default_query_base));
+            elk_url.setText(m.ELKUrl);
+        }
         super.setVisible(b); //To change body of generated methods, choose Tools | Templates.
-        query.setText(toHTML(m.default_query_base));
-        elk_url.setText(m.ELKUrl);
     }
     
     private String toHTML(String input) {

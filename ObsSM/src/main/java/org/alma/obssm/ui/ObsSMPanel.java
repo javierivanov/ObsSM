@@ -50,11 +50,17 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.LookAndFeel;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.BevelBorder;
+import javax.swing.plaf.metal.MetalLookAndFeel;
 import javax.swing.table.DefaultTableModel;
 
 import org.alma.obssm.Manager;
@@ -100,7 +106,9 @@ public class ObsSMPanel extends JFrame {
     public DefaultTableModel tablemodel;
     public JTable table;
 
-    JLabel statusLabel;
+    public JLabel statusLabel;
+    public JProgressBar progressBar;
+    
     public ObsSMPanelConf confPanel;
 
     private boolean dataSaved;
@@ -127,7 +135,7 @@ public class ObsSMPanel extends JFrame {
                 JOptionPane.showMessageDialog(m.osmPanel, "SM SCXML Model or JSON Log translator files are Missing!");
             }
         }
-        
+
         initialize();
         initializeListeners();
         confPanel = new ObsSMPanelConf(m);
@@ -181,11 +189,14 @@ public class ObsSMPanel extends JFrame {
         add(scrollTablePane, BorderLayout.CENTER);
 
         JPanel statusPanel = new JPanel();
-        statusPanel.setSize(getWidth(), 10);
+        statusPanel.setSize(getWidth(), 15);
         statusLabel = new JLabel("Status bar!");
+        progressBar = new JProgressBar();
         statusPanel.add(statusLabel);
+        statusPanel.add(new JSeparator(JSeparator.VERTICAL));
+        statusPanel.add(progressBar);
         statusPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
-        statusPanel.setPreferredSize(new Dimension(getWidth(), 18));
+        statusPanel.setPreferredSize(new Dimension(getWidth(), 20));
         statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.X_AXIS));
 
         statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
@@ -299,7 +310,7 @@ public class ObsSMPanel extends JFrame {
             public void windowDeactivated(WindowEvent e) {
             }
         });
-
+        
     }
 
     /**
