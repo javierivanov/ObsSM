@@ -45,10 +45,18 @@ cd ObsSM-master/ObsSM/
 ```
 mvn clean dependency:copy-dependencies package
 ```
+or
+```
+./build.sh
+```
 
 ##Execute the interpreter
 ```
 java -cp "target/ObsSM-0.4.jar:target/dependency/*" org.alma.obssm.Run
+```
+or
+```
+./obssm.sh
 ```
 
 
