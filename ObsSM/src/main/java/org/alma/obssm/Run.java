@@ -22,6 +22,7 @@
  */
 package org.alma.obssm;
 
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,13 +43,15 @@ public class Run {
      */
     public static String KEYNAME_FILTER[] = {};
     public static boolean SHOW_TIMESTAMP = false;
-
+    public static boolean SIMUL = false;
     /**
      * Main function. Initialize the Run class..
      *
      * @param args
      */
     public static void main(String args[]) {
+        if (args.length == 1)
+            if (args[0].equals("SIMUL")) SIMUL = true;
         Manager m = new Manager();
         m.osmPanel.setVisible(true);
         Logger.getLogger(Run.class.getName()).log(Level.INFO,"Manager Running");

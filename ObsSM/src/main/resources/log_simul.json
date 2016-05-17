@@ -1,0 +1,26 @@
+[
+    {
+       "eventName":"init",
+       "and_list": [],
+       "or_list": [],
+       "search_list": ["(init)"],
+       "keyName":"(Array\\d+)",
+       "eventType": "initial"
+    },
+    {
+       "eventName":"uno",
+       "and_list": [],
+       "or_list": [],
+       "search_list": ["(uno)"],
+       "keyName":"(Array\\d+)",
+       "eventType": "initial"
+    },
+    {
+       "eventName":"dos",
+       "and_list": [],
+       "or_list": [],
+       "search_list": ["(dos)"],
+       "keyName":"(Array\\d+)",
+       "eventType": "initial"
+    }
+]

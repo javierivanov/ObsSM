@@ -58,7 +58,7 @@ public class Manager {
     public String default_query_base = "";
     public String ELKUrl = "http://elk-master.osf.alma.cl:9200";
 
-    public static final boolean SIMUL = false;
+    
     /**
      * This constructor launches the Panel for visual operation.
      */

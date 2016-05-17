@@ -60,6 +60,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.table.DefaultTableModel;
 
 import org.alma.obssm.Manager;
+import org.alma.obssm.Run;
 import org.alma.obssm.net.ElasticSearchImpl;
 import org.alma.obssm.net.SimulationImpl;
 import org.alma.obssm.parser.Parser;
@@ -357,9 +358,10 @@ public class ObsSMPanel extends JFrame {
                      * TODO: This must be updated!
                      */
 
-                    if (Manager.SIMUL) {
-                        m.lr = new SimulationImpl(m.getResourceFiles("simul_input.txt").getAbsolutePath());
+                    if (Run.SIMUL) {
+                        m.lr = new SimulationImpl(m.getResourceString("simul_input.txt"));
                         m.smm = new StateMachineManager(m.getResourceFiles("model_simul.xml").getAbsolutePath());
+                        m.parser = new Parser(m.getResourceFiles("log_simul.json").getAbsolutePath());
                     } else {
                         m.lr = new ElasticSearchImpl(dfrom.getText().replace(" ", "T"),
                                 dto.getText().replace(" ", "T"),
