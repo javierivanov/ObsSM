@@ -91,13 +91,13 @@ public class ElasticSearchImpl implements LineReader {
     }
 
     public void getData() throws IOException, MalformedURLException, ParseException {
-
-        //Reusable vars
         thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 DataInputStream a;
                 Reader r;
+                active = true;
+                Logger.getLogger(ElasticSearchImpl.class.getName()).log(Level.INFO, "Elastic Search start");
                 while (active) {
                     try {
                         //Getting hits for each index " + s + "
@@ -133,11 +133,16 @@ public class ElasticSearchImpl implements LineReader {
                         }
                         if (timeStampStart.equals(lastTimeStampStart)) break;
                         timeStampStart = lastTimeStampStart;
-                        System.out.println(lastTimeStampStart);
                     } catch (IOException | ParseException ex) {
                         Logger.getLogger(ElasticSearchImpl.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
+                active = false;
+                synchronized (fifoList) {
+                    fifoList.add("EOF");
+                    fifoList.notify();
+                }
+                Logger.getLogger(ElasticSearchImpl.class.getName()).log(Level.INFO, "Elastic Search stop");
             }
         });
         thread.start();
@@ -178,8 +183,7 @@ public class ElasticSearchImpl implements LineReader {
 
     @Override
     public void endCommunication() throws IOException {
-        active = false;
-        thread.interrupt();
+        interrupt();
     }
 
     @Override
@@ -195,7 +199,7 @@ public class ElasticSearchImpl implements LineReader {
 
     @Override
     public boolean isCommunicationActive() {
-        return thread.isAlive();
+        return active;
     }
 
 }

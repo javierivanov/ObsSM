@@ -116,24 +116,20 @@ public class StateMachine {
     }
 
     /**
-     * Returns the current State name.
-     *
-     * @return String with the name of the actual state.
-     */
-    public String getCurrentStateId() {
-        Set<?> states = engine.getCurrentStatus().getStates();
-        State state = (State) states.iterator().next();
-        return state.getId();
-    }
-
-    /**
      * Returns a list with all possible transitions.
      *
      * @return List with all String names of the possible transitions.
      */
     public List<String> getTransitionsStringList() {
-        @SuppressWarnings("unchecked")
-        List<Transition> transitions = getCurrentState().getTransitionsList();
+        Set<State> states = engine.getCurrentStatus().getStates();
+        List<Transition> transitions = new ArrayList<>();
+        for (State s: states) {
+            for (Object t: s.getTransitionsList()) {
+                if (!transitions.contains((Transition) t)) {
+                    transitions.add((Transition) t);
+                }
+            }
+        }
         List<String> list = new ArrayList<>();
 
         for (Transition t: transitions) {
@@ -143,32 +139,11 @@ public class StateMachine {
         return list;
     }
 
-    /**
-     * Returns a list with all possible transitions.
-     *
-     * @see Transition
-     * @return List with all Transition possible.
-     */
-    @SuppressWarnings("unchecked")
-    public List<Transition> getTransitionsList() {
-        return getCurrentState().getTransitionsList();
-    }
-
-    /**
-     * Returns the current State.
-     *
-     * @see State
-     * @return the current State.
-     */
-    public State getCurrentState() {
-        Set<?> states = engine.getCurrentStatus().getStates();
-        return ((State) states.iterator().next());
-    }
 
     /**
      * Returns the keyName
      *
-     * @return
+     * @return String
      */
     public String getKeyName() {
         return keyName;

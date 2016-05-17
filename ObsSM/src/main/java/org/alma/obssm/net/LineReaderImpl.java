@@ -35,14 +35,14 @@ import java.util.Scanner;
  * @version 0.2
  *
  */
-public class LineReaderImpl2 implements LineReader {
+public class LineReaderImpl implements LineReader {
 
     private Socket socket;
     private final ServerSocket server;
     private Scanner scanner;
     private boolean active;
 
-    public LineReaderImpl2(int port) throws IOException {
+    public LineReaderImpl(int port) throws IOException {
         this.server = new ServerSocket(port);
         this.active = false;
     }

@@ -55,16 +55,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.LookAndFeel;
 import javax.swing.SwingConstants;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.BevelBorder;
-import javax.swing.plaf.metal.MetalLookAndFeel;
 import javax.swing.table.DefaultTableModel;
 
 import org.alma.obssm.Manager;
 import org.alma.obssm.net.ElasticSearchImpl;
+import org.alma.obssm.net.SimulationImpl;
 import org.alma.obssm.parser.Parser;
 import org.alma.obssm.sm.GuiEntryListener;
 import org.alma.obssm.sm.StateMachineManager;
@@ -108,15 +105,13 @@ public class ObsSMPanel extends JFrame {
 
     public JLabel statusLabel;
     public JProgressBar progressBar;
-    
+
     public ObsSMPanelConf confPanel;
 
     private boolean dataSaved;
 
     private Thread mainThread;
-    
-    
-    
+
     public ObsSMPanel(Manager m) {
         super("ObsSM2 Panel");
         this.m = m;
@@ -161,16 +156,16 @@ public class ObsSMPanel extends JFrame {
             "State To"};
 
         searchPanel = new JPanel(new FlowLayout());
-        
-        Timestamp t1 = new Timestamp(System.currentTimeMillis()-60*60*1000);
+
+        Timestamp t1 = new Timestamp(System.currentTimeMillis() - 60 * 60 * 1000);
         Timestamp t2 = new Timestamp(System.currentTimeMillis());
-        
+
         dfrom = new JTextField(t1.toString().replace(" ", "T"), 14);
-        dto = new JTextField(t2.toString().replace(" ", "T"),14);
+        dto = new JTextField(t2.toString().replace(" ", "T"), 14);
         queryLabel = new JLabel("Query: ");
         query = new JTextField("*", 14);
         searchButton = new JButton("GO!");
-        
+
         searchPanel.add(new JLabel("TimeStamp start"));
         searchPanel.add(dfrom);
         searchPanel.add(new JLabel("TimeStamp end"));
@@ -185,7 +180,7 @@ public class ObsSMPanel extends JFrame {
         table = new JTable(tablemodel);
         table.setFillsViewportHeight(true);
         scrollTablePane = new JScrollPane(table);
-        
+
         add(scrollTablePane, BorderLayout.CENTER);
 
         JPanel statusPanel = new JPanel();
@@ -236,7 +231,7 @@ public class ObsSMPanel extends JFrame {
      * Listeners for all interaction objects
      */
     private void initializeListeners() {
-        
+
         searchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -310,7 +305,7 @@ public class ObsSMPanel extends JFrame {
             public void windowDeactivated(WindowEvent e) {
             }
         });
-        
+
     }
 
     /**
@@ -340,7 +335,6 @@ public class ObsSMPanel extends JFrame {
 
         try {
             m.lr.endCommunication();
-            m.lr.interrupt();
             mainThread.interrupt();
         } catch (IOException ex) {
             Logger.getLogger(ObsSMPanel.class.getName()).log(Level.SEVERE, null, ex);
@@ -362,7 +356,16 @@ public class ObsSMPanel extends JFrame {
                     /**
                      * TODO: This must be updated!
                      */
-                    m.lr = new ElasticSearchImpl(dfrom.getText(), dto.getText(), query.getText(), m.default_query_base, m.ELKUrl);
+
+                    if (Manager.SIMUL) {
+                        m.lr = new SimulationImpl(m.getResourceFiles("simul_input.txt").getAbsolutePath());
+                        m.smm = new StateMachineManager(m.getResourceFiles("model_simul.xml").getAbsolutePath());
+                    } else {
+                        m.lr = new ElasticSearchImpl(dfrom.getText().replace(" ", "T"),
+                                dto.getText().replace(" ", "T"),
+                                query.getText(),
+                                m.default_query_base, m.ELKUrl);
+                    }
 
                     //Checking the SM Manager and JSON Log parser
                     if (m.smm == null || m.parser == null) {
@@ -406,7 +409,7 @@ public class ObsSMPanel extends JFrame {
                 } finally {
                     m.osmPanel.searchButton.setEnabled(true);
                 }
-                
+
             }
         });
 
