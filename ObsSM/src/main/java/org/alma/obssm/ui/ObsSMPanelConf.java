@@ -191,7 +191,7 @@ public class ObsSMPanelConf extends JFrame {
         gbc.gridy = 8;
         save_button = new JButton("Save");
         panelPrincipal.add(save_button, gbc);
-        add(new JScrollPane(panelPrincipal));
+        add((panelPrincipal));
         pack();
         setSize((int)(getSize().width*1.5), (int)(getSize().height*1.5));
         setResizable(false);
