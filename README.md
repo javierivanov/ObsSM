@@ -1,22 +1,6 @@
 # ObsSM 0.4 version
 ALMA Log's State Machine Parser
 
-#Discovery: Transitions
-
-This is an application to discover transitions into the log, generating a SCXML model.
-
-##Usage:
-
-* To select dates for learning, you have to edit the ```main.py``` file.
-
-
-```
-python2 Discovery/src/main.py [states.json file]
-```
-It generates a xml document, so you can save it using:
-```
-python2 Discovery/src/main.py [states.json file] > [model file]
-```
 #ObsSM: Interpreter
 
 * Easy build and run
@@ -83,4 +67,20 @@ You can build your own implementation on another language.
 * To run the log sender:
 ```
 python scripts/logSender.py
+```
+#Discovery: Transitions
+
+This is an application to discover transitions into the log, generating a SCXML model.
+
+##Usage:
+
+* To select dates for learning, you have to edit the ```main.py``` file.
+
+
+```
+python2 Discovery/src/main.py [states.json file]
+```
+It generates a xml document, so you can save it using:
+```
+python2 Discovery/src/main.py [states.json file] > [model file]
 ```
