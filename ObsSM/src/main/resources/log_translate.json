@@ -143,5 +143,86 @@
         "search_list": ["(Completed shutting down the interferometry observing mode.)"],
         "keyName": "(Array\\d+)",
         "eventType": "transition"
+    },
+    {
+        "eventName": "PointingSubArray.callreference",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(Trying to get a reference to a component called CONTROL\\/[A-Z]+\\d+\\/MountController thats collocated with the component called CONTROL\\/[A-Z]+\\d+)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "PointingSubArray.antModecontrollercreated",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(Creating and initializing all the alma.Control.MountControllerHelper controllers took \\d+.\\d+ seconds.)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "LocalOscillator.callreference",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(Trying to get a reference to a component called CONTROL\\/[A-Z]+\\d+\\/AntLOController thats collocated with the component called CONTROL\\/[A-Z]+\\d+)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "LocalOscillator.antModecontrollercreated",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(Creating and initializing all the alma.Control.AntLOControllerHelper controllers took \\d+.\\d+ seconds.)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "InterferometryController.start",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(Interferometery controller starting.)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "InterferometryController.startingEnd",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(Completed starting the interferometery controller.)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "TotalPowerProcessor.start",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(Creating the CONTROL\/Array\\d+\/TotalPowerProcessor component)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "TotalPowerProcessor.startEnd",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(Created the CONTROL\/Array\\d+\/TotalPowerProcessor component.)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "PointingSubArray.track",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(Ensuring enough antennas are in autonomous mode \\(releasing the brakes\\).)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "PointingSubArray.openShutter",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(Opening the shutter on all antennas)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
     }
+    
 ]

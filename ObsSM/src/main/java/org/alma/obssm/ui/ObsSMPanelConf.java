@@ -194,7 +194,6 @@ public class ObsSMPanelConf extends JFrame {
         add((panelPrincipal));
         pack();
         setSize((int)(getSize().width*1.5), (int)(getSize().height*1.5));
-        setResizable(false);
     }
 
     @Override

@@ -1,78 +1,177 @@
 <scxml initial="idle" final="ArrayDestroyedState" version="0.9" xmlns="http://www.w3.org/2005/07/scxml">
-	<state id="idle">
-		<transition event="Array.creation" target="ArrayCreated"></transition>
-		<transition event="Interferometry.init" target="InterferometryInitializeStarted"></transition>
-		<transition event="Interferometry.sumAntenna" target="InterferometryException"></transition>
-	</state>
+    <state id="idle">
+        <transition event="Array.creation" target="ArrayCreated"></transition>
+        <transition event="Interferometry.init" target="InterferometryInitializeStarted"></transition>
+        <transition event="Interferometry.sumAntenna" target="InterferometryException"></transition>
+    </state>
+	
+    <state id="ArrayCreated">
+        <transition event="Interferometry.init" target="InterferometryInitializeStarted"></transition>
+        <transition event="Interferometry.sumAntenna" target="InterferometryException"></transition>
+    </state>
+	
+    <parallel id="ObservingModelProcess">
+        <state id="ObervingMode">
+            <initial>
+                <transition target="InterferometryInitializeStarted"></transition>
+            </initial>
+            
+            <state id="InterferometryException">
+                <transition event="Array.destruction" target="ArrayDestroyed"></transition>
+                <transition event="Interferometry.init" target="InterferometryInitializeStarted"></transition>
+            </state>
 
-	<state id="InterferometryException">
-		<transition event="Array.destruction" target="ArrayDestroyed"></transition>
-		<transition event="Interferometry.init" target="InterferometryInitializeStarted"></transition>
-	</state>
 
-	<state id="ArrayCreated">
-		<transition event="Interferometry.init" target="InterferometryInitializeStarted"></transition>
-		<transition event="Interferometry.sumAntenna" target="InterferometryException"></transition>
-	</state>
-
-	<state id="InterferometryInitializeStarted">
-		<transition event="Interferometry.cleanUp" target="InterferometryCleanUpBegun"></transition>
-		<transition event="Interferometry.twoAntennas" target="InterferometryException"></transition>
-		<transition event="Interferometry.settingUp" target="InterferometrySettingUpBegun"></transition>
-	</state>
+            <state id="InterferometryInitializeStarted">
+                <transition event="Interferometry.cleanUp" target="InterferometryCleanUpBegun"></transition>
+                <transition event="Interferometry.twoAntennas" target="InterferometryException"></transition>
+                <transition event="Interferometry.settingUp" target="InterferometrySettingUpBegun"></transition>
+                <transition event="InterferometryController.start" target="InterferometrySettingUpBegun"></transition>
+                <transition event="LocalOscillator.callreference" target="InterferometrySettingUpBegun"></transition>
+                <transition event="PointingSubArray.callreference" target="InterferometrySettingUpBegun"></transition>
+            </state>
+			
+            <state id="InterferometrySettingUpBegun">
+                <transition event="Interferometry.cleanUp" target="InterferometryCleanUpBegun"></transition>
+                <transition event="Interferometry.settingUpEnd" target="InterferometrySettingUpEnded"></transition>
+            </state>
+			
+            <state id="InterferometrySettingUpEnded">
+                <transition event="ObservingMode.beginScan" target="ObservingModeScanBegun"></transition>
+            </state>
+			
+            <state id="ObservingModeScanBegun">
+                <transition event="Interferometry.doSubscanSequence" target="InterferometrySubscanStarted"></transition>
+            </state>
+			
+            <state id="InterferometrySubscanStarted">
+                <transition event="SubscanSequence.run" target="SubscanSequenceSettingUpStarted"></transition>
+                <transition event="SubscanSequence.runException" target="SubscanSequenceException"></transition>
+            </state>
 	
-	<state id="InterferometrySettingUpBegun">
-		<transition event="Interferometry.cleanUp" target="InterferometryCleanUpBegun"></transition>
-		<transition event="Interferometry.settingUpEnd" target="InterferometrySettingUpEnded"></transition>
-	</state>
+            <state id="ObservingModeScanEnded">
+                <transition event="ObservingMode.beginScan" target="ObservingModeScanBegun"></transition>
+                <transition event="Interferometry.cleanUp" target="InterferometryCleanUpBegun"></transition>
+            </state>
+			
+            <state id="InterferometryCleanUpBegun">
+                <transition event="Interferometry.endCleanUp" target="InterferometryCleanUpEnded"></transition>
+            </state>
+			
+			
+            <state id="InterferometryCleanUpEnded">
+                <transition event="Interferometry.settingUpException" target="InterferometryException"></transition>
+                <transition event="Array.destruction" target="ArrayDestroyed"></transition>
+                <transition event="Interferometry.init" target="InterferometryInitializeStarted"></transition>
+            </state>
+        
+            <state id="SubscanSequenceException">
+            </state>
+			
+            <state id="SubscanSequenceSettingUpStarted">
+                <transition event="SubscanSequence.runException" target="SubscanSequenceException"></transition>
+                <transition event="ObservingMode.beginSubscan" target="SubscanSequenceLoopStarted"></transition>
+            </state>
+			
+            <state id="SubscanSequenceLoopStarted">
+                <transition event="ObservingMode.endSubscan" target="SubscanSequenceLoopEnded"></transition>
+                <transition event="SubscanSequence.runException" target="SubscanSequenceException"></transition>
+            </state>
+			
+            <state id="SubscanSequenceLoopEnded">
+                <transition event="ObservingMode.beginSubscan" target="SubscanSequenceLoopStarted"></transition>
+                <transition event="ObservingMode.endScan" target="ObservingModeScanEnded"></transition>
+                <transition event="SubscanSequence.runException" target="SubscanSequenceException"></transition>
+            </state>		
+        </state>
+        <state id="PointingSubArray">
+            <initial>
+                <transition target="PointingSubArrayConstructorIdle"></transition>
+            </initial>
+            <state id="PointingSubArrayConstructorIdle">
+                <transition event="PointingSubArray.callreference" target="PointingSubArrayGettingReferenceCalled"></transition>
+            </state>
+            <state id="PointingSubArrayGettingReferenceCalled">
+                <transition event="PointingSubArray.antModecontrollercreated" target="PointingSubArrayControllersCreated"></transition>
+            </state>
+            
+            <state id="PointingSubArrayControllersCreated">
+                <transition event="PointingSubArray.track" target="PointingSubArrayAutonomousRequested"></transition>
+            </state>
+            
+            <state id="PointingSubArrayAutonomousRequested">
+                <transition event="PointingSubArray.openShutter" target="PointingSubArrayShutterOpenningStarted"></transition>
+            </state>
+            
+            <state id="PointingSubArrayShutterOpenningStarted">
+                <transition event="Interferometry.settingUpEnd" target="PointingSubArrayShutterOpenningEnded"></transition>
+            </state>
+            
+            <state id="PointingSubArrayShutterOpenningEnded">
+            </state>
+        </state>
+        
+        
+        <state id="LocalOscillator">
+            <initial>
+                <transition target="LocalOscillatorConstructorIdle"></transition>
+            </initial>
+            
+            
+            <state id="LocalOscillatorConstructorIdle">
+                <transition event="LocalOscillator.callreference" target="LocalOscillatorGettingReferenceCalled"></transition>
+            </state>
+            
+            
+            <state id="LocalOscillatorGettingReferenceCalled">
+                <transition event="LocalOscillator.antModecontrollercreated" target="LocalOscillatorControllersCreated"></transition>
+            </state>
+            
+            <state id="LocalOscillatorControllersCreated">
+            </state>
+        </state>
+        
+        <state id="InterferometryController">
+            <initial>
+                <transition target="InterferometryControllerConstructorIdle"></transition>
+            </initial>
+            
+            
+            <state id="InterferometryControllerConstructorIdle">
+                <transition event="InterferometryController.start" target="InterferometryControllerStarted"></transition>
+            </state>
+            
+            
+            <state id="InterferometryControllerStarted">
+                <transition event="InterferometryController.startingEnd" target="InterferometryControllerCreated"></transition>
+            </state>
+            
+            <state id="InterferometryControllerCreated">
+            </state>
+        </state>
+        
+        
+        <state id="TotalPowerProcessor">
+            <initial>
+                <transition target="TotalPowerProcessorConstructorIdle"></transition>
+            </initial>
+            
+            
+            <state id="TotalPowerProcessorConstructorIdle">
+                <transition event="TotalPowerProcessor.start" target="TotalPowerProcessorStarted"></transition>
+            </state>
+            
+            <state id="TotalPowerProcessorStarted">
+                <transition event="TotalPowerProcessor.startEnd" target="TotalPowerProcessorCreated"></transition>
+            </state>
+            
+            <state id="TotalPowerProcessorCreated">
+            </state>
+            
+            
+        </state>
+        
+    </parallel>
 	
-	<state id="InterferometrySettingUpEnded">
-		<transition event="ObservingMode.beginScan" target="ObservingModeScanBegun"></transition>
-	</state>
-	
-	<state id="ObservingModeScanBegun">
-		<transition event="Interferometry.doSubscanSequence" target="InterferometrySubscanStarted"></transition>
-	</state>
-	
-	<state id="InterferometrySubscanStarted">
-		<transition event="SubscanSequence.run" target="SubscanSequenceSettingUpStarted"></transition>
-		<transition event="SubscanSequence.runException" target="SubscanSequenceException"></transition>
-	</state>
-	
-	<state id="SubscanSequenceException">
-	</state>
-	
-	<state id="SubscanSequenceSettingUpStarted">
-		<transition event="SubscanSequence.runException" target="SubscanSequenceException"></transition>
-		<transition event="ObservingMode.beginSubscan" target="SubscanSequenceLoopStarted"></transition>
-	</state>
-	
-	<state id="SubscanSequenceLoopStarted">
-		<transition event="ObservingMode.endSubscan" target="SubscanSequenceLoopEnded"></transition>
-		<transition event="SubscanSequence.runException" target="SubscanSequenceException"></transition>
-	</state>
-	
-	<state id="SubscanSequenceLoopEnded">
-		<transition event="ObservingMode.beginSubscan" target="SubscanSequenceLoopStarted"></transition>
-		<transition event="ObservingMode.endScan" target="ObservingModeScanEnded"></transition>
-		<transition event="SubscanSequence.runException" target="SubscanSequenceException"></transition>
-	</state>
-	
-	<state id="ObservingModeScanEnded">
-		<transition event="ObservingMode.beginScan" target="ObservingModeScanBegun"></transition>
-		<transition event="Interferometry.cleanUp" target="InterferometryCleanUpBegun"></transition>
-	</state>
-	
-	<state id="InterferometryCleanUpBegun">
-		<transition event="Interferometry.endCleanUp" target="InterferometryCleanUpEnded"></transition>
-	</state>
-	
-	
-	<state id="InterferometryCleanUpEnded">
-		<transition event="Interferometry.settingUpException" target="InterferometryException"></transition>
-		<transition event="Array.destruction" target="ArrayDestroyed"></transition>
-		<transition event="Interferometry.init" target="InterferometryInitializeStarted"></transition>
-	</state>
-	
-	<final id="ArrayDestroyed"></final>
+    <final id="ArrayDestroyed"></final>
 </scxml>

@@ -62,7 +62,6 @@ import javax.swing.table.DefaultTableModel;
 import org.alma.obssm.Manager;
 import org.alma.obssm.Run;
 import org.alma.obssm.net.ElasticSearchImpl;
-import org.alma.obssm.net.SimulationImpl;
 import org.alma.obssm.parser.Parser;
 import org.alma.obssm.sm.GuiEntryListener;
 import org.alma.obssm.sm.StateMachineManager;
@@ -152,8 +151,8 @@ public class ObsSMPanel extends JFrame {
 
         String[] columnNames = {"TimeStamp",
             "Array",
-            "Event",
             "State From",
+            "Event",
             "State To"};
 
         searchPanel = new JPanel(new FlowLayout());
@@ -359,7 +358,13 @@ public class ObsSMPanel extends JFrame {
                      */
 
                     if (Run.SIMUL) {
-                        m.lr = new SimulationImpl(m.getResourceString("simul_input.txt"));
+                        //m.lr = new SimulationImpl(m.getResourceString("simul_input.txt"));
+                        dfrom.setText("2016-04-26 19:41:02.351");
+                        dto.setText("2016-04-26 19:50:00.000");
+                        m.lr = new ElasticSearchImpl(dfrom.getText().replace(" ", "T"),
+                                dto.getText().replace(" ", "T"),
+                                query.getText(),
+                                m.default_query_base, m.ELKUrl);
                         m.smm = new StateMachineManager(m.getResourceFiles("model_simul.xml").getAbsolutePath());
                         m.parser = new Parser(m.getResourceFiles("log_simul.json").getAbsolutePath());
                     } else {
@@ -435,7 +440,7 @@ public class ObsSMPanel extends JFrame {
                 for (int row = 0; row < tablemodel.getRowCount(); row++) {
                     StringBuilder sb = new StringBuilder();
                     for (int col = 0; col < tablemodel.getColumnCount(); col++) {
-                        sb.append(tablemodel.getValueAt(row, col)).append(";");
+                        sb.append(tablemodel.getValueAt(row, col)).append(",");
                     }
                     sb.append("\n");
                     fw.append(sb);
