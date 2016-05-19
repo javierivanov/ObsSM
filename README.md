@@ -9,6 +9,7 @@ This is an application to discover transitions into the log, generating a SCXML 
 
 * To select dates for learning, you have to edit the ```main.py``` file.
 
+
 ```
 python2 Discovery/src/main.py [states.json file]
 ```
@@ -21,6 +22,12 @@ python2 Discovery/src/main.py [states.json file] > [model file]
 ##Compiling process
 
 The interpreter works on java version >= 1.7
+
+* Easy build and run:
+```
+curl https://raw.githubusercontent.com/javierivanov/ObsSM/master/auto_install.sh -o - |sh
+```
+
 
 * Download sources https://github.com/javierivanov/ObsSM/archive/master.zip
 * Unzip files
