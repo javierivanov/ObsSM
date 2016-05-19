@@ -19,15 +19,15 @@ python2 Discovery/src/main.py [states.json file] > [model file]
 ```
 #ObsSM: Interpreter
 
-##Compiling process
-
-The interpreter works on java version >= 1.7
-
-* Easy build and run:
+* Easy build and run
 ```
 curl https://raw.githubusercontent.com/javierivanov/ObsSM/master/auto_install.sh -o - |sh
 ```
 
+
+##Compiling process, normal procedure
+
+The interpreter works on java version >= 1.7
 
 * Download sources https://github.com/javierivanov/ObsSM/archive/master.zip
 * Unzip files
