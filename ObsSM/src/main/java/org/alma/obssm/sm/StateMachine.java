@@ -96,6 +96,10 @@ public class StateMachine {
         this.historyEvents = new LinkedList<>();
         this.engine.go();
     }
+    
+    public SCXML getStateMachineModel() {
+        return engine.getStateMachine();
+    }
 
     /**
      * Fires the transition in the model. If the event is null do nothing.

@@ -134,7 +134,7 @@
         "or_list": [],
         "search_list": ["(Interferometry observing mode shutting down.)"],
         "keyName": "(Array\\d+)",
-        "eventType": "transition"
+        "eventType": "exception"
     },
     {
         "eventName": "Interferometry.endCleanUp",

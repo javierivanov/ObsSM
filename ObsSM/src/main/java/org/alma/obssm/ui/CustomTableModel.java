@@ -2,7 +2,6 @@ package org.alma.obssm.ui;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.table.DefaultTableModel;
@@ -22,7 +21,7 @@ public class CustomTableModel extends DefaultTableModel {
 
     @Override
     public void addRow(Object[] rowData) {
-        super.addRow(rowData);
+        addRow(rowData, null);
     }
 
     public Color getRowColor(int row) {

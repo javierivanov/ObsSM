@@ -384,7 +384,7 @@ public class ObsSMPanel extends JFrame {
                     while (m.lr.isCommunicationActive()) {
                         statusLabel.setText("Listening data...");
                         String line = m.lr.waitForLine();
-                        System.out.println(line);
+                        //System.out.println(line);
                         if (line != null) {
                             if ("EOF".equals(line)) {
                                 break;

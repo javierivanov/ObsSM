@@ -6,6 +6,7 @@
 package org.alma.obssm.ui;
 
 import java.awt.Component;
+import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
@@ -15,14 +16,17 @@ import javax.swing.table.DefaultTableCellRenderer;
  */
 public class CustomCellRender extends DefaultTableCellRenderer {
 
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            Component label = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            
-            CustomTableModel ctm = (CustomTableModel) table.getModel();
-            
-            label.setBackground(ctm.getRowColor(row));
-            
+    @Override
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+        CustomTableModel ctm = (CustomTableModel) table.getModel();
+        JLabel label = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        
+        if (table.getSelectedRow() == row) {
+            label.setOpaque(true);
             return label;
         }
+        
+        label.setBackground(ctm.getRowColor(row));
+        return label;
     }
+}

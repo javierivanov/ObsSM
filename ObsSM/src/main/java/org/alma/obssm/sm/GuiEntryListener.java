@@ -35,6 +35,8 @@ import org.apache.commons.scxml.model.TransitionTarget;
  */
 public class GuiEntryListener extends EntryListener {
 
+    
+    
     public GuiEntryListener(Manager m) {
         super(m);
     }
@@ -50,7 +52,22 @@ public class GuiEntryListener extends EntryListener {
     @Override
     public void onTransition(TransitionTarget from, TransitionTarget to, Transition transition, String array, String timeStamp, String logline) {
         System.out.println("\tEVENT: " + transition.getEvent() + " TO: " + to.getId());
-        m.osmPanel.tablemodel.addRow(new String[]{timeStamp, array, from.getId(), transition.getEvent(), to.getId()}, Color.yellow);
+        
+        Color color = null;
+        
+        String eventtype = m.parser.getConstraints().get(transition.getEvent()).eventType;
+        
+        switch(eventtype) {
+            case "initial": color = Color.yellow;
+            break;
+            case "final": color = Color.yellow;
+            break;
+            case "exception": color = Color.red;
+            break;
+        }
+        
+        
+        m.osmPanel.tablemodel.addRow(new String[]{timeStamp, array, from.getId(), transition.getEvent(), to.getId()}, color);
         int maximun = m.osmPanel.scrollTablePane.getVerticalScrollBar().getMaximum();
         m.osmPanel.scrollTablePane.getVerticalScrollBar().setValue(maximun);
     }
