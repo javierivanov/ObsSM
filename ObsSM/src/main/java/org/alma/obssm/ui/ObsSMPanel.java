@@ -57,11 +57,11 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
-import javax.swing.table.DefaultTableModel;
 
 import org.alma.obssm.Manager;
 import org.alma.obssm.Run;
 import org.alma.obssm.net.ElasticSearchImpl;
+import org.alma.obssm.net.SimulationImpl;
 import org.alma.obssm.parser.Parser;
 import org.alma.obssm.sm.GuiEntryListener;
 import org.alma.obssm.sm.StateMachineManager;
@@ -76,7 +76,7 @@ import org.xml.sax.SAXException;
  * @author Javier Fuentes Muñoz j.fuentes.m@icloud.com
  */
 public class ObsSMPanel extends JFrame {
-
+    
     /**
      *
      */
@@ -100,7 +100,7 @@ public class ObsSMPanel extends JFrame {
     private JButton searchButton;
 
     public JScrollPane scrollTablePane;
-    public DefaultTableModel tablemodel;
+    public CustomTableModel tablemodel;
     public JTable table;
 
     public JLabel statusLabel;
@@ -176,8 +176,11 @@ public class ObsSMPanel extends JFrame {
 
         add(searchPanel, BorderLayout.NORTH);
 
-        tablemodel = new DefaultTableModel(columnNames, 0);
+        tablemodel = new CustomTableModel(columnNames, 0);
         table = new JTable(tablemodel);
+        for (int col=0; col < columnNames.length; col++) {
+            table.getColumnModel().getColumn(col).setCellRenderer(new CustomCellRender());
+        }
         table.setFillsViewportHeight(true);
         scrollTablePane = new JScrollPane(table);
 
@@ -358,15 +361,7 @@ public class ObsSMPanel extends JFrame {
                      */
 
                     if (Run.SIMUL) {
-                        //m.lr = new SimulationImpl(m.getResourceString("simul_input.txt"));
-                        dfrom.setText("2016-04-26 19:41:02.351");
-                        dto.setText("2016-04-26 19:50:00.000");
-                        m.lr = new ElasticSearchImpl(dfrom.getText().replace(" ", "T"),
-                                dto.getText().replace(" ", "T"),
-                                query.getText(),
-                                m.default_query_base, m.ELKUrl);
-                        m.smm = new StateMachineManager(m.getResourceFiles("model_simul.xml").getAbsolutePath());
-                        m.parser = new Parser(m.getResourceFiles("log_simul.json").getAbsolutePath());
+                        m.lr = new SimulationImpl(m.getResourceString("simul_input.txt"));
                     } else {
                         m.lr = new ElasticSearchImpl(dfrom.getText().replace(" ", "T"),
                                 dto.getText().replace(" ", "T"),
@@ -389,6 +384,7 @@ public class ObsSMPanel extends JFrame {
                     while (m.lr.isCommunicationActive()) {
                         statusLabel.setText("Listening data...");
                         String line = m.lr.waitForLine();
+                        System.out.println(line);
                         if (line != null) {
                             if ("EOF".equals(line)) {
                                 break;

@@ -42,7 +42,7 @@ public class Run {
      */
     public static String KEYNAME_FILTER[] = {};
     public static boolean SHOW_TIMESTAMP = false;
-    public static boolean SIMUL = false;
+    public static boolean SIMUL = true;
     /**
      * Main function. Initialize the Run class..
      *
