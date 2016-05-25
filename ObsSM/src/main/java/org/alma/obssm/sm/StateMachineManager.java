@@ -22,7 +22,6 @@
  */
 package org.alma.obssm.sm;
 
-import com.sun.corba.se.spi.ior.MakeImmutable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -50,7 +49,6 @@ public class StateMachineManager {
     public StateMachineManager(String xmlpath) {
         this.xmlpath = xmlpath;
         this.stateMachines = new ArrayList<>();
-        new GraphMaker(xmlpath).getGraph();
     }
   
     /**
@@ -61,11 +59,16 @@ public class StateMachineManager {
      * @throws SAXException
      */
     public void addNewStateMachine() throws IOException, ModelException, SAXException {
+        StateMachine sm = new StateMachine(xmlpath);
+        //sm.setGraphs(new GraphMaker(xmlpath).getGraph());
         this.stateMachines.add(new StateMachine(this.xmlpath));
+        
     }
 
     public void addNewStateMachine(EntryListener listener) throws IOException, ModelException, SAXException {
-        this.stateMachines.add(new StateMachine(this.xmlpath, listener));
+        StateMachine sm = new StateMachine(this.xmlpath, listener);
+        //sm.setGraphs(new GraphMaker(xmlpath).getGraph());
+        this.stateMachines.add(sm);
     }
 
     public boolean isSMIdleAvailable() {

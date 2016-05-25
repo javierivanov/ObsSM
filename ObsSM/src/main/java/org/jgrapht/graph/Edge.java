@@ -31,40 +31,33 @@ import java.util.Objects;
  * @version 0.4
  */
 public class Edge {
-    private String from;
-    private String to;
+    private Vertex from;
+    private Vertex to;
     private String transition;
     private Object payload;
 
     public Edge() {
     }
 
-    public Edge(String from, String to, String transition) {
+    public Edge(Vertex from, Vertex to, String transition) {
         this.from = from;
         this.to = to;
         this.transition = transition;
     }
 
-    public Edge(String from, String to, String transition, Object payload) {
-        this.from = from;
-        this.to = to;
-        this.transition = transition;
-        this.payload = payload;
-    }
-
-    public String getFrom() {
+    public Vertex getFrom() {
         return from;
     }
 
-    public void setFrom(String from) {
+    public void setFrom(Vertex from) {
         this.from = from;
     }
 
-    public String getTo() {
+    public Vertex getTo() {
         return to;
     }
 
-    public void setTo(String to) {
+    public void setTo(Vertex to) {
         this.to = to;
     }
 
@@ -87,10 +80,10 @@ public class Edge {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 53 * hash + Objects.hashCode(this.from);
-        hash = 53 * hash + Objects.hashCode(this.to);
-        hash = 53 * hash + Objects.hashCode(this.transition);
-        hash = 53 * hash + Objects.hashCode(this.payload);
+        hash = 79 * hash + Objects.hashCode(this.from);
+        hash = 79 * hash + Objects.hashCode(this.to);
+        hash = 79 * hash + Objects.hashCode(this.transition);
+        hash = 79 * hash + Objects.hashCode(this.payload);
         return hash;
     }
 
@@ -106,19 +99,19 @@ public class Edge {
             return false;
         }
         final Edge other = (Edge) obj;
+        if (!Objects.equals(this.transition, other.transition)) {
+            return false;
+        }
         if (!Objects.equals(this.from, other.from)) {
             return false;
         }
-        if (!Objects.equals(this.to, other.to)) {
-            return false;
-        }
-        return Objects.equals(this.transition, other.transition);
+        return Objects.equals(this.to, other.to);
     }
-    
-    
+
     @Override
     public String toString() {
-        return transition;
+        return transition + ((payload != null) ? payload.toString(): "");
     }
+    
     
 }

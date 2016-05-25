@@ -41,9 +41,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import org.jgrapht.DirectedGraph;
+import org.apache.commons.scxml.model.TransitionTarget;
 import org.jgrapht.graph.DirectedMultigraph;
 import org.jgrapht.graph.Edge;
+import org.jgrapht.graph.Vertex;
 
 /**
  * This class define a State Machine(SM) executor, who decides the legality of
@@ -58,7 +59,7 @@ public class StateMachine {
     private SCXMLExecutor engine;
     private SCXML stateMachine;
     private String keyName;
-    private List<DirectedMultigraph<String, Edge>> graphs;
+    private List<DirectedMultigraph<Vertex, Edge>> graphs;
 
     
     /**
@@ -85,7 +86,7 @@ public class StateMachine {
     private void initialize(String xmlFile, EntryListener listener) throws IOException, ModelException, SAXException {
         this.stateMachine = SCXMLParser.parse(new File(xmlFile).toURI().toURL(),
                 new SimpleErrorHandler());
-
+        this.graphs = new GraphMaker(stateMachine).getGraph();
         this.engine = new SCXMLExecutor(new JexlEvaluator(), new SimpleDispatcher(),
                 new SimpleErrorReporter());
         this.engine.setStateMachine(this.stateMachine);
@@ -94,6 +95,7 @@ public class StateMachine {
         this.engine.addListener(this.stateMachine, listener);
         listener.setParent(this);
         this.engine.go();
+        listener.initialize();
     }
 
     public SCXML getStateMachineModel() {
@@ -163,9 +165,23 @@ public class StateMachine {
         return engine;
     }
 
-    public List<DirectedMultigraph<String, Edge>> getGraphs() {
+    public List<DirectedMultigraph<Vertex, Edge>> getGraphs() {
         return graphs;
     }
+
+    public void setGraphs(List<DirectedMultigraph<Vertex, Edge>> graphs) {
+        this.graphs = graphs;
+    }
+
+    
+    public DirectedMultigraph<Vertex, Edge> getGraph(TransitionTarget target) {
+        for (DirectedMultigraph<Vertex, Edge> g: graphs) {
+            if (g.containsVertex(new Vertex(target.getId())))
+                return g;
+        }
+        return null;
+    }
+    
     
     @Override
     public String toString() {

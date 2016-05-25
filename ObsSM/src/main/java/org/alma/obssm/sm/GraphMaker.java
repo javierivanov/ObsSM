@@ -12,6 +12,7 @@ import org.apache.commons.scxml.model.State;
 import org.apache.commons.scxml.model.Transition;
 import org.jgrapht.graph.DirectedMultigraph;
 import org.jgrapht.graph.Edge;
+import org.jgrapht.graph.Vertex;
 
 import org.xml.sax.SAXException;
 
@@ -28,38 +29,42 @@ public class GraphMaker {
         }
     }
     
-    public List< DirectedMultigraph<String, Edge> > getGraph() {
-        List< DirectedMultigraph<String, Edge> > l = new ArrayList<>();
+    public GraphMaker(SCXML sm) {
+        this.sm = sm;
+    }
+    
+    public List< DirectedMultigraph<Vertex, Edge> > getGraph() {
+        List< DirectedMultigraph<Vertex, Edge> > l = new ArrayList<>();
         for (String s: getRootStatesList()) {
             l.add(makeGraph(s));
         }
         return l;
     }
     
-    private DirectedMultigraph<String, Edge> makeGraph(String parentId) {
-        DirectedMultigraph<String, Edge> g = new DirectedMultigraph<>(Edge.class);
-        LinkedList<String> visitados = new LinkedList<>();
-        LinkedList<String> porVisitar = new LinkedList<>();
+    private DirectedMultigraph<Vertex, Edge> makeGraph(String parentId) {
+        DirectedMultigraph<Vertex, Edge> g = new DirectedMultigraph<>(Edge.class);
+        LinkedList<Vertex> visitados = new LinkedList<>();
+        LinkedList<Vertex> porVisitar = new LinkedList<>();
         
-        porVisitar.add(parentId);
+        porVisitar.add(new Vertex(parentId));
         
         while (!porVisitar.isEmpty()) {
-            String pv = porVisitar.removeLast();
+            Vertex pv = porVisitar.removeLast();
             if (!visitados.contains(pv)) visitados.add(pv);
-            List<Transition> tlist = getTransitionsListFromState(pv);
+            List<Transition> tlist = getTransitionsListFromState(pv.getState());
             for (Transition t: tlist) {
-                if (!porVisitar.contains(t.getNext()) && !visitados.contains(t.getNext()))
-                    porVisitar.add(t.getNext());
+                if (!porVisitar.contains(new Vertex(t.getNext())) && !visitados.contains(new Vertex(t.getNext())))
+                    porVisitar.add(new Vertex(t.getNext()));
             }
         }
         
-        for (String s: visitados) {
+        for (Vertex s: visitados) {
             g.addVertex(s);
         }
         
-        for (String s: visitados) {
-            for (Transition t: getTransitionsListFromState(s)) {
-                g.addEdge(s, t.getNext(), new Edge(s, t.getNext(), t.getEvent()));
+        for (Vertex s: visitados) {
+            for (Transition t: getTransitionsListFromState(s.getState())) {
+                g.addEdge(s, new Vertex(t.getNext()), new Edge(s, new Vertex(t.getNext()), t.getEvent()));
             }
             
         }

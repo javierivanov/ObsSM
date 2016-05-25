@@ -43,8 +43,10 @@ public abstract class EntryListener implements SCXMLListener {
     public EntryListener(Manager m) {
         this.m = m;
     }
-
-
+    
+    public abstract void initialize();
+    
+    
     @Override
     public void onTransition(TransitionTarget from, TransitionTarget to, Transition transition) {
         onTransition(from, to, transition, Parser.savedArray, Parser.savedTimeStamp, Parser.savedLogLine);

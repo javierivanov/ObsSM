@@ -150,7 +150,9 @@ public class ObsSMPanel extends JFrame {
             "Array",
             "State From",
             "Event",
-            "State To"};
+            "State To",
+            "Time"
+        };
 
         searchPanel = new JPanel(new FlowLayout());
 
@@ -268,6 +270,13 @@ public class ObsSMPanel extends JFrame {
             }
         });
 
+        newItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cleanData();
+            }
+        });
+        
         quitItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -339,7 +348,7 @@ public class ObsSMPanel extends JFrame {
         } catch (IOException ex) {
             Logger.getLogger(ObsSMPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        statusLabel.setText("Interrupted!");
     }
 
     /**
@@ -449,5 +458,11 @@ public class ObsSMPanel extends JFrame {
             }
         }
     }
-
+    public void cleanData() {
+        mainThread.interrupt();
+        saveData();
+        while (tablemodel.getRowCount() > 0) tablemodel.removeRow(0);
+        dataSaved = true;
+        statusLabel.setText("Cleaned!");
+    }
 }

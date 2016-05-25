@@ -54,4 +54,8 @@ public class DefaultEntryListener extends EntryListener {
         System.out.println("EVENT: " + transition.getEvent() + " TO: " + to.getId() + " FROM: " + from.getId() + " TS: " + timeStamp);
     }
 
+    @Override
+    public void initialize() {
+    }
+
 }
