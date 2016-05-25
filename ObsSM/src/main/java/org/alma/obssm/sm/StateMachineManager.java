@@ -20,9 +20,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  ******************************************************************************
  */
-
 package org.alma.obssm.sm;
 
+import com.sun.corba.se.spi.ior.MakeImmutable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -35,7 +35,7 @@ import org.xml.sax.SAXException;
 /**
  * This class manages State Machines which are currently active.
  *
- * @author Javier Fuentes j.fuentes.m@icloud.com
+ * @author Javier Fuentes Munoz j.fuentes.m@icloud.com
  * @version 0.3
  */
 public class StateMachineManager {
@@ -50,8 +50,9 @@ public class StateMachineManager {
     public StateMachineManager(String xmlpath) {
         this.xmlpath = xmlpath;
         this.stateMachines = new ArrayList<>();
+        new GraphMaker(xmlpath).getGraph();
     }
-
+  
     /**
      * Creates a new State Machine
      *
@@ -68,8 +69,10 @@ public class StateMachineManager {
     }
 
     public boolean isSMIdleAvailable() {
-        for (StateMachine s: this.stateMachines) {
-            if (s.getKeyName() == null) return true;
+        for (StateMachine s : this.stateMachines) {
+            if (s.getKeyName() == null) {
+                return true;
+            }
         }
         return false;
     }
@@ -117,9 +120,9 @@ public class StateMachineManager {
         if (transition == null) {
             return ACTION_NOT_FOUND;
         }
-        
+
         StateMachine newOne = null;
-        
+
         for (StateMachine aux : this.stateMachines) {
             if (aux.getKeyName() == null) {
                 newOne = aux;
@@ -137,8 +140,10 @@ public class StateMachineManager {
                 return ACTION_TRIGGERED;
             }
         }
-        if (newOne == null) throw new NullPointerException("Null state machine");
-        
+        if (newOne == null) {
+            throw new NullPointerException("Null state machine");
+        }
+
         newOne.setKeyName(keyName);
         if (newOne.fireEvent(transition)) {
             /**
@@ -152,27 +157,26 @@ public class StateMachineManager {
          */
         return NEW_SM_REQUIRED;
     }
-    
-    
+
     /**
-     * 
+     *
      * Finds a transition on the state machines which has the specific keyNamem
-     * if the state machine does not exists, it will return a new SM is required.
-     * 
-     * 
+     * if the state machine does not exists, it will return a new SM is
+     * required.
+     *
+     *
      * @param transition
      * @param keyName
      * @return ACTION_TRIGGERED, NEW_SM_REQUIRED, ACTION_NOT_FOUND
      * @throws ModelException
      * @throws IOException
-     * @throws SAXException 
+     * @throws SAXException
      */
     public int findAndTriggerAction(String transition, String keyName) throws ModelException, IOException, SAXException {
         if (transition == null) {
             return ACTION_NOT_FOUND;
         }
-        
-        
+
         for (StateMachine aux : this.stateMachines) {
             if (aux.getKeyName() != null) {
                 if (aux.getKeyName().equals(keyName)) {
@@ -185,15 +189,17 @@ public class StateMachineManager {
         }
 
         StateMachine m = null;
-        for (StateMachine s: this.stateMachines) {
+        for (StateMachine s : this.stateMachines) {
             if (s.getKeyName() == null) {
                 m = s;
             }
         }
-        
-        if (m == null) return ACTION_NOT_FOUND;
-        
-        for (String s: m.getTransitionsStringList()) {
+
+        if (m == null) {
+            return ACTION_NOT_FOUND;
+        }
+
+        for (String s : m.getTransitionsStringList()) {
             if (s.equals(transition)) {
                 m.setKeyName(keyName);
                 if (m.fireEvent(transition)) {
@@ -202,7 +208,7 @@ public class StateMachineManager {
                 return NEW_SM_REQUIRED;
             }
         }
-        
+
         return ACTION_NOT_FOUND;
     }
 

@@ -23,7 +23,6 @@
 package org.alma.obssm.net;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.text.ParseException;
 
 /**
@@ -35,6 +34,7 @@ import java.text.ParseException;
  */
 public interface LineReader {
 
+    
     /**
      * This method has to lock the execution until a line is delivered.
      * 
@@ -42,7 +42,7 @@ public interface LineReader {
      * @throws IOException
      * @throws InterruptedException 
      */
-    public String waitForLine() throws IOException, InterruptedException;
+    String waitForLine() throws IOException, InterruptedException;
 
     
     /**
@@ -50,12 +50,12 @@ public interface LineReader {
      * 
      * @throws IOException 
      */
-    public void endCommunication() throws IOException;
+    void endCommunication() throws IOException;
 
     /**
      * This method has to interrupt the communication and unlock the waitForLine method.
      */
-    public void interrupt();
+    void interrupt();
     
     /**
      * This method has to initialize the communications.
@@ -64,12 +64,12 @@ public interface LineReader {
      * @throws java.net.MalformedURLException 
      * @throws java.text.ParseException 
      */
-    public void startCommunication() throws IOException, MalformedURLException, ParseException;
+    void startCommunication() throws IOException, ParseException;
 
     
     /**
      * This method has to check the status of the communication.
      * @return true if is connected, false otherwise.
      */
-    public boolean isCommunicationActive();
+    boolean isCommunicationActive();
 }

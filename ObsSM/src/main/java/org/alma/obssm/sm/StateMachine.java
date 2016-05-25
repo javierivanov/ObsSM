@@ -22,12 +22,6 @@
  */
 package org.alma.obssm.sm;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
 import org.apache.commons.scxml.SCXMLExecutor;
 import org.apache.commons.scxml.TriggerEvent;
 import org.apache.commons.scxml.env.SimpleDispatcher;
@@ -42,6 +36,15 @@ import org.apache.commons.scxml.model.State;
 import org.apache.commons.scxml.model.Transition;
 import org.xml.sax.SAXException;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import org.jgrapht.DirectedGraph;
+import org.jgrapht.graph.DirectedMultigraph;
+import org.jgrapht.graph.Edge;
+
 /**
  * This class define a State Machine(SM) executor, who decides the legality of
  * the transitions and change its own state when its correct.
@@ -55,11 +58,8 @@ public class StateMachine {
     private SCXMLExecutor engine;
     private SCXML stateMachine;
     private String keyName;
-    
-    /**
-     * Useful var to remember all the actions executed before.
-     */
-    public List<String> historyEvents;
+    private List<DirectedMultigraph<String, Edge>> graphs;
+
     
     /**
      * Constructor of the class, initialize the engine and the model and runs
@@ -67,7 +67,7 @@ public class StateMachine {
      * changes.
      *
      * @param listener
-     * @see CustomEntryListener
+     * @see DefaultEntryListener
      *
      * @param xmlFile Origin SM file with the SCXML model.
      * @throws IOException
@@ -79,7 +79,7 @@ public class StateMachine {
     }
 
     public StateMachine(String xmlFile) throws IOException, ModelException, SAXException {
-        initialize(xmlFile, new CustomEntryListener(null));
+        initialize(xmlFile, new DefaultEntryListener(null));
     }
 
     private void initialize(String xmlFile, EntryListener listener) throws IOException, ModelException, SAXException {
@@ -93,10 +93,9 @@ public class StateMachine {
         this.engine.setRootContext(new JexlContext());
         this.engine.addListener(this.stateMachine, listener);
         listener.setParent(this);
-        this.historyEvents = new LinkedList<>();
         this.engine.go();
     }
-    
+
     public SCXML getStateMachineModel() {
         return engine.getStateMachine();
     }
@@ -114,8 +113,6 @@ public class StateMachine {
         }
         engine.triggerEvent(new TriggerEvent(event,
             TriggerEvent.SIGNAL_EVENT, null));
-        //To remember...
-        this.historyEvents.add(event);
         return engine.getCurrentStatus().isFinal();
     }
 
@@ -129,7 +126,7 @@ public class StateMachine {
         List<Transition> transitions = new ArrayList<>();
         for (State s: states) {
             for (Object t: s.getTransitionsList()) {
-                if (!transitions.contains((Transition) t)) {
+                if (!transitions.contains(t)) {
                     transitions.add((Transition) t);
                 }
             }
@@ -162,6 +159,14 @@ public class StateMachine {
         this.keyName = keyName;
     }
 
+    public SCXMLExecutor getEngine() {
+        return engine;
+    }
+
+    public List<DirectedMultigraph<String, Edge>> getGraphs() {
+        return graphs;
+    }
+    
     @Override
     public String toString() {
         return "StateMachine [engine=" + engine + ", stateMachine=" + stateMachine + ", keyName=" + keyName + "]";

@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.HashMap;
@@ -90,7 +89,7 @@ public class ElasticSearchImpl implements LineReader {
         this.fifoList = new LinkedList<>();
     }
 
-    public void getData() throws IOException, MalformedURLException, ParseException {
+    public void getData() throws IOException, ParseException {
         thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -134,7 +133,8 @@ public class ElasticSearchImpl implements LineReader {
                         if (timeStampStart.equals(lastTimeStampStart)) break;
                         timeStampStart = lastTimeStampStart;
                     } catch (IOException | ParseException ex) {
-                        Logger.getLogger(ElasticSearchImpl.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(ElasticSearchImpl.class.getName()).log(Level.SEVERE, "Elastic Search fail response", ex);
+                        active = false;
                     }
                 }
                 active = false;
@@ -148,7 +148,7 @@ public class ElasticSearchImpl implements LineReader {
         thread.start();
     }
 
-    private DataInputStream sendAndGetData(String url, String postData, String method) throws MalformedURLException, IOException, ParseException {
+    private DataInputStream sendAndGetData(String url, String postData, String method) throws IOException, ParseException {
         URL _url = new URL(url);
         HttpURLConnection con = (HttpURLConnection) _url.openConnection();
         //  CURLOPT_POST
@@ -193,7 +193,7 @@ public class ElasticSearchImpl implements LineReader {
     }
 
     @Override
-    public void startCommunication() throws IOException, MalformedURLException, ParseException {
+    public void startCommunication() throws IOException, ParseException {
         getData();
     }
 

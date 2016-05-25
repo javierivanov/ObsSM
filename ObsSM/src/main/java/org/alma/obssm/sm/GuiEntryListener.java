@@ -23,6 +23,7 @@ package org.alma.obssm.sm;
 
 import java.awt.Color;
 import org.alma.obssm.Manager;
+import org.apache.commons.scxml.model.State;
 import org.apache.commons.scxml.model.Transition;
 import org.apache.commons.scxml.model.TransitionTarget;
 
@@ -31,7 +32,7 @@ import org.apache.commons.scxml.model.TransitionTarget;
  * Default implementation to use with the main GUI.
  * 
  * @version 0.4
- * @author Javier Fuentes j.fuentes.m@icloud.com
+ * @author Javier Fuentes Munoz j.fuentes.m@icloud.com
  */
 public class GuiEntryListener extends EntryListener {
 
@@ -51,8 +52,7 @@ public class GuiEntryListener extends EntryListener {
 
     @Override
     public void onTransition(TransitionTarget from, TransitionTarget to, Transition transition, String array, String timeStamp, String logline) {
-        System.out.println("\tEVENT: " + transition.getEvent() + " TO: " + to.getId());
-        
+        //System.out.println("\tEVENT: " + transition.getEvent() + " TO: " + to.getId());
         Color color = null;
         
         String eventtype = m.parser.getConstraints().get(transition.getEvent()).eventType;

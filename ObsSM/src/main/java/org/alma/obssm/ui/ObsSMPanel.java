@@ -25,7 +25,6 @@ package org.alma.obssm.ui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -36,7 +35,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Timestamp;
 
-import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -57,26 +55,25 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
+import org.alma.obssm.Core;
 
 import org.alma.obssm.Manager;
-import org.alma.obssm.Run;
 import org.alma.obssm.net.ElasticSearchImpl;
-import org.alma.obssm.net.SimulationImpl;
+import org.alma.obssm.net.LineReader;
 import org.alma.obssm.parser.Parser;
+import org.alma.obssm.sm.EntryListener;
 import org.alma.obssm.sm.GuiEntryListener;
 import org.alma.obssm.sm.StateMachineManager;
-import org.apache.commons.scxml.model.ModelException;
-import org.xml.sax.SAXException;
 
 /**
  *
  * Main graphical interface.
  *
  * @version 0.4
- * @author Javier Fuentes Muñoz j.fuentes.m@icloud.com
+ * @author Javier Fuentes Munoz j.fuentes.m@icloud.com
  */
 public class ObsSMPanel extends JFrame {
-    
+
     /**
      *
      */
@@ -178,7 +175,7 @@ public class ObsSMPanel extends JFrame {
 
         tablemodel = new CustomTableModel(columnNames, 0);
         table = new JTable(tablemodel);
-        for (int col=0; col < columnNames.length; col++) {
+        for (int col = 0; col < columnNames.length; col++) {
             table.getColumnModel().getColumn(col).setCellRenderer(new CustomCellRender());
         }
         table.setFillsViewportHeight(true);
@@ -350,69 +347,68 @@ public class ObsSMPanel extends JFrame {
      * Starts the main thread and search data.
      */
     public void startThreadSearch() {
+        final UICoreActions actions = new UICoreActions() {
+            @Override
+            public LineReader initialize() {
+                m.osmPanel.searchButton.setEnabled(false);
+                return new ElasticSearchImpl(dfrom.getText().replace(" ", "T"),
+                        dto.getText().replace(" ", "T"),
+                        query.getText(),
+                        m.default_query_base, m.ELKUrl);
+            }
+
+            @Override
+            public Manager getManager() {
+                return m;
+            }
+
+            @Override
+            public void filesNotFound() {
+                JOptionPane.showMessageDialog(m.osmPanel, "SM SCXML Model or JSON Log translator Missing!");
+            }
+
+            @Override
+            public void beforeStartCommunications() {
+                statusLabel.setText("Searching data...");
+            }
+
+            @Override
+            public void afterStartCommunications() {
+                statusLabel.setText("Ready!");
+                dataSaved = false;
+            }
+
+            @Override
+            public void actionsPerLine(String line) {
+                statusLabel.setText(line);
+                //nooothing
+            }
+
+            @Override
+            public EntryListener getEntryListener() {
+                return new GuiEntryListener(m);
+            }
+
+            @Override
+            public void loopEnd() {
+                statusLabel.setText("Loop ended: data in table!");
+            }
+
+            @Override
+            public void exceptions(Exception ex) {
+                statusLabel.setText("Something wrong, check the logs!");
+            }
+
+            @Override
+            public void cleanUp() {
+                m.osmPanel.searchButton.setEnabled(true);
+            }
+        };
 
         mainThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                m.osmPanel.searchButton.setEnabled(false);
-                try {
-                    /**
-                     * TODO: This must be updated!
-                     */
-
-                    if (Run.SIMUL) {
-                        m.lr = new SimulationImpl(m.getResourceString("simul_input.txt"));
-                    } else {
-                        m.lr = new ElasticSearchImpl(dfrom.getText().replace(" ", "T"),
-                                dto.getText().replace(" ", "T"),
-                                query.getText(),
-                                m.default_query_base, m.ELKUrl);
-                    }
-
-                    //Checking the SM Manager and JSON Log parser
-                    if (m.smm == null || m.parser == null) {
-                        JOptionPane.showMessageDialog(m.osmPanel, "SM SCXML Model or JSON Log translator Missing!");
-                        return;
-                    }
-
-                    statusLabel.setText("Searching data...");
-                    //Starting up the communications!
-                    //in the case of ElasticSearch input it is retrieving data from ElastickSearch.
-                    m.lr.startCommunication();
-                    statusLabel.setText("Ready!");
-                    dataSaved = false;
-                    while (m.lr.isCommunicationActive()) {
-                        statusLabel.setText("Listening data...");
-                        String line = m.lr.waitForLine();
-                        //System.out.println(line);
-                        if (line != null) {
-                            if ("EOF".equals(line)) {
-                                break;
-                            }
-                            String event;
-                            String keyName;
-
-                            if (!m.smm.isSMIdleAvailable()) {
-                                m.smm.addNewStateMachine(new GuiEntryListener(m));
-                            }
-
-                            event = m.parser.getParseAction(line, m.smm.getAllPossiblesTransitions());
-                            keyName = m.parser.getKeyName(line, event);
-                            m.parser.saveExtraData(line, keyName, event);
-                            m.smm.findAndTriggerAction(event, keyName);
-                        }
-                    }
-                    statusLabel.setText("Loop ended: data in table!");
-                } catch (HeadlessException | IOException | ParseException | ModelException | SAXException ex) {
-                    Logger.getLogger(ObsSMPanel.class.getName()).log(Level.SEVERE, null, ex);
-                    statusLabel.setText("Something wrong, check the logs!");
-                } catch (InterruptedException ex) {
-                    statusLabel.setText("Forced stop!, check the logs!");
-                    Logger.getLogger(ObsSMPanel.class.getName()).log(Level.INFO, null, ex);
-                } finally {
-                    m.osmPanel.searchButton.setEnabled(true);
-                }
-
+                Core.startSearch(actions);
             }
         });
 
