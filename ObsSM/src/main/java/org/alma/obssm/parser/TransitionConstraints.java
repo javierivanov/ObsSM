@@ -32,7 +32,7 @@ import java.util.Objects;
  * list must be on the log. search_list is a list of regexpr that search for a
  * pattern on the log. keyname is the identifier of the SM
  *
- * @author Javier Fuentes
+ * @author Javier Fuentes Munoz
  * @version 0.3 j.fuentes.m@icloud.com
  *
  */

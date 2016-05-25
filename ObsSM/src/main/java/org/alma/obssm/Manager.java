@@ -22,24 +22,32 @@
  */
 package org.alma.obssm;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.alma.obssm.ui.CommandLine;
 import org.alma.obssm.ui.ObsSMPanel;
 import org.alma.obssm.net.LineReader;
 import org.alma.obssm.parser.Parser;
+import org.alma.obssm.sm.DefaultEntryListener;
+import org.alma.obssm.sm.EntryListener;
 import org.alma.obssm.sm.StateMachineManager;
 
 /**
  * This class manages all components, with the purpose of interconnecting
  * objects between them.
  *
+ * This class must be instanced once, not more.
+ *
  * TO DO: Allow to launch a console mode operation.
  *
- * @author Javier Fuentes j.fuentes.m@icloud.com
+ * @author Javier Fuentes Munoz j.fuentes.m@icloud.com
  * @version 0.4
  * @see StateMachineManager
  * @see LineReader
@@ -53,18 +61,35 @@ public class Manager {
     public LineReader lr;
     public ObsSMPanel osmPanel;
     public Parser parser;
-    public Thread mainThread;
-    
+    public CommandLine cmdLine;
+
     public String default_query_base = "";
     public String ELKUrl = "http://elk-master.osf.alma.cl:9200";
 
-    
     /**
-     * This constructor launches the Panel for visual operation.
+     * This constructor does not do nothing.
      */
     public Manager() {
+    }
 
+    /**
+     * Shortcut to create an instance.
+     *
+     * @return CommandLine instance.
+     */
+    public ObsSMPanel launchPanel() {
         osmPanel = new ObsSMPanel(this);
+        return osmPanel;
+    }
+
+    /**
+     * Shortcut to create an instance.
+     *
+     * @return CommandLine instance
+     */
+    public CommandLine launchCommandLine() {
+        cmdLine = new CommandLine(this);
+        return cmdLine;
     }
 
     /**
@@ -82,7 +107,7 @@ public class Manager {
 
         try (FileWriter fw = new FileWriter(f)) {
             String tempLine;
-            
+
             while (true) {
                 tempLine = br.readLine();
                 if (tempLine == null) {
@@ -94,16 +119,15 @@ public class Manager {
 
         return f;
     }
-    
+
     /**
-     * 
+     *
      * Return a String with the contents of the resource file.
-     * 
+     *
      * @param file
      * @return
-     * @throws IOException 
+     * @throws IOException
      */
-
     public String getResourceString(String file) throws IOException {
         InputStream is = this.getClass().getClassLoader().getResourceAsStream(file);
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
@@ -119,4 +143,108 @@ public class Manager {
         return sb.toString();
     }
 
+    /**
+     * Returns the contents of a File as String.
+     *
+     * @param file to be read.
+     * @return String with the contents of the file
+     * @throws IOException
+     */
+    public String getFileToString(String file) throws IOException {
+        File f = new File(file);
+        BufferedReader br = new BufferedReader(new FileReader(f));
+        String tempLine;
+        StringBuilder sb = new StringBuilder();
+        while (true) {
+            tempLine = br.readLine();
+            if (tempLine == null) {
+                break;
+            }
+            sb.append(tempLine);
+        }
+        return sb.toString();
+    }
+
+    
+    /**
+     * Returns a Custom EntryListener from an external Jar
+     * 
+     * @param jarUrl
+     * @param className
+     * @return Custom EntryListener
+     * @throws MalformedURLException
+     * @throws ClassNotFoundException
+     * @throws NoSuchMethodException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     * @throws InvocationTargetException 
+     */
+    public EntryListener getEntryListenerFromJar(String jarUrl, String className)
+            throws MalformedURLException,
+            ClassNotFoundException,
+            NoSuchMethodException,
+            InstantiationException,
+            IllegalAccessException,
+            IllegalArgumentException,
+            InvocationTargetException {
+
+        EntryListener l;
+        URLClassLoader loader = new URLClassLoader(
+                new URL[]{new File(jarUrl).toURI().toURL()},
+                getClass().getClassLoader());
+
+        Constructor c = loader.loadClass(className).getConstructor(Manager.class);
+        l = (EntryListener) c.newInstance(this);
+
+        return l;
+    }
+    
+    public Class getEntryListenerClassFromJar(String jarUrl, String className) {
+        try {
+            URLClassLoader loader = new URLClassLoader(
+                    new URL[]{new File(jarUrl).toURI().toURL()},
+                    getClass().getClassLoader());
+            
+            Class cl = loader.loadClass(className);
+            return cl;
+        } catch (ClassNotFoundException | MalformedURLException ex) {
+            Logger.getLogger(Manager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return DefaultEntryListener.class;
+    }
+    
+    /**
+     * Returns a custom LineReader from an external Jar
+     * @param jarUrl
+     * @param className
+     * @return
+     * @throws MalformedURLException
+     * @throws ClassNotFoundException
+     * @throws NoSuchMethodException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     * @throws InvocationTargetException 
+     */
+    public LineReader getLineReaderFromJar(String jarUrl, String className) 
+            throws MalformedURLException,
+            ClassNotFoundException,
+            NoSuchMethodException,
+            InstantiationException,
+            IllegalAccessException,
+            IllegalArgumentException,
+            InvocationTargetException {
+        
+        
+        LineReader r;
+        URLClassLoader loader = new URLClassLoader(
+                new URL[]{new File(jarUrl).toURI().toURL()},
+                getClass().getClassLoader());
+        
+        Constructor c = loader.loadClass(className).getConstructor(Manager.class);
+        r = (LineReader) c.newInstance(this);
+
+        return r;
+    }
 }

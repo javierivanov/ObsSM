@@ -50,7 +50,7 @@ import org.jsoup.safety.Whitelist;
  * Configuration graphical interface.
  *
  * @version 0.4
- * @author Javier Fuentes j.fuentes.m@icloud.com
+ * @author Javier Fuentes Munoz j.fuentes.m@icloud.com
  */
 public class ObsSMPanelConf extends JFrame {
 

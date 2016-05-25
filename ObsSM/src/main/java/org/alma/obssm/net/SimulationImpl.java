@@ -6,7 +6,6 @@
 package org.alma.obssm.net;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.logging.Level;
@@ -53,7 +52,7 @@ public class SimulationImpl implements LineReader{
     }
 
     @Override
-    public void startCommunication() throws IOException, MalformedURLException, ParseException {
+    public void startCommunication() throws IOException, ParseException {
         
     }
 

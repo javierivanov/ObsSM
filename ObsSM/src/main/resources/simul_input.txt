@@ -1,3 +1,0 @@
-component CONTROL/Array000 activated and initialized&
-Interferometry observing mode starting.&
-Enabling delay compensation and fringe tracking.&

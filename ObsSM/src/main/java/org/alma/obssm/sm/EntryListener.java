@@ -32,7 +32,7 @@ import org.apache.commons.scxml.model.TransitionTarget;
  * This abstract class allows to inherit it, to create your owns actions on States changes.
  * Moreover its possible to call the parent of the state machine to obtain the keyName and others components.
  * 
- * @author Javier Fuentes j.fuentes.m@icloud.com
+ * @author Javier Fuentes Munoz j.fuentes.m@icloud.com
  * @version 0.4
  */
 public abstract class EntryListener implements SCXMLListener {
@@ -43,8 +43,10 @@ public abstract class EntryListener implements SCXMLListener {
     public EntryListener(Manager m) {
         this.m = m;
     }
-
-
+    
+    public abstract void initialize();
+    
+    
     @Override
     public void onTransition(TransitionTarget from, TransitionTarget to, Transition transition) {
         onTransition(from, to, transition, Parser.savedArray, Parser.savedTimeStamp, Parser.savedLogLine);

@@ -22,10 +22,7 @@
  */
 package org.alma.obssm.sm;
 
-import java.sql.Timestamp;
 import org.alma.obssm.Manager;
-
-import org.alma.obssm.Run;
 import org.apache.commons.scxml.model.Transition;
 import org.apache.commons.scxml.model.TransitionTarget;
 
@@ -34,52 +31,31 @@ import org.apache.commons.scxml.model.TransitionTarget;
  * transition. This class also is able to do whatever thing, e.g. connect to a
  * database or connect to a socket and transmit the transitions and states.
  *
- * @author Javier Fuentes j.fuentes.m@icloud.com
+ * @author Javier Fuentes Munoz j.fuentes.m@icloud.com
  * @version 0.4
  *
  */
-public class CustomEntryListener extends EntryListener {
+public class DefaultEntryListener extends EntryListener {
 
-    public CustomEntryListener(Manager m) {
+    public DefaultEntryListener(Manager m) {
         super(m);
     }
 
     @Override
     public void onEntry(TransitionTarget state) {
-        Timestamp ts = new Timestamp(System.currentTimeMillis());
-        if (Run.KEYNAME_FILTER.length > 0) {
-            boolean show = false;
-            for (String a : Run.KEYNAME_FILTER) {
-                if (a.equals(parent.getKeyName())) {
-                    show = true;
-                }
-            }
-            if (!show) {
-                return;
-            }
-        }
-        String t = "";
-
-        if (Run.SHOW_TIMESTAMP) {
-            t = ts.toString();
-        }
-        /*
-    	 * Don not showing idles states!
-         */
-        if (state.getId().equals("idle")) {
-            return;
-        }
-        System.out.println(t + " ON_ENTRY_STATE, KN: " + parent.getKeyName() + ", STATE: " + state.getId());
     }
 
     @Override
     public void onExit(TransitionTarget state) {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void onTransition(TransitionTarget from, TransitionTarget to, Transition transition, String array, String timeStamp, String logline) {
         System.out.println("EVENT: " + transition.getEvent() + " TO: " + to.getId() + " FROM: " + from.getId() + " TS: " + timeStamp);
+    }
+
+    @Override
+    public void initialize() {
     }
 
 }
