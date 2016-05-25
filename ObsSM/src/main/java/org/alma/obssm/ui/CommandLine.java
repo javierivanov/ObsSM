@@ -30,8 +30,8 @@ import org.alma.obssm.parser.Parser;
 import org.alma.obssm.sm.StateMachineManager;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.alma.obssm.sm.DefaultEntryListener;
@@ -93,7 +93,21 @@ public class CommandLine {
         } catch (IOException ex) {
             Logger.getLogger(CommandLine.class.getName()).log(Level.SEVERE, "Problems reading configuration files, check the trace.", ex);
         }
-
+        
+        Class aux = null;
+        if (listener != null) {
+            if (listener.contains(":")) {
+                String[] jarAndClass = listener.split(":");
+                aux = m.getEntryListenerClassFromJar(jarAndClass[0], jarAndClass[1]);
+            }
+        }
+        final Class cl;
+        if (aux == null) {
+            cl = EntryListener.class;
+        } else {
+            cl = aux;
+        }
+        
         Core.startSearch(new UICoreActions() {
             @Override
             public LineReader initialize() {
@@ -137,6 +151,7 @@ public class CommandLine {
             public void cleanUp() {
             }
 
+            /*
             @Override
             public EntryListener getEntryListener() {
                 if (listener == null) return new DefaultEntryListener(m);
@@ -147,6 +162,18 @@ public class CommandLine {
                 } catch (MalformedURLException | ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                     Logger.getLogger(CommandLine.class.getName()).
                             log(Level.SEVERE, "Problems reading jar/class, check the logs. Using DefaultListener instead: \n" + ex.getMessage(), ex);
+                }
+                return new DefaultEntryListener(m);
+            }
+             */
+            @Override
+            public EntryListener getEntryListener() {
+                try {
+                    Constructor c = cl.getConstructor(Manager.class);
+                    EntryListener l = (EntryListener) c.newInstance(m);
+                    return l;
+                } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException ex) {
+                    Logger.getLogger(CommandLine.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 return new DefaultEntryListener(m);
             }

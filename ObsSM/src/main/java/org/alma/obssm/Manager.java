@@ -28,11 +28,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.alma.obssm.ui.CommandLine;
 import org.alma.obssm.ui.ObsSMPanel;
 import org.alma.obssm.net.LineReader;
 import org.alma.obssm.parser.Parser;
+import org.alma.obssm.sm.DefaultEntryListener;
 import org.alma.obssm.sm.EntryListener;
 import org.alma.obssm.sm.StateMachineManager;
 
@@ -195,6 +198,20 @@ public class Manager {
         l = (EntryListener) c.newInstance(this);
 
         return l;
+    }
+    
+    public Class getEntryListenerClassFromJar(String jarUrl, String className) {
+        try {
+            URLClassLoader loader = new URLClassLoader(
+                    new URL[]{new File(jarUrl).toURI().toURL()},
+                    getClass().getClassLoader());
+            
+            Class cl = loader.loadClass(className);
+            return cl;
+        } catch (ClassNotFoundException | MalformedURLException ex) {
+            Logger.getLogger(Manager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return DefaultEntryListener.class;
     }
     
     /**
