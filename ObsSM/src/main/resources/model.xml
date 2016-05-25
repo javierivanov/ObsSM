@@ -1,5 +1,5 @@
-<scxml initial="idle" final="ArrayDestroyedState" version="0.9" xmlns="http://www.w3.org/2005/07/scxml">
-    <state id="idle">
+<scxml initial="MainIdle" final="ArrayDestroyedState" version="0.9" xmlns="http://www.w3.org/2005/07/scxml">
+    <state id="MainIdle">
         <transition event="Array.creation" target="ArrayCreated"></transition>
         <transition event="Interferometry.init" target="InterferometryInitializeStarted"></transition>
         <transition event="Interferometry.sumAntenna" target="InterferometryException"></transition>

@@ -43,6 +43,11 @@ import java.util.logging.Logger;
  */
 public class Core {
 
+    /**
+     * Initialize the data retrieving process. Use a given data LineReader.
+     * 
+     * @param actions 
+     */
     public static void startSearch(UICoreActions actions) {
         actions.initialize();
         try {
