@@ -37,11 +37,11 @@ import org.apache.commons.scxml.model.TransitionTarget;
  */
 public abstract class EntryListener implements SCXMLListener {
 
-    protected StateMachine parent = null;
-    protected final Manager m;
+    protected StateMachine stateMachine = null;
+    protected final Manager manager;
 
-    public EntryListener(Manager m) {
-        this.m = m;
+    public EntryListener(Manager manager) {
+        this.manager = manager;
     }
     
     public abstract void initialize();
@@ -56,10 +56,10 @@ public abstract class EntryListener implements SCXMLListener {
     public abstract void onTransition(TransitionTarget from, TransitionTarget to, Transition transition, String array, String timeStamp, String logLine);
     
     public void setParent(StateMachine parent) {
-        this.parent = parent;
+        this.stateMachine = parent;
     }
 
     public StateMachine getParent() {
-        return this.parent;
+        return this.stateMachine;
     }
 }

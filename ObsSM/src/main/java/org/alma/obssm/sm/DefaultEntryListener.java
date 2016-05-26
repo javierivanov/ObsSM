@@ -37,8 +37,8 @@ import org.apache.commons.scxml.model.TransitionTarget;
  */
 public class DefaultEntryListener extends EntryListener {
 
-    public DefaultEntryListener(Manager m) {
-        super(m);
+    public DefaultEntryListener(Manager manager) {
+        super(manager);
     }
 
     @Override

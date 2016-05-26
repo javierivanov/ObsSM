@@ -40,8 +40,8 @@ public class GuiEntryListener extends EntryListener {
 
     
     
-    public GuiEntryListener(Manager m) {
-        super(m);
+    public GuiEntryListener(Manager manager) {
+        super(manager);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class GuiEntryListener extends EntryListener {
         //System.out.println("\tEVENT: " + transition.getEvent() + " TO: " + to.getId());
         Color color = null;
         
-        String eventtype = m.parser.getConstraints().get(transition.getEvent()).eventType;
+        String eventtype = manager.parser.getConstraints().get(transition.getEvent()).eventType;
         
         switch(eventtype) {
             case "initial": color = Color.yellow;
@@ -69,9 +69,9 @@ public class GuiEntryListener extends EntryListener {
         }
         long delta = getTimeMillis(timeStamp);
         
-        for (int row = m.osmPanel.tablemodel.getRowCount()-1; row>=0; row--) {
-            if (m.osmPanel.tablemodel.getValueAt(row, 2).equals(to.getId())) {
-                delta -= getTimeMillis((String)m.osmPanel.tablemodel.getValueAt(row, 0));
+        for (int row = manager.osmPanel.getTablemodel().getRowCount()-1; row>=0; row--) {
+            if (manager.osmPanel.getTablemodel().getValueAt(row, 2).equals(to.getId())) {
+                delta -= getTimeMillis((String)manager.osmPanel.getTablemodel().getValueAt(row, 0));
                 break;
             }
         }
@@ -79,6 +79,7 @@ public class GuiEntryListener extends EntryListener {
         if (delta == getTimeMillis(timeStamp)) delta = 0L;
         
         delta/=1000;
+        
         /*
         DirectedMultigraph<Vertex, Edge> graph = parent.getGraph(from);
         
@@ -93,9 +94,10 @@ public class GuiEntryListener extends EntryListener {
         
         if (sourceTimeStamp != 0) delta = targetTimeStamp - sourceTimeStamp;
         */
-        m.osmPanel.tablemodel.addRow(new String[]{timeStamp, array, from.getId(), transition.getEvent(), to.getId(), String.valueOf(delta)}, color);
-        int maximun = m.osmPanel.scrollTablePane.getVerticalScrollBar().getMaximum();
-        m.osmPanel.scrollTablePane.getVerticalScrollBar().setValue(maximun);
+        
+        manager.osmPanel.getTablemodel().addRow(new String[]{timeStamp, array, from.getId(), transition.getEvent(), to.getId(), String.valueOf(delta)}, color);
+        int maximun = manager.osmPanel.getScrollTablePane().getVerticalScrollBar().getMaximum();
+        manager.osmPanel.getScrollTablePane().getVerticalScrollBar().setValue(maximun);
     }
 
     private long getTimeMillis(String timestamp) {

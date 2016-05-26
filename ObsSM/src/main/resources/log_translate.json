@@ -21,7 +21,7 @@
         "or_list": [],
         "search_list": ["(Interferometry observing mode starting.)"],
         "keyName": "(Array\\d+)",
-        "eventType": "transition"
+        "eventType": "initial"
     },
     {
         "eventName": "Interferometry.sumAntenna",
@@ -142,7 +142,7 @@
         "or_list": [],
         "search_list": ["(Completed shutting down the interferometry observing mode.)"],
         "keyName": "(Array\\d+)",
-        "eventType": "transition"
+        "eventType": "final"
     },
     {
         "eventName": "PointingSubArray.callreference",

@@ -48,7 +48,7 @@ import org.alma.obssm.sm.EntryListener;
  */
 public class CommandLine {
 
-    public final Manager m;
+    private final Manager m;
 
     public CommandLine(Manager m) {
         this.m = m;
@@ -61,22 +61,32 @@ public class CommandLine {
      * @param scxml State Machine SCXML document
      * @param log_translate JSON log translate document
      * @param query_filter JSON query filter document
-     * @param ELK_server ElasticSearch URL
-     * @param listener
+     * @param ELK_server ElasticSearch URL (default LineReader)
+     * @param listener EntryListener implementation via jar:class
+     * @param linereader LineReader implementation via jar:class
      * @param dfrom TimeStamp from
      * @param dto TimeStamp To
      * @param query query to search.
      */
-    public void initialize(String scxml, String log_translate, String query_filter, String ELK_server, final String listener, final String linereader, final String dfrom, final String dto, final String query) {
+    public void initialize(String scxml,
+            String log_translate,
+            String query_filter,
+            String ELK_server,
+            final String listener,
+            final String linereader,
+            final String dfrom,
+            final String dto, final String query) {
 
         try {
             if (log_translate == null) {
-                m.parser = new Parser(m.getResourceFiles("log_translate.json").getAbsolutePath());
+                m.parser = new Parser(m.getResourceFiles("log_translate.json")
+                        .getAbsolutePath());
             } else {
                 m.parser = new Parser(log_translate);
             }
             if (scxml == null) {
-                m.smm = new StateMachineManager(m.getResourceFiles("model.xml").getAbsolutePath());
+                m.smm = new StateMachineManager(m.getResourceFiles("model.xml")
+                        .getAbsolutePath());
             } else {
                 m.smm = new StateMachineManager(scxml);
             }
@@ -91,8 +101,11 @@ public class CommandLine {
             }
 
         } catch (IOException ex) {
-            Logger.getLogger(CommandLine.class.getName()).log(Level.SEVERE, "Problems reading configuration files, check the trace.", ex);
+            Logger.getLogger(CommandLine.class.getName())
+                    .log(Level.SEVERE, "Problems reading configuration files,"
+                            + " check the trace.", ex);
         }
+        
         
         Class aux = null;
         if (listener != null) {
@@ -107,7 +120,7 @@ public class CommandLine {
         } else {
             cl = aux;
         }
-        
+
         Core.startSearch(new UICoreActions() {
             @Override
             public LineReader initialize() {
@@ -144,7 +157,8 @@ public class CommandLine {
 
             @Override
             public void exceptions(Exception ex) {
-                Logger.getLogger(CommandLine.class.getName()).log(Level.SEVERE, "Check the trace", ex);
+                Logger.getLogger(CommandLine.class.getName())
+                        .log(Level.SEVERE, "Check the trace", ex);
             }
 
             @Override
@@ -172,8 +186,13 @@ public class CommandLine {
                     Constructor c = cl.getConstructor(Manager.class);
                     EntryListener l = (EntryListener) c.newInstance(m);
                     return l;
-                } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException ex) {
-                    Logger.getLogger(CommandLine.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (InstantiationException
+                        | IllegalAccessException
+                        | IllegalArgumentException
+                        | InvocationTargetException
+                        | NoSuchMethodException| SecurityException ex) {
+                    Logger.getLogger(CommandLine.class.getName())
+                            .log(Level.SEVERE, null, ex);
                 }
                 return new DefaultEntryListener(m);
             }

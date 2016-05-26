@@ -27,6 +27,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
@@ -48,9 +50,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -74,11 +74,6 @@ import org.alma.obssm.sm.StateMachineManager;
  */
 public class ObsSMPanel extends JFrame {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1L;
-
     private final Manager m;
     private JMenuBar menuBar;
     private JMenu fileMenu;
@@ -95,19 +90,16 @@ public class ObsSMPanel extends JFrame {
     private JLabel queryLabel;
     private JTextField query;
     private JButton searchButton;
-
-    public JScrollPane scrollTablePane;
-    public CustomTableModel tablemodel;
-    public JTable table;
-
-    public JLabel statusLabel;
-    public JProgressBar progressBar;
-
-    public ObsSMPanelConf confPanel;
-
-    private boolean dataSaved;
-
+    private JLabel statusLabel;
+    private JScrollPane scrollTablePane;
+    private CustomTableModel tablemodel;
+    private JTable table;
+    
+    private final ObsSMPanelConf confPanel;
     private Thread mainThread;
+    
+    private boolean dataSaved;
+    
 
     public ObsSMPanel(Manager m) {
         super("ObsSM2 Panel");
@@ -188,10 +180,7 @@ public class ObsSMPanel extends JFrame {
         JPanel statusPanel = new JPanel();
         statusPanel.setSize(getWidth(), 15);
         statusLabel = new JLabel("Status bar!");
-        progressBar = new JProgressBar();
         statusPanel.add(statusLabel);
-        statusPanel.add(new JSeparator(JSeparator.VERTICAL));
-        statusPanel.add(progressBar);
         statusPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
         statusPanel.setPreferredSize(new Dimension(getWidth(), 20));
         statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.X_AXIS));
@@ -234,6 +223,26 @@ public class ObsSMPanel extends JFrame {
      */
     private void initializeListeners() {
 
+        KeyListener klistener = new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                if ((int)e.getKeyChar() == KeyEvent.VK_ENTER)
+                    startThreadSearch();
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+            }
+        };
+        
+        dfrom.addKeyListener(klistener);
+        dto.addKeyListener(klistener);
+        query.addKeyListener(klistener);
+        
         searchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -359,7 +368,10 @@ public class ObsSMPanel extends JFrame {
         final UICoreActions actions = new UICoreActions() {
             @Override
             public LineReader initialize() {
-                m.osmPanel.searchButton.setEnabled(false);
+                searchButton.setEnabled(false);
+                dfrom.setEnabled(false);
+                query.setEnabled(false);
+                dto.setEnabled(false);
                 return new ElasticSearchImpl(dfrom.getText().replace(" ", "T"),
                         dto.getText().replace(" ", "T"),
                         query.getText(),
@@ -410,7 +422,10 @@ public class ObsSMPanel extends JFrame {
 
             @Override
             public void cleanUp() {
-                m.osmPanel.searchButton.setEnabled(true);
+                searchButton.setEnabled(true);
+                dfrom.setEnabled(true);
+                query.setEnabled(true);
+                dto.setEnabled(true);
             }
         };
 
@@ -458,6 +473,7 @@ public class ObsSMPanel extends JFrame {
             }
         }
     }
+    
     public void cleanData() {
         mainThread.interrupt();
         saveData();
@@ -465,4 +481,17 @@ public class ObsSMPanel extends JFrame {
         dataSaved = true;
         statusLabel.setText("Cleaned!");
     }
+
+    public CustomTableModel getTablemodel() {
+        return tablemodel;
+    }
+
+    public JScrollPane getScrollTablePane() {
+        return scrollTablePane;
+    }
+
+    public JLabel getStatusLabel() {
+        return statusLabel;
+    }
+    
 }

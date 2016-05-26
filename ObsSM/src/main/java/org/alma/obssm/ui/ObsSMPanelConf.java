@@ -61,20 +61,20 @@ public class ObsSMPanelConf extends JFrame {
 
     private final Manager m;
 
-    public JLabel show_label;
-    public JLabel scxml_label;
-    public JLabel json_label;
-    public JLabel elkurl_label;
-    public JTextField scxml_file;
-    public JTextField json_file;
-    public JTextField elk_url;
-    public JButton scxml_button;
-    public JButton json_button;
-    public JLabel query_label;
-    public JTextPane query;
-    public JScrollPane query_scroll;
+    private JLabel show_label;
+    private JLabel scxml_label;
+    private JLabel json_label;
+    private JLabel elkurl_label;
+    private JTextField scxml_file;
+    private JTextField json_file;
+    private JTextField elk_url;
+    private JButton scxml_button;
+    private JButton json_button;
+    private JLabel query_label;
+    private JTextPane query;
+    private JScrollPane query_scroll;
 
-    public JButton save_button, cancel_button;
+    private JButton save_button, cancel_button;
 
     public ObsSMPanelConf(Manager m) {
         super("Configuration Panel");
@@ -268,7 +268,7 @@ public class ObsSMPanelConf extends JFrame {
         });
     }
 
-    public void save() {
+    private void save() {
         try {
             String text = Jsoup.parse(query.getText()).text();
             m.default_query_base = text;
@@ -285,7 +285,7 @@ public class ObsSMPanelConf extends JFrame {
         this.setVisible(false);
     }
     
-    public void openSCXMLFile() {
+    private void openSCXMLFile() {
         JFileChooser fc = new JFileChooser();
         if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             File f = fc.getSelectedFile();
@@ -293,7 +293,7 @@ public class ObsSMPanelConf extends JFrame {
         }
     }
     
-    public void openJSONFile(){
+    private void openJSONFile(){
         JFileChooser fc = new JFileChooser();
         if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             File f = fc.getSelectedFile();

@@ -50,7 +50,7 @@ import com.google.gson.GsonBuilder;
 public class ElasticSearchImpl implements LineReader {
 
     /**
-     * ***************GSON CLASSES******************
+     * ***************INTERNAL GSON CLASSES******************
      */
     class Hit {
 
@@ -67,7 +67,7 @@ public class ElasticSearchImpl implements LineReader {
         HitsList hits;
     }
     /**
-     * ***************GSON CLASSES******************
+     * ***************INTERNAL GSON CLASSES******************
      */
 
     private final LinkedList<String> fifoList;
