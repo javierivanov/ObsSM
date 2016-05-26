@@ -11,8 +11,8 @@ import org.apache.commons.scxml.model.SCXML;
 import org.apache.commons.scxml.model.State;
 import org.apache.commons.scxml.model.Transition;
 import org.jgrapht.graph.DirectedMultigraph;
-import org.jgrapht.graph.Edge;
-import org.jgrapht.graph.Vertex;
+import org.alma.graph.Edge;
+import org.alma.graph.Vertex;
 
 import org.xml.sax.SAXException;
 

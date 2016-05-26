@@ -20,8 +20,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  ******************************************************************************
  */
-package org.jgrapht.graph;
+package org.alma.graph;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 
@@ -30,7 +31,9 @@ import java.util.Objects;
  * @author Javier Fuentes Munoz j.fuentes.m@icloud.com
  * @version 0.4
  */
-public class Edge {
+public class Edge implements Serializable{
+    
+    
     private Vertex from;
     private Vertex to;
     private String transition;
@@ -110,7 +113,7 @@ public class Edge {
 
     @Override
     public String toString() {
-        return transition + ((payload != null) ? payload.toString(): "");
+        return transition;
     }
     
     

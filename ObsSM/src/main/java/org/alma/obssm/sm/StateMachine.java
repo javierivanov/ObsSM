@@ -43,8 +43,8 @@ import java.util.List;
 import java.util.Set;
 import org.apache.commons.scxml.model.TransitionTarget;
 import org.jgrapht.graph.DirectedMultigraph;
-import org.jgrapht.graph.Edge;
-import org.jgrapht.graph.Vertex;
+import org.alma.graph.Edge;
+import org.alma.graph.Vertex;
 
 /**
  * This class define a State Machine(SM) executor, who decides the legality of
@@ -60,6 +60,7 @@ public class StateMachine {
     private SCXML stateMachine;
     private String keyName;
     private List<DirectedMultigraph<Vertex, Edge>> graphs;
+    private EntryListener listener;
 
     
     /**
@@ -84,6 +85,7 @@ public class StateMachine {
     }
 
     private void initialize(String xmlFile, EntryListener listener) throws IOException, ModelException, SAXException {
+        this.listener = listener;
         this.stateMachine = SCXMLParser.parse(new File(xmlFile).toURI().toURL(),
                 new SimpleErrorHandler());
         this.graphs = new GraphMaker(stateMachine).getGraph();
@@ -92,10 +94,9 @@ public class StateMachine {
         this.engine.setStateMachine(this.stateMachine);
         this.engine.setSuperStep(true);
         this.engine.setRootContext(new JexlContext());
-        this.engine.addListener(this.stateMachine, listener);
-        listener.setParent(this);
+        this.engine.addListener(this.stateMachine, this.listener);
+        this.listener.setParent(this);
         this.engine.go();
-        listener.initialize();
     }
 
     public SCXML getStateMachineModel() {
@@ -159,6 +160,7 @@ public class StateMachine {
      */
     public void setKeyName(String keyName) {
         this.keyName = keyName;
+        this.listener.initialize();
     }
 
     public SCXMLExecutor getEngine() {

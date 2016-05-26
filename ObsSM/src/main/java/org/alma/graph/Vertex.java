@@ -1,8 +1,9 @@
-package org.jgrapht.graph;
+package org.alma.graph;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Vertex {
+public class Vertex implements Serializable{
 
     private String state;
     private Object payload;
