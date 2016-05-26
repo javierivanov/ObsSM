@@ -26,5 +26,5 @@ fi
 cd ObsSM-master/ObsSM/
 
 mvn clean dependency:copy-dependencies package
-java -cp "target/ObsSM-0.4.jar:target/dependency/*" org.alma.obssm.Run
+java -cp "target/ObsSM-1.0.jar:target/dependency/*" org.alma.obssm.Run
 
