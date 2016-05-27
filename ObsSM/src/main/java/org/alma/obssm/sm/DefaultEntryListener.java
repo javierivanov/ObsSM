@@ -51,7 +51,7 @@ public class DefaultEntryListener extends EntryListener {
 
     @Override
     public void onTransition(TransitionTarget from, TransitionTarget to, Transition transition, String array, String timeStamp, String logline) {
-        System.out.println("EVENT: " + transition.getEvent() + " TO: " + to.getId() + " FROM: " + from.getId() + " TS: " + timeStamp);
+        System.out.println("ARRAY: "+array+" EVENT: " + transition.getEvent() + " TO: " + to.getId() + " FROM: " + from.getId() + " TS: " + timeStamp);
     }
 
     @Override

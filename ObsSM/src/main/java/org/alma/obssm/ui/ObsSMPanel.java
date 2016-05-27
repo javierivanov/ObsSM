@@ -375,7 +375,7 @@ public class ObsSMPanel extends JFrame {
                 return new ElasticSearchImpl(dfrom.getText().replace(" ", "T"),
                         dto.getText().replace(" ", "T"),
                         query.getText(),
-                        m.default_query_base, m.ELKUrl);
+                        m.default_query_base, m.ESUrl);
             }
 
             @Override

@@ -45,21 +45,33 @@ import com.google.gson.stream.JsonReader;
  */
 public class Parser {
 
-    public Map<String, TransitionConstraints> constraints;
+    private final Map<String, TransitionConstraints> constraints;
     
     
     /**
-     * Vars required for the EntryListener to obtain extra data.
+     * Required for the EntryListener to obtain extra data.
      */
     public static String savedTimeStamp;
+
+    /**
+     * Required for the EntryListener to obtain extra data.
+     */
     public static String savedArray;
+
+    /**
+     * Required for the EntryListener to obtain extra data.
+     */
     public static String savedEvent;
+
+    /**
+     * Required for the EntryListener to obtain extra data.
+     */
     public static String savedLogLine;
     
     /**
      * Constructor, initialize the JSON constraints file.
      *
-     * @param url json file
+     * @param url JSON file
      * @throws FileNotFoundException
      */
     public Parser(String url) throws FileNotFoundException {
@@ -77,6 +89,11 @@ public class Parser {
         }
     }
 
+    /**
+     * Returns a Map which contains a reference between Transition and Transitions Constraints
+     * @see TransitionConstraints
+     * @return
+     */
     public Map<String, TransitionConstraints> getConstraints() {
         return constraints;
     }
@@ -173,6 +190,12 @@ public class Parser {
         return keyName;
     }
     
+    /**
+     * Allows to set this vars to the Local static vars.
+     * @param line
+     * @param keyName
+     * @param event
+     */
     public void saveExtraData(String line, String keyName, String event) {
         Parser.savedArray = keyName;
         Parser.savedEvent = event;

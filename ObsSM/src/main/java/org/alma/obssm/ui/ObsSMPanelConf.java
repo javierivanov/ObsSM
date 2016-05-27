@@ -150,7 +150,7 @@ public class ObsSMPanelConf extends JFrame {
         gbc.gridy = 3;
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        elk_url = new JTextField(m.ELKUrl, 20);
+        elk_url = new JTextField(m.ESUrl, 20);
         panelPrincipal.add(elk_url, gbc);
         
         
@@ -200,7 +200,7 @@ public class ObsSMPanelConf extends JFrame {
     public void setVisible(boolean b) {
         if (b) {
             query.setText(toHTML(m.default_query_base));
-            elk_url.setText(m.ELKUrl);
+            elk_url.setText(m.ESUrl);
         }
         super.setVisible(b); //To change body of generated methods, choose Tools | Templates.
     }
@@ -272,7 +272,7 @@ public class ObsSMPanelConf extends JFrame {
         try {
             String text = Jsoup.parse(query.getText()).text();
             m.default_query_base = text;
-            m.ELKUrl = elk_url.getText();
+            m.ESUrl = elk_url.getText();
             m.smm = new StateMachineManager(scxml_file.getText());
             m.parser = new Parser(json_file.getText());
         } catch (Exception ex) {
