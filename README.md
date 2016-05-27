@@ -128,7 +128,7 @@ Maybe you want to view transitions with a graphical interface. So it's possible 
 
 You want to download the third party plugin here before!
 ```sh
-wget 
+wget https://raw.githubusercontent.com/javierivanov/ObsSM/master/ObsSM_plugins/GraphViewer.jar
 ```
 
 ```sh
