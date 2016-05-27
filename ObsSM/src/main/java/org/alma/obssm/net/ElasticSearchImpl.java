@@ -38,6 +38,10 @@ import java.util.logging.Logger;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  *
@@ -82,30 +86,29 @@ public class ElasticSearchImpl implements LineReader {
 
     /**
      * This is the LineReader implementation for ElasticSearch
-     * 
+     *
      * It requires:
-     *  <ul>
-     *      <li>time stamp to start, and end.</li>
-     *      <li>
-     *          A query and query base: the query base is a filter provided
-     *          to create a default search. It is a JSON document it must include
-     *          three variables inside ($T1, $T2, $Q) as you can see
-     *          in the query_base.json file.
-     *          The query is a simple query form based on Lucene.
-     *          Example: "Array: Array001 AND Array: Array002"
-     *      </li>
-     *      <li>
-     *          ESUrl: ElasticSearch Url.
-     *      </li>
-     *  </ul>
-     * 
+     * <ul>
+     * <li>time stamp to start, and end.</li>
+     * <li>
+     * A query and query base: the query base is a filter provided to create a
+     * default search. It is a JSON document it must include three variables
+     * inside ($T1, $T2, $Q) as you can see in the query_base.json file. The
+     * query is a simple query form based on Lucene. Example: "Array: Array001
+     * AND Array: Array002"
+     * </li>
+     * <li>
+     * ESUrl: ElasticSearch Url.
+     * </li>
+     * </ul>
+     *
      * @param timeStampStart
      * @param timeStampEnd
      * @param query
      * @param query_base
      * @param ESUrl
      */
-    public ElasticSearchImpl(String timeStampStart, String timeStampEnd, 
+    public ElasticSearchImpl(String timeStampStart, String timeStampEnd,
             String query, String query_base, String ESUrl) {
         this.timeStampStart = timeStampStart;
         this.timeStampEnd = timeStampEnd;
@@ -117,34 +120,46 @@ public class ElasticSearchImpl implements LineReader {
 
     /**
      * This methods connect to ES, collect data and put them into a FIFO list.
-     * It runs a thread.
-     * The FIFO list locks the execution waiting for logs.
-     * 
+     * It runs a thread. The FIFO list locks the execution waiting for logs.
+     *
      * @throws IOException
      * @throws ParseException
      */
-      public void getData() throws IOException, ParseException {
+    public void getData() throws IOException, ParseException {
         thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 DataInputStream a;
                 Reader r;
                 active = true;
-                Logger.getLogger(ElasticSearchImpl.class.getName()).log(Level.INFO, "Elastic Search start");
+                //DefaultTime.
+                String auxTimeStampEnd = timeStampEnd;
+                Logger.getLogger(ElasticSearchImpl.class.getName()).
+                        log(Level.INFO, "Elastic Search start");
                 while (active) {
                     try {
-                        //Getting hits for each index " + s + "
+                        //Setting query
+                        //The end time change each iteration when the end is now.
+                        if (timeStampEnd.equals("now"))
+                            auxTimeStampEnd = getActualUTCTime();
+                        
                         String query_base_aux = query_base.replace("$Q", query);
                         query_base_aux = query_base_aux.replace("$T1", timeStampStart);
-                        query_base_aux = query_base_aux.replace("$T2", timeStampEnd);
+                        query_base_aux = query_base_aux.replace("$T2", auxTimeStampEnd);
+                        //Sending query
                         a = sendAndGetData(ESUrl + "/aos-*/_search", query_base_aux, "POST");
+
+                        //Reading response
                         r = new InputStreamReader(a);
                         List<Hit> response = getHits(r);
+
                         if (response.isEmpty()) {
                             break;
                         }
+
                         String lastTimeStampStart = null;
                         for (Hit h : response) {
+
                             //Creating a log line for each  result.
                             StringBuilder temp = new StringBuilder();
                             temp.append(h._source.get("TimeStamp")).append(" ");
@@ -152,22 +167,27 @@ public class ElasticSearchImpl implements LineReader {
                             temp.append(h._source.get("File")).append(" ");
                             temp.append(h._source.get("Routine")).append(" ");
                             temp.append(h._source.get("text")).append(" ");
+
                             synchronized (fifoList) {
                                 fifoList.add(temp.toString());
+                                fifoList.notify();
                             }
 
                             lastTimeStampStart = (String) h._source.get("TimeStamp");
                         }
-                        synchronized (fifoList) {
-                            fifoList.notify();
-                        }
+
                         if (lastTimeStampStart == null) {
                             break;
                         }
-                        if (timeStampStart.equals(lastTimeStampStart)) break;
+
+                        if (timeStampStart.equals(lastTimeStampStart)) {
+                            break;
+                        }
                         timeStampStart = lastTimeStampStart;
+
                     } catch (IOException | ParseException ex) {
-                        Logger.getLogger(ElasticSearchImpl.class.getName()).log(Level.SEVERE, "Elastic Search fail response", ex);
+                        Logger.getLogger(ElasticSearchImpl.class.getName()).
+                                log(Level.SEVERE, "Elastic Search fail response", ex);
                         active = false;
                     }
                 }
@@ -176,13 +196,15 @@ public class ElasticSearchImpl implements LineReader {
                     fifoList.add("EOF");
                     fifoList.notify();
                 }
-                Logger.getLogger(ElasticSearchImpl.class.getName()).log(Level.INFO, "Elastic Search stop");
+                Logger.getLogger(ElasticSearchImpl.class.getName()).
+                        log(Level.INFO, "Elastic Search stop");
             }
         });
         thread.start();
     }
 
-    private DataInputStream sendAndGetData(String url, String postData, String method) throws IOException, ParseException {
+    private DataInputStream sendAndGetData(String url, String postData, String method)
+            throws IOException, ParseException {
         URL _url = new URL(url);
         HttpURLConnection con = (HttpURLConnection) _url.openConnection();
         //  CURLOPT_POST
@@ -196,6 +218,16 @@ public class ElasticSearchImpl implements LineReader {
         }
         // read the response
         return new DataInputStream(con.getInputStream());
+    }
+
+    public String getActualUTCTime() {
+        TimeZone timeZone = TimeZone.getTimeZone("UTC");
+        Calendar calendar = Calendar.getInstance(timeZone);
+        SimpleDateFormat simpleDateFormat
+                = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.zzz", Locale.US);
+        simpleDateFormat.setTimeZone(timeZone);
+
+        return simpleDateFormat.format(calendar.getTime()).replace(" ", "T");
     }
 
     private List<Hit> getHits(Reader results) {
