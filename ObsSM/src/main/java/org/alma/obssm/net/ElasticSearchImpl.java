@@ -74,22 +74,56 @@ public class ElasticSearchImpl implements LineReader {
     private final String timeStampEnd;
     private final String query;
     private final String query_base;
-    private final String ELKUrl;
+    private final String ESUrl;
     private String timeStampStart;
     private boolean active = true;
 
     private Thread thread;
 
-    public ElasticSearchImpl(String timeStampStart, String timeStampEnd, String query, String query_base, String ELKUrl) {
+    /**
+     * This is the LineReader implementation for ElasticSearch
+     * 
+     * It requires:
+     *  <ul>
+     *      <li>time stamp to start, and end.</li>
+     *      <li>
+     *          A query and query base: the query base is a filter provided
+     *          to create a default search. It is a JSON document it must include
+     *          three variables inside ($T1, $T2, $Q) as you can see
+     *          in the query_base.json file.
+     *          The query is a simple query form based on Lucene.
+     *          Example: "Array: Array001 AND Array: Array002"
+     *      </li>
+     *      <li>
+     *          ESUrl: ElasticSearch Url.
+     *      </li>
+     *  </ul>
+     * 
+     * @param timeStampStart
+     * @param timeStampEnd
+     * @param query
+     * @param query_base
+     * @param ESUrl
+     */
+    public ElasticSearchImpl(String timeStampStart, String timeStampEnd, 
+            String query, String query_base, String ESUrl) {
         this.timeStampStart = timeStampStart;
         this.timeStampEnd = timeStampEnd;
         this.query = query;
         this.query_base = query_base;
-        this.ELKUrl = ELKUrl;
+        this.ESUrl = ESUrl;
         this.fifoList = new LinkedList<>();
     }
 
-    public void getData() throws IOException, ParseException {
+    /**
+     * This methods connect to ES, collect data and put them into a FIFO list.
+     * It runs a thread.
+     * The FIFO list locks the execution waiting for logs.
+     * 
+     * @throws IOException
+     * @throws ParseException
+     */
+      public void getData() throws IOException, ParseException {
         thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -103,7 +137,7 @@ public class ElasticSearchImpl implements LineReader {
                         String query_base_aux = query_base.replace("$Q", query);
                         query_base_aux = query_base_aux.replace("$T1", timeStampStart);
                         query_base_aux = query_base_aux.replace("$T2", timeStampEnd);
-                        a = sendAndGetData(ELKUrl + "/aos-*/_search", query_base_aux, "POST");
+                        a = sendAndGetData(ESUrl + "/aos-*/_search", query_base_aux, "POST");
                         r = new InputStreamReader(a);
                         List<Hit> response = getHits(r);
                         if (response.isEmpty()) {
@@ -160,7 +194,6 @@ public class ElasticSearchImpl implements LineReader {
         try (DataOutputStream output = new DataOutputStream(con.getOutputStream())) {
             output.writeBytes(postData);
         }
-
         // read the response
         return new DataInputStream(con.getInputStream());
     }
