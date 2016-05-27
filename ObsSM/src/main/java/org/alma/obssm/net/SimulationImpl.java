@@ -19,6 +19,11 @@ public class SimulationImpl implements LineReader{
 
     private String[] fifo;
     private int i=0;
+
+    /**
+     * This is a custom LineReader. It reads data from a local file.
+     * @param example
+     */
     public SimulationImpl(String example) {
         fifo = example.split("&");
         for (int a=0; a < fifo.length; a++) {

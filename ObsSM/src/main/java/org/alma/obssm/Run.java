@@ -37,6 +37,9 @@ import org.apache.commons.cli.*;
  */
 public class Run {
 
+    /**
+     * Flag to run with a simulation input.
+     */
     public static boolean SIMUL = false;
     /**
      * Main function.

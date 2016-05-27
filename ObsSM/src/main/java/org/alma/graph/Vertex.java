@@ -7,10 +7,7 @@ public class Vertex implements Serializable{
 
     private String state;
     private Object payload;
-
-    public Vertex() {
-    }
-
+    
     public Vertex(String state, Object payload) {
         this.state = state;
         this.payload = payload;

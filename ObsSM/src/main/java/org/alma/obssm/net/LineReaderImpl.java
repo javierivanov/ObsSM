@@ -42,6 +42,13 @@ public class LineReaderImpl implements LineReader {
     private Scanner scanner;
     private boolean active;
 
+    /**
+     * Initialize server mode LineReader implementation.
+     * This is a socket server, which wait for a connection and for receiving data.
+     * 
+     * @param port
+     * @throws IOException
+     */
     public LineReaderImpl(int port) throws IOException {
         this.server = new ServerSocket(port);
         this.active = false;

@@ -97,7 +97,7 @@ public class CommandLine {
             }
 
             if (ELK_server != null) {
-                m.ELKUrl = ELK_server;
+                m.ESUrl = ELK_server;
             }
 
         } catch (IOException ex) {
@@ -116,7 +116,7 @@ public class CommandLine {
         }
         final Class cl;
         if (aux == null) {
-            cl = EntryListener.class;
+            cl = DefaultEntryListener.class;
         } else {
             cl = aux;
         }
@@ -127,7 +127,7 @@ public class CommandLine {
                 return new ElasticSearchImpl(dfrom.replace(" ", "T"),
                         dto.replace(" ", "T"),
                         query,
-                        m.default_query_base, m.ELKUrl);
+                        m.default_query_base, m.ESUrl);
             }
 
             @Override
@@ -194,6 +194,7 @@ public class CommandLine {
                     Logger.getLogger(CommandLine.class.getName())
                             .log(Level.SEVERE, null, ex);
                 }
+                
                 return new DefaultEntryListener(m);
             }
         });

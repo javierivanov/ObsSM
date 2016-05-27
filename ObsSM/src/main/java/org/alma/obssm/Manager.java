@@ -30,6 +30,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.alma.obssm.net.ElasticSearchImpl;
 
 import org.alma.obssm.ui.CommandLine;
 import org.alma.obssm.ui.ObsSMPanel;
@@ -57,19 +58,50 @@ import org.alma.obssm.sm.StateMachineManager;
  */
 public class Manager {
 
+    /**
+     * Global StateMachine Manager, 
+     * provides interaction with all the StateMachines.
+     */
     public StateMachineManager smm;
+
+    /**
+     * Global LineReader implementation. It's required to read data.
+     */
     public LineReader lr;
+
+    /**
+     * Global default GUI 
+     */
     public ObsSMPanel osmPanel;
+
+    /**
+     * Global parser, reads constraints and logs to match transitions.
+     */
     public Parser parser;
+
+    /**
+     * Global command line UI
+     */
     public CommandLine cmdLine;
 
-    public String default_query_base = "";
-    public String ELKUrl = "http://elk-master.osf.alma.cl:9200";
+    /**
+     * Default global query base
+     * @see ElasticSearchImpl
+     */
+    public String default_query_base;
+
+    /**
+     * Default ElasticSearch Url
+     * @see ElasticSearchImpl
+     */
+    public String ESUrl;
 
     /**
      * This constructor does not do nothing.
      */
     public Manager() {
+        this.ESUrl = "http://elk-master.osf.alma.cl:9200";
+        this.default_query_base = "";
     }
 
     /**
@@ -200,6 +232,15 @@ public class Manager {
         return l;
     }
     
+    /**
+     * Returns a Class object, given a jar url and the class name.
+     * 
+     * <i>it does not check the constructor or types.</i>
+     * 
+     * @param jarUrl
+     * @param className
+     * @return
+     */
     public Class getEntryListenerClassFromJar(String jarUrl, String className) {
         try {
             URLClassLoader loader = new URLClassLoader(

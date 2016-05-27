@@ -37,13 +37,27 @@ import org.apache.commons.scxml.model.TransitionTarget;
  */
 public abstract class EntryListener implements SCXMLListener {
 
+    /**
+     * Parent state machine execution.
+     */
     protected StateMachine stateMachine = null;
+
+    /**
+     * Global Manager instance.
+     */
     protected final Manager manager;
 
+    /**
+     *
+     * @param manager
+     */
     public EntryListener(Manager manager) {
         this.manager = manager;
     }
     
+    /**
+     * This method will be executed after the parent State machine receive a keyName.
+     */
     public abstract void initialize();
     
     
@@ -52,13 +66,30 @@ public abstract class EntryListener implements SCXMLListener {
         onTransition(from, to, transition, Parser.savedArray, Parser.savedTimeStamp, Parser.savedLogLine);
     }
     
-    
+    /**
+     * this methods allow to execute what you need, on every transition.
+     * 
+     * @param from
+     * @param to
+     * @param transition
+     * @param array
+     * @param timeStamp
+     * @param logLine
+     */
     public abstract void onTransition(TransitionTarget from, TransitionTarget to, Transition transition, String array, String timeStamp, String logLine);
     
+    /**
+     * Set the StateMachine
+     * @param parent
+     */
     public void setParent(StateMachine parent) {
         this.stateMachine = parent;
     }
 
+    /**
+     * Returns the StateMachine
+     * @return
+     */
     public StateMachine getParent() {
         return this.stateMachine;
     }

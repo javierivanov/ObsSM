@@ -58,7 +58,7 @@ public class ElasticSearchImpl implements LineReader {
      */
     class Hit {
 
-        HashMap<String, Object> _source;
+        HashMap<String, Object> _source;        
     }
 
     class HitsList {
@@ -140,8 +140,10 @@ public class ElasticSearchImpl implements LineReader {
                     try {
                         //Setting query
                         //The end time change each iteration when the end is now.
-                        if (timeStampEnd.equals("now"))
+                        if (timeStampEnd.equals("now")){
                             auxTimeStampEnd = getActualUTCTime();
+                        }
+                            
                         
                         String query_base_aux = query_base.replace("$Q", query);
                         query_base_aux = query_base_aux.replace("$T1", timeStampStart);
@@ -149,13 +151,17 @@ public class ElasticSearchImpl implements LineReader {
                         //Sending query
                         a = sendAndGetData(ESUrl + "/aos-*/_search", query_base_aux, "POST");
 
+                        //System.out.println(timeStampStart + "->" + auxTimeStampEnd);
                         //Reading response
                         r = new InputStreamReader(a);
                         List<Hit> response = getHits(r);
 
-                        if (response.isEmpty()) {
+                        if (response.isEmpty() && !timeStampEnd.equals("now")) {
                             break;
                         }
+                        
+                        //5 seconds delay with a small response.
+                        if (response.size() <= 2) Thread.sleep(5000);
 
                         String lastTimeStampStart = null;
                         for (Hit h : response) {
@@ -168,6 +174,7 @@ public class ElasticSearchImpl implements LineReader {
                             temp.append(h._source.get("Routine")).append(" ");
                             temp.append(h._source.get("text")).append(" ");
 
+                            
                             synchronized (fifoList) {
                                 fifoList.add(temp.toString());
                                 fifoList.notify();
@@ -176,21 +183,28 @@ public class ElasticSearchImpl implements LineReader {
                             lastTimeStampStart = (String) h._source.get("TimeStamp");
                         }
 
-                        if (lastTimeStampStart == null) {
+                        //Without responses actions.
+                        if (lastTimeStampStart == null && !timeStampEnd.equals("now")) {
                             break;
+                        } else if (lastTimeStampStart == null) {
+                            lastTimeStampStart = auxTimeStampEnd;
                         }
 
-                        if (timeStampStart.equals(lastTimeStampStart)) {
+                        if (timeStampStart.equals(lastTimeStampStart) 
+                                && !timeStampEnd.equals("now")) {
                             break;
-                        }
+                        }   
+                        //Updating the low time limit for a new search.
                         timeStampStart = lastTimeStampStart;
 
-                    } catch (IOException | ParseException ex) {
+                    } catch (IOException | ParseException | InterruptedException ex) {
                         Logger.getLogger(ElasticSearchImpl.class.getName()).
                                 log(Level.SEVERE, "Elastic Search fail response", ex);
+                        System.out.println("end4");
                         active = false;
                     }
                 }
+                System.out.println("end5");
                 active = false;
                 synchronized (fifoList) {
                     fifoList.add("EOF");
@@ -220,11 +234,16 @@ public class ElasticSearchImpl implements LineReader {
         return new DataInputStream(con.getInputStream());
     }
 
+    /**
+     * Provide actual timeStamp yyyy-MM-dd'T'HH:mm:ss.SSS
+     * The time depends on the time of the execution machine.
+     * @return timeStamp
+     */
     public String getActualUTCTime() {
         TimeZone timeZone = TimeZone.getTimeZone("UTC");
         Calendar calendar = Calendar.getInstance(timeZone);
         SimpleDateFormat simpleDateFormat
-                = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.zzz", Locale.US);
+                = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US);
         simpleDateFormat.setTimeZone(timeZone);
 
         return simpleDateFormat.format(calendar.getTime()).replace(" ", "T");

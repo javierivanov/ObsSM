@@ -39,9 +39,12 @@ public class Edge implements Serializable{
     private String transition;
     private Object payload;
 
-    public Edge() {
-    }
-
+    /**
+     * Creates a new Edge.
+     * @param from
+     * @param to
+     * @param transition
+     */
     public Edge(Vertex from, Vertex to, String transition) {
         this.from = from;
         this.to = to;
