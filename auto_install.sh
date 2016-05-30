@@ -1,18 +1,18 @@
 #!/bin/bash
 #Auto install Obssm
 
-if ! command_loc="$(type -p "mvn")" || [ -z "$command_loc" ]; then
+if ! command -v mvn >/dev/null 2>&1 ; then
   echo "mvn command not found";
   echo "A Maven installation is required";
   exit 1;
 fi
 
-if ! command_loc="$(type -p "wget")" || [ -z "$command_loc" ]; then
+if ! command -v wget >/dev/null 2>&1 ; then
   echo "wget command is required";
   exit 1;
 fi
 
-if ! command_loc="$(type -p "unzip")" || [ -z "$command_loc" ]; then
+if ! command -v unzip >/dev/null 2>&1 ; then
   echo "unzip command is required";
   exit 1;
 fi
