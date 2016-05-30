@@ -27,9 +27,10 @@ import java.util.Objects;
 
 
 /**
+ * Edge class
  * 
  * @author Javier Fuentes Munoz j.fuentes.m@icloud.com
- * @version 0.4
+ * @version 1.0
  */
 public class Edge implements Serializable{
     
