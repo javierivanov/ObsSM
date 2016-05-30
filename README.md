@@ -1,7 +1,7 @@
 # ObsSM 1.0 version
 ALMA Log's State Machine Parser
 
-For more information see: https://github.com/javierivanov/ObsSM/wiki
+This is the -how to compile and run-, for further information see: https://github.com/javierivanov/ObsSM/wiki
 
 # ObsSM: Interpreter
 
