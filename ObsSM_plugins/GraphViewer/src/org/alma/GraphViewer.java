@@ -35,7 +35,11 @@ public class GraphViewer extends EntryListener {
 
     @Override
     public void onTransition(TransitionTarget from, TransitionTarget to, Transition trnstn, String array, String timestamp, String logline) {
-        view.getjLabel3().setText(logline);
+        view.getStatus().setText(logline);
+        view.getLastArray().setText(array);
+        view.getLastEvent().setText(trnstn.getEvent());
+        view.getLastFrom().setText(from.getId());
+        view.getLastTo().setText(to.getId());
         String s = to.getId();
         for (DirectedMultigraph<Vertex, Edge> g : stateMachine.getGraphs()) {
             String first = g.vertexSet().iterator().next().getState();

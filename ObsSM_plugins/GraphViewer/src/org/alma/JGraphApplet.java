@@ -79,7 +79,7 @@ public final class JGraphApplet
                 c.setStyle("ROUNDED;strokeColor=red;fillColor=yellow");
             }
             if (m.get(c).getState().equals(last)){
-                c.setStyle("ROUNDED;strokeColor=red;fillColor=skyblue");
+                c.setStyle("ROUNDED;strokeColor=red;fillColor=lightsalmon");
             }
         }
         last = s;

@@ -1,6 +1,7 @@
 package org.alma;
 
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Toolkit;
 import java.util.HashMap;
 import javax.swing.DefaultComboBoxModel;
@@ -19,7 +20,6 @@ public class Viewer extends javax.swing.JFrame {
      * Creates new form Viewer2
      */
     private final HashMap<String, HashMap<String, JGraphApplet>> arraysAndgraphs;
-    private JGraphApplet last;
 
     public Viewer() {
         arraysAndgraphs = new HashMap<>();
@@ -30,10 +30,10 @@ public class Viewer extends javax.swing.JFrame {
     private void init2() {
         Dimension DimMax = Toolkit.getDefaultToolkit().getScreenSize();
         setMaximumSize(DimMax);
-
+        jPanel1.setLayout(new FlowLayout());
         setExtendedState(MAXIMIZED_BOTH);
         setVisible(true);
-        //jToggleButton1.setSelected(true);
+        jToggleButton1.setSelected(true);
     }
 
     /**
@@ -47,11 +47,17 @@ public class Viewer extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jComboBox1 = new javax.swing.JComboBox<>();
-        jComboBox2 = new javax.swing.JComboBox<>();
         jButton1 = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
         jToggleButton1 = new javax.swing.JToggleButton();
+        status = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        lastArray = new javax.swing.JLabel();
+        lastEvent = new javax.swing.JLabel();
+        lastFrom = new javax.swing.JLabel();
+        lastTo = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -64,7 +70,7 @@ public class Viewer extends javax.swing.JFrame {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 552, Short.MAX_VALUE)
         );
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {}));
@@ -74,18 +80,12 @@ public class Viewer extends javax.swing.JFrame {
             }
         });
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {}));
-
         jButton1.setText("Show");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
-
-        jLabel1.setText("Array");
-
-        jLabel2.setText("Graph");
 
         jToggleButton1.setText("Auto transition");
         jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -94,29 +94,67 @@ public class Viewer extends javax.swing.JFrame {
             }
         });
 
-        jLabel3.setText("jLabel3");
+        status.setText("status");
+
+        jLabel4.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
+        jLabel4.setText("Array:");
+
+        jLabel5.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
+        jLabel5.setText("To State:");
+
+        jLabel6.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
+        jLabel6.setText("Event:");
+
+        jLabel7.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
+        jLabel7.setText("From State:");
+
+        lastArray.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
+        lastArray.setText("text");
+
+        lastEvent.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
+        lastEvent.setText("text");
+        lastEvent.setToolTipText("");
+
+        lastFrom.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
+        lastFrom.setText("text");
+
+        lastTo.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
+        lastTo.setText("text");
+
+        jLabel3.setText("Log:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel1)
-                    .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jToggleButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 218, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addComponent(jLabel2)))
-                .addGap(60, 60, 60)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jToggleButton1))
+                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel7)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(lastArray, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lastEvent, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lastFrom, javax.swing.GroupLayout.DEFAULT_SIZE, 649, Short.MAX_VALUE)
+                            .addComponent(lastTo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel3)
-                        .addGap(0, 713, Short.MAX_VALUE))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(status, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -125,21 +163,33 @@ public class Viewer extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
+                        .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2)
+                        .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel5))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButton1)
+                            .addComponent(jToggleButton1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jToggleButton1)
-                        .addGap(0, 474, Short.MAX_VALUE))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lastArray)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lastEvent)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lastFrom)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lastTo)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel3)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(status))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -158,45 +208,25 @@ public class Viewer extends javax.swing.JFrame {
 
     private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
 
-        rePaintGraphsList();
     }//GEN-LAST:event_jComboBox1ItemStateChanged
 
-    public void rePaintGraphsList() {
-        DefaultComboBoxModel model = (DefaultComboBoxModel) jComboBox2.getModel();
-        while (model.getSize() > 0) {
-            model.removeElementAt(0);
-        }
-        for (String s : arraysAndgraphs.get((String) jComboBox1.getSelectedItem()).keySet()) {
-            model.addElement(s);
-        }
-    }
 
     public void rePaintGraph() {
         String array = (String) jComboBox1.getSelectedItem();
-        String graph = (String) jComboBox2.getSelectedItem();
-        JGraphApplet applet = (JGraphApplet) arraysAndgraphs.get(array).get(graph);
-        if (last != null) {
-            jPanel1.remove(last);
+        jPanel1.removeAll();
+        for (JGraphApplet jg: arraysAndgraphs.get(array).values()) {
+            jPanel1.add(jg);
         }
-        jPanel1.add(applet);
-        applet.setSize(jPanel1.getSize());
-        //setSize(getSize().width - 1, getSize().height - 1);
-        //setSize(getSize().width + 1, getSize().height + 1);
+        
         setSize(getSize());
-        last = applet;
     }
 
     public void updateActualState(String array, String graphName, String state) {
         if (jToggleButton1.isSelected()) {
-
-            if (!array.equals((String) jComboBox1.getSelectedItem())
-                    || graphName.equals(jComboBox2.getSelectedItem())) {
+            if (!array.equals((String) jComboBox1.getSelectedItem())) {
                 jComboBox1.setSelectedItem(array);
-                rePaintGraphsList();
-                jComboBox2.setSelectedItem(graphName);
                 rePaintGraph();
             }
-
         }
         arraysAndgraphs.get(array).get(graphName).setState(state);
     }
@@ -207,7 +237,6 @@ public class Viewer extends javax.swing.JFrame {
             arraysAndgraphs.get(array);
             if (!arraysAndgraphs.get(array).containsKey(graphName)) {
                 arraysAndgraphs.get(array).put(graphName, applet);
-                rePaintGraphsList();
             }
         } else {
             HashMap<String, JGraphApplet> list = new HashMap<>();
@@ -218,19 +247,43 @@ public class Viewer extends javax.swing.JFrame {
         }
     }
 
-    public JLabel getjLabel3() {
-        return jLabel3;
+    public JLabel getStatus() {
+        return status;
     }
+
+    public JLabel getLastArray() {
+        return lastArray;
+    }
+
+    public JLabel getLastEvent() {
+        return lastEvent;
+    }
+
+    public JLabel getLastFrom() {
+        return lastFrom;
+    }
+
+    public JLabel getLastTo() {
+        return lastTo;
+    }
+    
+    
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JToggleButton jToggleButton1;
+    private javax.swing.JLabel lastArray;
+    private javax.swing.JLabel lastEvent;
+    private javax.swing.JLabel lastFrom;
+    private javax.swing.JLabel lastTo;
+    private javax.swing.JLabel status;
     // End of variables declaration//GEN-END:variables
 }
