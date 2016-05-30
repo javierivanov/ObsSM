@@ -138,7 +138,6 @@ As you can see, I'm not a GUI designer, please create your own plugin for visual
 
 ### Custom models
 Also you can use a custom SCXML Model, JSON log translate and JSON query base documents:
-**[[More about models|models]]**
 
 
 ```sh
