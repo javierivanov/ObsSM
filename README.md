@@ -1,7 +1,7 @@
 # ObsSM 1.0 version
 ALMA Log's State Machine Parser
 
-
+For more information see: https://github.com/javierivanov/ObsSM/wiki
 
 # ObsSM: Interpreter
 
@@ -13,7 +13,8 @@ curl https://raw.githubusercontent.com/javierivanov/ObsSM/master/auto_install.sh
 
 ## Compiling process, normal procedure
 
-The interpreter works on java version >= 1.7
+The interpreter works on java version >= 1.7 (Oracle)
+Tested on Ubuntu 15.10, Oracle jdk 7, maven2.
 
 * Download sources https://github.com/javierivanov/ObsSM/archive/master.zip
 * Unzip files
