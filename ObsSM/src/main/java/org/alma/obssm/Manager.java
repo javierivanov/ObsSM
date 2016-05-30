@@ -30,6 +30,8 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import org.alma.obssm.net.ElasticSearchImpl;
 
 import org.alma.obssm.ui.CommandLine;
@@ -49,7 +51,7 @@ import org.alma.obssm.sm.StateMachineManager;
  * TO DO: Allow to launch a console mode operation.
  *
  * @author Javier Fuentes Munoz j.fuentes.m@icloud.com
- * @version 0.4
+ * @version 1.0
  * @see StateMachineManager
  * @see LineReader
  * @see ObsSMPanel
@@ -59,8 +61,8 @@ import org.alma.obssm.sm.StateMachineManager;
 public class Manager {
 
     /**
-     * Global StateMachine Manager, 
-     * provides interaction with all the StateMachines.
+     * Global StateMachine Manager, provides interaction with all the
+     * StateMachines.
      */
     public StateMachineManager smm;
 
@@ -70,7 +72,7 @@ public class Manager {
     public LineReader lr;
 
     /**
-     * Global default GUI 
+     * Global default GUI
      */
     public ObsSMPanel osmPanel;
 
@@ -86,12 +88,14 @@ public class Manager {
 
     /**
      * Default global query base
+     *
      * @see ElasticSearchImpl
      */
     public String default_query_base;
 
     /**
      * Default ElasticSearch Url
+     *
      * @see ElasticSearchImpl
      */
     public String ESUrl;
@@ -110,6 +114,12 @@ public class Manager {
      * @return CommandLine instance.
      */
     public ObsSMPanel launchPanel() {
+        //Remove customs styles for java swing. Metal!!
+        try {
+            UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+        } catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+            Logger.getLogger(Manager.class.getName()).log(Level.SEVERE, null, ex);
+        }
         osmPanel = new ObsSMPanel(this);
         return osmPanel;
     }
@@ -197,10 +207,9 @@ public class Manager {
         return sb.toString();
     }
 
-    
     /**
      * Returns a Custom EntryListener from an external Jar
-     * 
+     *
      * @param jarUrl
      * @param className
      * @return Custom EntryListener
@@ -210,7 +219,7 @@ public class Manager {
      * @throws InstantiationException
      * @throws IllegalAccessException
      * @throws IllegalArgumentException
-     * @throws InvocationTargetException 
+     * @throws InvocationTargetException
      */
     public EntryListener getEntryListenerFromJar(String jarUrl, String className)
             throws MalformedURLException,
@@ -231,12 +240,12 @@ public class Manager {
 
         return l;
     }
-    
+
     /**
      * Returns a Class object, given a jar url and the class name.
-     * 
+     *
      * <i>it does not check the constructor or types.</i>
-     * 
+     *
      * @param jarUrl
      * @param className
      * @return
@@ -246,7 +255,7 @@ public class Manager {
             URLClassLoader loader = new URLClassLoader(
                     new URL[]{new File(jarUrl).toURI().toURL()},
                     getClass().getClassLoader());
-            
+
             Class cl = loader.loadClass(className);
             return cl;
         } catch (ClassNotFoundException | MalformedURLException ex) {
@@ -254,9 +263,10 @@ public class Manager {
         }
         return DefaultEntryListener.class;
     }
-    
+
     /**
      * Returns a custom LineReader from an external Jar
+     *
      * @param jarUrl
      * @param className
      * @return
@@ -266,9 +276,9 @@ public class Manager {
      * @throws InstantiationException
      * @throws IllegalAccessException
      * @throws IllegalArgumentException
-     * @throws InvocationTargetException 
+     * @throws InvocationTargetException
      */
-    public LineReader getLineReaderFromJar(String jarUrl, String className) 
+    public LineReader getLineReaderFromJar(String jarUrl, String className)
             throws MalformedURLException,
             ClassNotFoundException,
             NoSuchMethodException,
@@ -276,13 +286,12 @@ public class Manager {
             IllegalAccessException,
             IllegalArgumentException,
             InvocationTargetException {
-        
-        
+
         LineReader r;
         URLClassLoader loader = new URLClassLoader(
                 new URL[]{new File(jarUrl).toURI().toURL()},
                 getClass().getClassLoader());
-        
+
         Constructor c = loader.loadClass(className).getConstructor(Manager.class);
         r = (LineReader) c.newInstance(this);
 

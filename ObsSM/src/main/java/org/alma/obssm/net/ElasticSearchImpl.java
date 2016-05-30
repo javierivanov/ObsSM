@@ -48,7 +48,7 @@ import java.util.TimeZone;
  * Data retriever implementation, it use ElasticSearch. Don't require server
  * socket listener.
  *
- * @version 0.4
+ * @version 1.0
  * @author Javier Fuentes Muñoz j.fuentes.m@icloud.com
  */
 public class ElasticSearchImpl implements LineReader {

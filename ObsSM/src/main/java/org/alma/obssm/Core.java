@@ -37,7 +37,7 @@ import java.util.logging.Logger;
  * This class Execute the procedure to search and parse data.
  * 
  * @author Javier Fuentes Munoz j.fuentes.m@icloud.com
- * @version 0.4
+ * @version 1.0
  * @see UICoreActions
  * 
  */

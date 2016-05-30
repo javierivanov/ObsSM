@@ -28,9 +28,8 @@ import org.apache.commons.cli.*;
  * Main class, initialize the State Machines and Parsers and runs the
  * interpreter only.
  *
- * TO DO: Upgrade to allow to run with the Manager class.
  *
- * @version 0.4
+ * @version 1.0
  * @author Javier Fuentes j.fuentes.m@icloud.com
  *
  * @see Manager

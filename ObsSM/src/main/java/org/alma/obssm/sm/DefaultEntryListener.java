@@ -32,7 +32,7 @@ import org.apache.commons.scxml.model.TransitionTarget;
  * database or connect to a socket and transmit the transitions and states.
  *
  * @author Javier Fuentes Munoz j.fuentes.m@icloud.com
- * @version 0.4
+ * @version 1.0
  *
  */
 public class DefaultEntryListener extends EntryListener {
@@ -52,6 +52,7 @@ public class DefaultEntryListener extends EntryListener {
     @Override
     public void onTransition(TransitionTarget from, TransitionTarget to, Transition transition, String array, String timeStamp, String logline) {
         System.out.println("ARRAY: "+array+" EVENT: " + transition.getEvent() + " TO: " + to.getId() + " FROM: " + from.getId() + " TS: " + timeStamp);
+        System.out.println("\tLOGLINE: " + logline);
     }
 
     @Override
