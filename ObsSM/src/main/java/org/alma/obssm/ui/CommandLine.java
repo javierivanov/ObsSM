@@ -36,6 +36,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.alma.obssm.sm.DefaultEntryListener;
 import org.alma.obssm.sm.EntryListener;
+import org.apache.commons.scxml.model.Transition;
+import org.apache.commons.scxml.model.TransitionTarget;
 
 /**
  * This class run the interpreter via command line.
@@ -63,7 +65,7 @@ public class CommandLine {
      * @param query_filter JSON query filter document
      * @param ELK_server ElasticSearch URL (default LineReader)
      * @param listener EntryListener implementation via jar:class
-     * @param linereader LineReader implementation via jar:class
+     * @param grep Log retrieve only
      * @param dfrom TimeStamp from
      * @param dto TimeStamp To
      * @param query query to search.
@@ -73,7 +75,7 @@ public class CommandLine {
             String query_filter,
             String ELK_server,
             final String listener,
-            final String linereader,
+            final boolean grep,
             final String dfrom,
             final String dto, final String query) {
 
@@ -149,6 +151,8 @@ public class CommandLine {
 
             @Override
             public void actionsPerLine(String line) {
+                if (grep)
+                    System.out.println(line);
             }
 
             @Override
@@ -182,6 +186,28 @@ public class CommandLine {
              */
             @Override
             public EntryListener getEntryListener() {
+                /**
+                 * If grep mode is active Listener option will be silence.
+                 */
+                if (grep) {
+                    return new EntryListener(m) {
+                        @Override
+                        public void initialize() {
+                        }
+                        
+                        @Override
+                        public void onTransition(TransitionTarget from, TransitionTarget to, Transition transition, String array, String timeStamp, String logLine) {
+                        }
+                        
+                        @Override
+                        public void onEntry(TransitionTarget tt) {
+                        }
+                        
+                        @Override
+                        public void onExit(TransitionTarget tt) {
+                        }
+                    };
+                }
                 try {
                     Constructor c = cl.getConstructor(Manager.class);
                     EntryListener l = (EntryListener) c.newInstance(m);

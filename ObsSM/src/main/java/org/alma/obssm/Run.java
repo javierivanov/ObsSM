@@ -40,6 +40,11 @@ public class Run {
      * Flag to run with a simulation input.
      */
     public static boolean SIMUL = false;
+    
+    /**
+     * Flag to run with debugging messages. 
+     */
+    public static boolean VERBOSE = false;
     /**
      * Main function.
      *
@@ -57,6 +62,8 @@ public class Run {
         Options options = new Options();
         options.addOption("c", "cmd", false, "use a Command Line Interface");
         options.addOption("h", "help", false, "show this message");
+        options.addOption("g", "grep", false, "just retrieve data from ES");
+        options.addOption("v", "verbose", false, "show debugging messages");
         options.addOption( Option.builder().desc("use a given scxml file to parse a SM").argName("scxml file").numberOfArgs(1).longOpt("scxml").build());
         options.addOption( Option.builder().desc("use a given json file to translate log").argName("json file").numberOfArgs(1).longOpt("log_translate").build());
         options.addOption( Option.builder().desc("use a given query filter (json) file to search through ElasticSearch").argName("json file").numberOfArgs(1).longOpt("query_filter").build());
@@ -64,7 +71,6 @@ public class Run {
         options.addOption( Option.builder().desc("TimeStamp to").argName("time stamp to").numberOfArgs(1).longOpt("date_to").build());
         options.addOption( Option.builder().desc("Query DSL").argName("query").numberOfArgs(1).longOpt("query").build());
         options.addOption( Option.builder().desc("Transition listener (Default: DefaultEntryistener)").argName("ListenerJarFile:ListenerClass").numberOfArgs(1).longOpt("listener").build());
-        options.addOption( Option.builder().desc("Linereader implementation (Default: ElasticSearch)").argName("LineReaderJarFile:LineReaderClass").numberOfArgs(1).longOpt("linereader").build());
         options.addOption( Option.builder().desc("Elastic Search Server").argName("elk_server").numberOfArgs(1).longOpt("elk_server").build());
 
 
@@ -78,6 +84,9 @@ public class Run {
                 printUsage(options);
             }
 
+            if (line.hasOption("verbose"))
+                VERBOSE = true;
+            
             if (line.hasOption("cmd")) {
                 String dfrom = null, dto = null, query = null;
                 String scxml = null;
@@ -85,7 +94,7 @@ public class Run {
                 String query_filter = null;
                 String elk = null;
                 String listener = null;
-                String linereader = null;
+                boolean grep = false;
                 /**
                  * This vars are required.
                  */
@@ -111,8 +120,8 @@ public class Run {
                     elk = line.getOptionValue("elk_server");
                 if (line.hasOption("listener"))
                     listener = line.getOptionValue("listener");
-                if (line.hasOption("linereader"))
-                    linereader = line.getOptionValue("linereader");
+                if (line.hasOption("grep"))
+                    grep = true;
                 
                 new Manager().
                         launchCommandLine().
@@ -121,7 +130,7 @@ public class Run {
                                 query_filter,
                                 elk,
                                 listener,
-                                linereader,
+                                grep,
                                 dfrom,
                                 dto,
                                 query);
