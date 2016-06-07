@@ -175,7 +175,9 @@ public class StateMachineManager {
      * @throws IOException
      * @throws SAXException
      */
-    public int findAndTriggerAction(String transition, String keyName) throws ModelException, IOException, SAXException {
+    public int findAndTriggerAction(String transition, String keyName) 
+            throws ModelException, IOException, SAXException {
+        
         if (transition == null) {
             return ACTION_NOT_FOUND;
         }

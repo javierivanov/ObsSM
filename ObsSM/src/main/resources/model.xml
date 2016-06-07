@@ -1,5 +1,5 @@
-<scxml initial="MainIdle" final="ArrayDestroyedState" version="0.9" xmlns="http://www.w3.org/2005/07/scxml">
-    <state id="MainIdle">
+<scxml initial="Idle" final="ArrayDestroyedState" version="0.9" xmlns="http://www.w3.org/2005/07/scxml">
+    <state id="Idle">
         <transition event="Array.creation" target="ArrayCreated"></transition>
         <transition event="Interferometry.init" target="InterferometryInitializeStarted"></transition>
         <transition event="Interferometry.sumAntenna" target="InterferometryException"></transition>
@@ -67,7 +67,7 @@
         
             <state id="SubscanSequenceException">
             </state>
-			
+                
             <state id="SubscanSequenceSettingUpStarted">
                 <transition event="SubscanSequence.runException" target="SubscanSequenceException"></transition>
                 <transition event="ObservingMode.beginSubscan" target="SubscanSequenceLoopStarted"></transition>
@@ -82,7 +82,8 @@
                 <transition event="ObservingMode.beginSubscan" target="SubscanSequenceLoopStarted"></transition>
                 <transition event="ObservingMode.endScan" target="ObservingModeScanEnded"></transition>
                 <transition event="SubscanSequence.runException" target="SubscanSequenceException"></transition>
-            </state>		
+            </state>
+           
         </state>
         <state id="PointingSubArray">
             <initial>

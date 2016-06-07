@@ -12,8 +12,7 @@ import org.jgrapht.ext.JGraphXAdapter;
 import org.jgrapht.graph.DirectedMultigraph;
 
 
-public final class JGraphApplet
-        extends JApplet {
+public final class JGraphApplet extends JApplet {
 
     private static final long serialVersionUID = 2202072534703043194L;
 
@@ -31,7 +30,8 @@ public final class JGraphApplet
         HashMap<mxICell, Vertex> v = jgxAdapter.getCellToVertexMap();
         HashMap<mxICell, Edge> e = jgxAdapter.getCellToEdgeMap();
         for (mxICell c: v.keySet()) {
-            if (v.get(c).getState().contains("Idle")){
+            if (v.get(c).getState().contains("Idle")
+                    || v.get(c).getState().contains("idle") ){
                 c.setStyle("ROUNDED;strokeColor=red;fillColor=yellow");
                 last = v.get(c).getState();
             }

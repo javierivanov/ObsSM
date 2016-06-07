@@ -45,7 +45,7 @@ public class GraphViewer extends EntryListener {
             String first = g.vertexSet().iterator().next().getState();
             for (Vertex v : g.vertexSet()) {
                 if (v.getState().equals(s)) {
-                    view.updateActualState(array, first.replace("Idle", ""), s);
+                    view.updateActualState(array, first, s);
                     return;
                 }
             }

@@ -105,6 +105,14 @@ public class ObsSMPanel extends JFrame {
         super("ObsSM2 Panel");
         this.m = m;
         //Default files
+        setUpParsers();
+        initialize();
+        initializeListeners();
+        confPanel = new ObsSMPanelConf(m);
+        dataSaved = true;
+    }
+    
+    private void setUpParsers() {
         try {
             //Right usage of a internal JAR files.
             m.parser = new Parser(m.getResourceFiles("log_translate.json").getAbsolutePath());
@@ -119,11 +127,6 @@ public class ObsSMPanel extends JFrame {
                 JOptionPane.showMessageDialog(m.osmPanel, "SM SCXML Model or JSON Log translator files are Missing!");
             }
         }
-
-        initialize();
-        initializeListeners();
-        confPanel = new ObsSMPanelConf(m);
-        dataSaved = true;
     }
 
     /**
@@ -480,6 +483,8 @@ public class ObsSMPanel extends JFrame {
         while (tablemodel.getRowCount() > 0) tablemodel.removeRow(0);
         dataSaved = true;
         statusLabel.setText("Cleaned!");
+        
+        setUpParsers();
     }
 
     public CustomTableModel getTablemodel() {

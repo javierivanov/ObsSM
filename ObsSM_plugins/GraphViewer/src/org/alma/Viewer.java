@@ -216,6 +216,7 @@ public class Viewer extends javax.swing.JFrame {
         jPanel1.removeAll();
         for (JGraphApplet jg: arraysAndgraphs.get(array).values()) {
             jPanel1.add(jg);
+            jg.getJgxAdapter().refresh();
         }
         
         setSize(getSize());
