@@ -1,6 +1,4 @@
-#!/usr/bin/env python
-
-
+#!/usr/bin/env python2
 from datetime import date
 from xml_log_processor import XMLLogProcessor
 import sys

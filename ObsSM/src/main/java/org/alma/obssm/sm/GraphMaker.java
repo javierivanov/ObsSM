@@ -91,7 +91,6 @@ public class GraphMaker {
             for (Transition t: getTransitionsListFromState(s.getState())) {
                 g.addEdge(s, new Vertex(t.getNext()), new Edge(s, new Vertex(t.getNext()), t.getEvent()));
             }
-            
         }
         return g;
     }

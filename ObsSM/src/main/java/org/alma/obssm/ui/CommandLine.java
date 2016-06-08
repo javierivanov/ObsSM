@@ -32,6 +32,7 @@ import org.alma.obssm.sm.StateMachineManager;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.alma.obssm.sm.DefaultEntryListener;
@@ -75,7 +76,7 @@ public class CommandLine {
             String query_filter,
             String ELK_server,
             final String listener,
-            final boolean grep,
+            final String grep,
             final String dfrom,
             final String dto, final String query) {
 
@@ -126,10 +127,22 @@ public class CommandLine {
         Core.startSearch(new UICoreActions() {
             @Override
             public LineReader initialize() {
-                return new ElasticSearchImpl(dfrom.replace(" ", "T"),
+                ElasticSearchImpl out =  new ElasticSearchImpl(dfrom.replace(" ", "T"),
                         dto.replace(" ", "T"),
                         query,
                         m.default_query_base, m.ESUrl);
+                /**
+                 * Checks if the grep option is ON.
+                 * And parse options.
+                 */
+                if (grep != null) {
+                    if (!grep.equals("")) {
+                        out.setSpecialOutput(grep.split(":"));
+                    } else {
+                        out.setSpecialOutput(new String[]{});
+                    }
+                }
+                return out;
             }
 
             @Override
@@ -151,7 +164,7 @@ public class CommandLine {
 
             @Override
             public void actionsPerLine(String line) {
-                if (grep)
+                if (grep != null)
                     System.out.println(line);
             }
 
@@ -187,9 +200,9 @@ public class CommandLine {
             @Override
             public EntryListener getEntryListener() {
                 /**
-                 * If grep mode is active Listener option will be silence.
+                 * If grep mode is active Listener option will be silenced.
                  */
-                if (grep) {
+                if (grep != null) {
                     return new EntryListener(m) {
                         @Override
                         public void initialize() {

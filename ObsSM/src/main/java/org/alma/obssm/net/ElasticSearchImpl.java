@@ -39,9 +39,11 @@ import java.util.logging.Logger;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
+import org.alma.obssm.Run;
 
 /**
  *
@@ -58,7 +60,22 @@ public class ElasticSearchImpl implements LineReader {
      */
     class Hit {
 
-        HashMap<String, Object> _source;        
+        HashMap<String, Object> _source;
+        public String getSource(String[] params) {
+            StringBuilder out = new StringBuilder();
+            if (params.length != 0) {
+                out.append("{");
+                for (String p: params) {
+                    out.append(p).append("= ");
+                    out.append((String)_source.get(p));
+                    out.append(", ");
+                }
+                out.append("}");
+            } else {
+                out.append(_source.toString());
+            }
+            return out.toString().replaceAll("\n", "\t");
+        }
     }
 
     class HitsList {
@@ -81,7 +98,7 @@ public class ElasticSearchImpl implements LineReader {
     private final String ESUrl;
     private String timeStampStart;
     private boolean active = true;
-
+    private String[] specialOutput = null;
     private Thread thread;
 
     /**
@@ -134,7 +151,8 @@ public class ElasticSearchImpl implements LineReader {
                 active = true;
                 //DefaultTime.
                 String auxTimeStampEnd = timeStampEnd;
-                Logger.getLogger(ElasticSearchImpl.class.getName()).
+                if (Run.VERBOSE)
+                    Logger.getLogger(ElasticSearchImpl.class.getName()).
                         log(Level.INFO, "Elastic Search start");
                 while (active) {
                     try {
@@ -172,11 +190,17 @@ public class ElasticSearchImpl implements LineReader {
                             temp.append(h._source.get("SourceObject")).append(" ");
                             temp.append(h._source.get("File")).append(" ");
                             temp.append(h._source.get("Routine")).append(" ");
-                            temp.append(h._source.get("text")).append(" ");
+                            String aux = (String)h._source.get("text");
+                            temp.append(aux.replace("\n", ""));
 
                             
+                            
                             synchronized (fifoList) {
-                                fifoList.add(temp.toString());
+                                if (specialOutput != null) {
+                                    fifoList.add(h.getSource(specialOutput));
+                                } else {
+                                    fifoList.add(temp.toString());
+                                }
                                 fifoList.notify();
                             }
 
@@ -200,17 +224,16 @@ public class ElasticSearchImpl implements LineReader {
                     } catch (IOException | ParseException | InterruptedException ex) {
                         Logger.getLogger(ElasticSearchImpl.class.getName()).
                                 log(Level.SEVERE, "Elastic Search fail response", ex);
-                        System.out.println("end4");
                         active = false;
                     }
                 }
-                System.out.println("end5");
                 active = false;
                 synchronized (fifoList) {
                     fifoList.add("EOF");
                     fifoList.notify();
                 }
-                Logger.getLogger(ElasticSearchImpl.class.getName()).
+                if (Run.VERBOSE)
+                    Logger.getLogger(ElasticSearchImpl.class.getName()).
                         log(Level.INFO, "Elastic Search stop");
             }
         });
@@ -233,6 +256,16 @@ public class ElasticSearchImpl implements LineReader {
         // read the response
         return new DataInputStream(con.getInputStream());
     }
+
+    /**
+     * Change the output vars
+     * @param specialOutput
+     */
+    public void setSpecialOutput(String[] specialOutput) {
+        this.specialOutput = specialOutput;
+    }
+    
+    
 
     /**
      * Provide actual timeStamp yyyy-MM-dd'T'HH:mm:ss.SSS

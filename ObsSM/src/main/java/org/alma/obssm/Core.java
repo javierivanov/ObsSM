@@ -49,7 +49,6 @@ public class Core {
      * @param actions 
      */
     public static void startSearch(UICoreActions actions) {
-        actions.initialize();
         try {
             actions.getManager().lr = actions.initialize();
             //Checking the SM Manager and JSON Log parser
@@ -87,7 +86,8 @@ public class Core {
             Logger.getLogger(ObsSMPanel.class.getName()).log(Level.SEVERE, null, ex);
             actions.exceptions(ex);
         } catch (InterruptedException ex) {
-            Logger.getLogger(ObsSMPanel.class.getName()).log(Level.INFO, null, ex);
+            if (Run.VERBOSE)
+                Logger.getLogger(ObsSMPanel.class.getName()).log(Level.INFO, null, ex);
             actions.exceptions(ex);
         } finally {
             actions.getManager().lr.interrupt();

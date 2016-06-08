@@ -62,7 +62,6 @@ public class Run {
         Options options = new Options();
         options.addOption("c", "cmd", false, "use a Command Line Interface");
         options.addOption("h", "help", false, "show this message");
-        options.addOption("g", "grep", false, "just retrieve data from ES");
         options.addOption("v", "verbose", false, "show debugging messages");
         options.addOption( Option.builder().desc("use a given scxml file to parse a SM").argName("scxml file").numberOfArgs(1).longOpt("scxml").build());
         options.addOption( Option.builder().desc("use a given json file to translate log").argName("json file").numberOfArgs(1).longOpt("log_translate").build());
@@ -72,6 +71,8 @@ public class Run {
         options.addOption( Option.builder().desc("Query DSL").argName("query").numberOfArgs(1).longOpt("query").build());
         options.addOption( Option.builder().desc("Transition listener (Default: DefaultEntryistener)").argName("ListenerJarFile:ListenerClass").numberOfArgs(1).longOpt("listener").build());
         options.addOption( Option.builder().desc("Elastic Search Server").argName("elk_server").numberOfArgs(1).longOpt("elk_server").build());
+        options.addOption( Option.builder().desc("Make a grep from Elastic search, arguments are optional.")
+                .argName("TimeStamp:Array:text:SourceObject:Etc").numberOfArgs(1).longOpt("grep").optionalArg(true).build());
 
 
 
@@ -94,7 +95,7 @@ public class Run {
                 String query_filter = null;
                 String elk = null;
                 String listener = null;
-                boolean grep = false;
+                String grep = null;
                 /**
                  * This vars are required.
                  */
@@ -120,8 +121,11 @@ public class Run {
                     elk = line.getOptionValue("elk_server");
                 if (line.hasOption("listener"))
                     listener = line.getOptionValue("listener");
-                if (line.hasOption("grep"))
-                    grep = true;
+                
+                if (line.hasOption("grep")) {
+                    grep = line.getOptionValue("grep");
+                    if (grep == null) grep = "";
+                }
                 
                 new Manager().
                         launchCommandLine().
