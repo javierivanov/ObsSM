@@ -73,11 +73,11 @@ python2 scripts/logSender.py
 
 This is an application to discover transitions into the log, generating a SCXML model.
 
-## Usage:
+## Downloading XML Documents:
 
 * To select dates for learning, you have to edit the ```main.py``` file.
 
-
+**Añadir command line options
 ```sh
 python2 Discovery/src/main.py [states.json file]
 ```
@@ -85,3 +85,22 @@ It generates a xml document, so you can save it using:
 ```sh
 python2 Discovery/src/main.py [states.json file] > [model file]
 ```
+## Downloading Logs from Elastic Search:
+
+Help exec.py
+```sh
+Usage: exec.py [options]
+
+Options:
+  -h, --help            show this help message and exit
+  -f JSON, --file=JSON  JSON Log translate document
+  -v, --verbose         Show data from transitions
+```
+
+You can use the obssm.sh in grep mode to obtain logs:
+```sh
+./obssm.sh -c --grep --date_from="2016-05-22T21:16:22.037" --date_to="2016-05-23T21:16:22.037" --query="*"
+```
+So, you can use a pipe:
+```sh
+ObsSM/obssm.sh -c --grep --date_from="2016-05-23T20:16:22.037" --date_to="2016-05-23T21:16:22.037" --query="*" | python2 Discovery/src/exec.py -f json-document.json
