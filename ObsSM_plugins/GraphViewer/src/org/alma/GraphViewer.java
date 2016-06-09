@@ -65,7 +65,7 @@ public class GraphViewer extends EntryListener {
     @Override
     public void initialize() {
         for (DirectedMultigraph<Vertex, Edge> g : stateMachine.getGraphs()) {
-            String graphName = g.vertexSet().iterator().next().getState().replace("Idle", "");
+            String graphName = g.vertexSet().iterator().next().getState();
             view.addGraph(graphName, stateMachine.getKeyName(), g);
         }
     }
