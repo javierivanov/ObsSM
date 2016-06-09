@@ -94,12 +94,11 @@ public class ObsSMPanel extends JFrame {
     private JScrollPane scrollTablePane;
     private CustomTableModel tablemodel;
     private JTable table;
-    
+
     private final ObsSMPanelConf confPanel;
     private Thread mainThread;
-    
+
     private boolean dataSaved;
-    
 
     public ObsSMPanel(Manager m) {
         super("ObsSM2 Panel");
@@ -111,7 +110,7 @@ public class ObsSMPanel extends JFrame {
         confPanel = new ObsSMPanelConf(m);
         dataSaved = true;
     }
-    
+
     private void setUpParsers() {
         try {
             //Right usage of a internal JAR files.
@@ -229,8 +228,9 @@ public class ObsSMPanel extends JFrame {
         KeyListener klistener = new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
-                if ((int)e.getKeyChar() == KeyEvent.VK_ENTER)
+                if ((int) e.getKeyChar() == KeyEvent.VK_ENTER) {
                     startThreadSearch();
+                }
             }
 
             @Override
@@ -241,11 +241,11 @@ public class ObsSMPanel extends JFrame {
             public void keyReleased(KeyEvent e) {
             }
         };
-        
+
         dfrom.addKeyListener(klistener);
         dto.addKeyListener(klistener);
         query.addKeyListener(klistener);
-        
+
         searchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -288,7 +288,7 @@ public class ObsSMPanel extends JFrame {
                 cleanData();
             }
         });
-        
+
         quitItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -371,6 +371,14 @@ public class ObsSMPanel extends JFrame {
         final UICoreActions actions = new UICoreActions() {
             @Override
             public LineReader initialize() {
+                if (tablemodel.getRowCount() != 0) {
+                    int res = JOptionPane.showConfirmDialog(m.osmPanel, "Do you want to save this data?");
+                    if (JOptionPane.OK_OPTION == res) {
+                        cleanData();
+                    }
+                    dataSaved = true;
+                    cleanData();
+                }
                 searchButton.setEnabled(false);
                 dfrom.setEnabled(false);
                 query.setEnabled(false);
@@ -476,14 +484,16 @@ public class ObsSMPanel extends JFrame {
             }
         }
     }
-    
+
     public void cleanData() {
         mainThread.interrupt();
         saveData();
-        while (tablemodel.getRowCount() > 0) tablemodel.removeRow(0);
+        while (tablemodel.getRowCount() > 0) {
+            tablemodel.removeRow(0);
+        }
         dataSaved = true;
         statusLabel.setText("Cleaned!");
-        
+
         setUpParsers();
     }
 
@@ -498,5 +508,5 @@ public class ObsSMPanel extends JFrame {
     public JLabel getStatusLabel() {
         return statusLabel;
     }
-    
+
 }

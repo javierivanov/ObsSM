@@ -22,6 +22,7 @@
  */
 package org.alma.obssm;
 
+import java.util.Arrays;
 import org.apache.commons.cli.*;
 
 /**
@@ -107,6 +108,10 @@ public class Run {
                     dfrom = line.getOptionValue("date_from");
                     dto = line.getOptionValue("date_to");
                     query = line.getOptionValue("query");
+                    for (String s: line.getArgs()) {
+                        query += " ";
+                        query += s;
+                    }
                 }
                 /**
                  * This vars are optional.
@@ -164,7 +169,7 @@ public class Run {
         if (message != null) {
             System.out.println(message);
         }
-        formatter.printHelp("obssm", options);
+        formatter.printHelp("obssm.sh", options);
         System.exit(0);
     }
 
