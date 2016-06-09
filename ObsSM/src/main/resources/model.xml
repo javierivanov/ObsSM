@@ -109,8 +109,13 @@
             </state>
             
             <state id="PointingSubArrayShutterOpenningEnded">
+                <transition event="SubscanSequence.runException" target="PointingSubArrayStopped"></transition>
+            </state>
+
+            <state id="PointingSubArrayStopped">
             </state>
         </state>
+        
         
         
         <state id="LocalOscillator">
@@ -129,9 +134,34 @@
             </state>
             
             <state id="LocalOscillatorControllersCreated">
+                <transition event="LocalOscillator.abortsequence" target="LocalOscillatorAborted"></transition>
+                <transition event="LocalOscillator.startingSequence" target="LocalOscillatorSequenceStarted"></transition>
+            </state>
+            <state id="LocalOscillatorSequenceStarted">
+                <transition event="LocalOscillator.stoppingSequence" target="LocalOscillatorSequenceEnded"></transition>
+            </state>
+
+            <state id="LocalOscillatorSequenceEnded">
+                <transition event="LocalOscillator.startingSequence" target="LocalOscillatorSequenceStarted"></transition>
+                <transition event="LocalOscillator.cleanUp" target="LocalOscillatorCleanUpStarted"></transition>
+            </state>
+
+            <state id="LocalOscillatorCleanUpStarted">
+                <transition event="LocalOscillator.cleanUpEnd" target="LocalOscillatorCleanUpEnded"></transition>
+            </state>
+
+
+            <state id="LocalOscillatorCleanUpEnded">
+                <transition event="LocalOscillator.callreference" target="LocalOscillatorGettingReferenceCalled"></transition>
+            </state>
+
+
+            <state id="LocalOscillatorAborted">
             </state>
         </state>
         
+
+
         <state id="InterferometryController">
             <initial>
                 <transition target="InterferometryControllerConstructorIdle"></transition>
@@ -148,6 +178,23 @@
             </state>
             
             <state id="InterferometryControllerCreated">
+                <transition event="InterferometryController.stop" target="InterferometryControllerStopped"></transition>
+                <transition event="InterferometryController.subsequenceStart" target="InterferometryControllerSubsequenceStarted"></transition>
+            </state>
+            <state id="InterferometryControllerSubsequenceStarted">
+                <transition event="InterferometryController.subsequenceEnd" target="InterferometryControllerSubsequenceEnded"></transition>
+                <transition event="InterferometryController.stop" target="InterferometryControllerStopped"></transition>
+            </state>
+            <state id="InterferometryControllerSubsequenceEnded">
+                <transition event="InterferometryController.cleanUp" target="InterferometryControllerCleanUpStarted"></transition>
+            </state>
+            <state id="InterferometryControllerCleanUpStarted">
+                <transition event="InterferometryController.cleanUpEnd" target="InterferometryControllerCleanUpEnded"></transition>
+            </state>
+            <state id="InterferometryControllerCleanUpEnded">
+                <transition event="InterferometryController.start" target="InterferometryControllerStarted"></transition>
+            </state>
+            <state id="InterferometryControllerStopped">
             </state>
         </state>
         

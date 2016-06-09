@@ -55,8 +55,6 @@
         "keyName": "(Array\\d+)",
         "eventType": "transition"
     },
-    
-    
     {
         "eventName": "Interferometry.settingUpEnd",
         "and_list": [],
@@ -189,7 +187,7 @@
         "eventName": "InterferometryController.startingEnd",
         "and_list": [],
         "or_list": [],
-        "search_list": ["(Completed starting the interferometery controller.)"],
+        "search_list": ["(Completed starting the interferometery controller)"],
         "keyName": "(Array\\d+)",
         "eventType": "transition"
     },
@@ -205,7 +203,7 @@
         "eventName": "TotalPowerProcessor.startEnd",
         "and_list": [],
         "or_list": [],
-        "search_list": ["(Created the CONTROL\/Array\\d+\/TotalPowerProcessor component.)"],
+        "search_list": ["(Created the CONTROL\/Array\\d+\/TotalPowerProcessor component)"],
         "keyName": "(Array\\d+)",
         "eventType": "transition"
     },
@@ -224,6 +222,85 @@
         "search_list": ["(Opening the shutter on all antennas)"],
         "keyName": "(Array\\d+)",
         "eventType": "transition"
+    },
+    {
+        "eventName": "LocalOscillator.abortsequence",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(Aborting the tuning sequence)", "(abortSubscanSequence)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "InterferometryController.stop",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(Stopping the subscan sequence)", "(stopSubscanSequence)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "InterferometryController.subsequenceStart",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(Sequence timing provided to the correlator)", "(startSubscanSequence)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "InterferometryController.subsequenceEnd",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(Subscan \\d+ contains \\d+ integration\\(s\\) \\(\\d+ total bytes\\))", "(waitForSubscanEnd)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "InterferometryController.cleanUp",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(Interferometry controller shutting down)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "InterferometryController.cleanUpEnd",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(Completed deactivating the interferometery controller)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "LocalOscillator.startingSequence",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(Starting a thread to handle a sequence of \\d+ tuning changes)", "(LocalOscillatorThread)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "LocalOscillator.stoppingSequence",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(Completed a sequence of \\d+ tuning changes)", "(LocalOscillatorThread)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "LocalOscillator.cleanUp",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(Shutting down delay compensation and fringe tracking)", "(LocalOscillatorImpl)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "LocalOscillator.cleanUpEnd",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(Completed deactivating the local oscillator)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
     }
-    
 ]
