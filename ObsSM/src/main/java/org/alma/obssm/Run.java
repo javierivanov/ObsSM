@@ -22,7 +22,6 @@
  */
 package org.alma.obssm;
 
-import java.util.Arrays;
 import org.apache.commons.cli.*;
 
 /**

@@ -114,13 +114,6 @@ public class Manager {
      * @return CommandLine instance.
      */
     public ObsSMPanel launchPanel() {
-        //Remove customs styles for java swing. Metal!!
-        try {
-            UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
-        } catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-            if (Run.VERBOSE)
-                Logger.getLogger(Manager.class.getName()).log(Level.SEVERE, null, ex);
-        }
         osmPanel = new ObsSMPanel(this);
         return osmPanel;
     }

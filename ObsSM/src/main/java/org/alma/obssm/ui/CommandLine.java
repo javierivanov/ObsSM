@@ -32,9 +32,9 @@ import org.alma.obssm.sm.StateMachineManager;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.alma.obssm.Run;
 import org.alma.obssm.sm.DefaultEntryListener;
 import org.alma.obssm.sm.EntryListener;
 import org.apache.commons.scxml.model.Transition;
@@ -108,8 +108,7 @@ public class CommandLine {
                     .log(Level.SEVERE, "Problems reading configuration files,"
                             + " check the trace.", ex);
         }
-        
-        
+
         Class aux = null;
         if (listener != null) {
             if (listener.contains(":")) {
@@ -127,13 +126,12 @@ public class CommandLine {
         Core.startSearch(new UICoreActions() {
             @Override
             public LineReader initialize() {
-                ElasticSearchImpl out =  new ElasticSearchImpl(dfrom.replace(" ", "T"),
+                ElasticSearchImpl out = new ElasticSearchImpl(dfrom.replace(" ", "T"),
                         dto.replace(" ", "T"),
                         query,
                         m.default_query_base, m.ESUrl);
                 /**
-                 * Checks if the grep option is ON.
-                 * And parse options.
+                 * Checks if the grep option is ON. And parse options.
                  */
                 if (grep != null) {
                     if (!grep.equals("")) {
@@ -156,20 +154,33 @@ public class CommandLine {
 
             @Override
             public void beforeStartCommunications() {
+                if (Run.VERBOSE) {
+                    Logger.getLogger(CommandLine.class.getName())
+                            .log(Level.INFO, "Before start Com");
+                }
             }
 
             @Override
             public void afterStartCommunications() {
+                if (Run.VERBOSE) {
+                    Logger.getLogger(CommandLine.class.getName())
+                            .log(Level.INFO, "After start Com");
+                }
             }
 
             @Override
             public void actionsPerLine(String line) {
-                if (grep != null)
+                if (grep != null) {
                     System.out.println(line);
+                }
             }
 
             @Override
             public void loopEnd() {
+                if (Run.VERBOSE) {
+                    Logger.getLogger(CommandLine.class.getName())
+                            .log(Level.INFO, "Loop ended");
+                }
             }
 
             @Override
@@ -180,6 +191,10 @@ public class CommandLine {
 
             @Override
             public void cleanUp() {
+                if (Run.VERBOSE) {
+                    Logger.getLogger(CommandLine.class.getName())
+                            .log(Level.INFO, "Running cleanUp");
+                }
             }
 
             /*
@@ -207,15 +222,15 @@ public class CommandLine {
                         @Override
                         public void initialize() {
                         }
-                        
+
                         @Override
                         public void onTransition(TransitionTarget from, TransitionTarget to, Transition transition, String array, String timeStamp, String logLine) {
                         }
-                        
+
                         @Override
                         public void onEntry(TransitionTarget tt) {
                         }
-                        
+
                         @Override
                         public void onExit(TransitionTarget tt) {
                         }
@@ -225,15 +240,11 @@ public class CommandLine {
                     Constructor c = cl.getConstructor(Manager.class);
                     EntryListener l = (EntryListener) c.newInstance(m);
                     return l;
-                } catch (InstantiationException
-                        | IllegalAccessException
-                        | IllegalArgumentException
-                        | InvocationTargetException
-                        | NoSuchMethodException| SecurityException ex) {
+                } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException ex) {
                     Logger.getLogger(CommandLine.class.getName())
                             .log(Level.SEVERE, null, ex);
                 }
-                
+
                 return new DefaultEntryListener(m);
             }
         });

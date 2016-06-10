@@ -61,13 +61,14 @@ public class ElasticSearchImpl implements LineReader {
     class Hit {
 
         HashMap<String, Object> _source;
+
         public String getSource(String[] params) {
             StringBuilder out = new StringBuilder();
             if (params.length != 0) {
                 out.append("{");
-                for (String p: params) {
+                for (String p : params) {
                     out.append(p).append("= ");
-                    out.append((String)_source.get(p));
+                    out.append((String) _source.get(p));
                     out.append(", ");
                 }
                 out.append("}");
@@ -151,18 +152,18 @@ public class ElasticSearchImpl implements LineReader {
                 active = true;
                 //DefaultTime.
                 String auxTimeStampEnd = timeStampEnd;
-                if (Run.VERBOSE)
+                if (Run.VERBOSE) {
                     Logger.getLogger(ElasticSearchImpl.class.getName()).
-                        log(Level.INFO, "Elastic Search start");
+                            log(Level.INFO, "Elastic Search start");
+                }
                 while (active) {
                     try {
                         //Setting query
                         //The end time change each iteration when the end is now.
-                        if (timeStampEnd.equals("now")){
+                        if (timeStampEnd.equals("now")) {
                             auxTimeStampEnd = getActualUTCTime();
                         }
-                            
-                        
+
                         String query_base_aux = query_base.replace("$Q", query);
                         query_base_aux = query_base_aux.replace("$T1", timeStampStart);
                         query_base_aux = query_base_aux.replace("$T2", auxTimeStampEnd);
@@ -174,27 +175,31 @@ public class ElasticSearchImpl implements LineReader {
                         r = new InputStreamReader(a);
                         List<Hit> response = getHits(r);
 
+                        if (Run.VERBOSE) {
+                            Logger.getLogger(ElasticSearchImpl.class.getName())
+                                    .log(Level.INFO, "List response from ElasticSearch: {0}", response.size());
+                        }
+
                         if (response.isEmpty() && !timeStampEnd.equals("now")) {
                             break;
                         }
-                        
+
                         //5 seconds delay with a small response.
-                        if (response.size() <= 2) Thread.sleep(5000);
+                        if (response.size() <= 2) {
+                            Thread.sleep(5000);
+                        }
 
                         String lastTimeStampStart = null;
                         for (Hit h : response) {
-
                             //Creating a log line for each  result.
                             StringBuilder temp = new StringBuilder();
                             temp.append(h._source.get("TimeStamp")).append(" ");
                             temp.append(h._source.get("SourceObject")).append(" ");
                             temp.append(h._source.get("File")).append(" ");
                             temp.append(h._source.get("Routine")).append(" ");
-                            String aux = (String)h._source.get("text");
+                            String aux = (String) h._source.get("text");
                             temp.append(aux.replace("\n", ""));
 
-                            
-                            
                             synchronized (fifoList) {
                                 if (specialOutput != null) {
                                     fifoList.add(h.getSource(specialOutput));
@@ -202,6 +207,10 @@ public class ElasticSearchImpl implements LineReader {
                                     fifoList.add(temp.toString());
                                 }
                                 fifoList.notify();
+                                if (Run.VERBOSE) {
+                                    Logger.getLogger(ElasticSearchImpl.class.getName()).
+                                            log(Level.INFO, "Added new log to fifoList");
+                                }
                             }
 
                             lastTimeStampStart = (String) h._source.get("TimeStamp");
@@ -214,10 +223,10 @@ public class ElasticSearchImpl implements LineReader {
                             lastTimeStampStart = auxTimeStampEnd;
                         }
 
-                        if (timeStampStart.equals(lastTimeStampStart) 
+                        if (timeStampStart.equals(lastTimeStampStart)
                                 && !timeStampEnd.equals("now")) {
                             break;
-                        }   
+                        }
                         //Updating the low time limit for a new search.
                         timeStampStart = lastTimeStampStart;
 
@@ -232,9 +241,10 @@ public class ElasticSearchImpl implements LineReader {
                     fifoList.add("EOF");
                     fifoList.notify();
                 }
-                if (Run.VERBOSE)
+                if (Run.VERBOSE) {
                     Logger.getLogger(ElasticSearchImpl.class.getName()).
-                        log(Level.INFO, "Elastic Search stop");
+                            log(Level.INFO, "Elastic Search stop");
+                }
             }
         });
         thread.start();
@@ -242,34 +252,39 @@ public class ElasticSearchImpl implements LineReader {
 
     private DataInputStream sendAndGetData(String url, String postData, String method)
             throws IOException, ParseException {
-        URL _url = new URL(url);
-        HttpURLConnection con = (HttpURLConnection) _url.openConnection();
-        //  CURLOPT_POST
-        con.setRequestMethod(method);
-        con.setRequestProperty("Content-length", String.valueOf(postData.length()));
-        con.setDoOutput(true);
-        con.setDoInput(true);
+        try {
+            URL _url = new URL(url);
+            HttpURLConnection con = (HttpURLConnection) _url.openConnection();
+            //  CURLOPT_POST
+            con.setRequestMethod(method);
+            con.setRequestProperty("Content-length", String.valueOf(postData.length()));
+            con.setDoOutput(true);
+            con.setDoInput(true);
 
-        try (DataOutputStream output = new DataOutputStream(con.getOutputStream())) {
-            output.writeBytes(postData);
+            try (DataOutputStream output = new DataOutputStream(con.getOutputStream())) {
+                output.writeBytes(postData);
+            }
+            // read the response
+
+            return new DataInputStream(con.getInputStream());
+        } catch (IOException e) {
+            throw new IOException("Bad query syntax, Elastic Search return status 400");
         }
-        // read the response
-        return new DataInputStream(con.getInputStream());
     }
 
     /**
      * Change the output vars
+     *
      * @param specialOutput
      */
     public void setSpecialOutput(String[] specialOutput) {
         this.specialOutput = specialOutput;
     }
-    
-    
 
     /**
-     * Provide actual timeStamp yyyy-MM-dd'T'HH:mm:ss.SSS
-     * The time depends on the time of the execution machine.
+     * Provide actual timeStamp yyyy-MM-dd'T'HH:mm:ss.SSS The time depends on
+     * the time of the execution machine.
+     *
      * @return timeStamp
      */
     public String getActualUTCTime() {
@@ -294,6 +309,10 @@ public class ElasticSearchImpl implements LineReader {
             if (fifoList.isEmpty()) {
                 fifoList.wait();
             }
+            if (Run.VERBOSE) {
+                Logger.getLogger(ElasticSearchImpl.class.getName()).
+                        log(Level.INFO, "Log line readed from Fifo list");
+            }
             return fifoList.removeFirst();
         }
     }
@@ -316,7 +335,10 @@ public class ElasticSearchImpl implements LineReader {
 
     @Override
     public boolean isCommunicationActive() {
-        return active;
+        if (timeStampEnd.equals("now")) {
+            return active;
+        }
+        return active || !fifoList.isEmpty();
     }
 
 }
