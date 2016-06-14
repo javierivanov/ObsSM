@@ -46,8 +46,8 @@ public class CustomTableModel extends DefaultTableModel {
     }
 
     public void addRow(Object[] rowData, Color color) {
-        super.addRow(rowData);
         colorRow.add(color);
+        super.addRow(rowData);
     }
 
     @Override
