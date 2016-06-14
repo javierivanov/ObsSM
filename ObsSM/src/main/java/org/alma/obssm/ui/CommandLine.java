@@ -188,7 +188,7 @@ public class CommandLine {
                 Logger.getLogger(CommandLine.class.getName())
                         .log(Level.SEVERE, "Check the trace", ex);
             }
-
+ 
             @Override
             public void cleanUp() {
                 if (Run.VERBOSE) {

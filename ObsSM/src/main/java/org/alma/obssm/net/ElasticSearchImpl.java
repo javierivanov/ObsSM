@@ -39,7 +39,6 @@ import java.util.logging.Logger;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -155,7 +154,11 @@ public class ElasticSearchImpl implements LineReader {
                 if (Run.VERBOSE) {
                     Logger.getLogger(ElasticSearchImpl.class.getName()).
                             log(Level.INFO, "Elastic Search start");
+                    Logger.getLogger(ElasticSearchImpl.class.getName()).
+                            log(Level.INFO, "Times: {0} - {1}",
+                                    new Object[]{timeStampStart, timeStampEnd});
                 }
+                
                 while (active) {
                     try {
                         //Setting query
@@ -175,17 +178,16 @@ public class ElasticSearchImpl implements LineReader {
                         r = new InputStreamReader(a);
                         List<Hit> response = getHits(r);
 
-                        if (Run.VERBOSE) {
-                            Logger.getLogger(ElasticSearchImpl.class.getName())
-                                    .log(Level.INFO, "List response from ElasticSearch: {0}", response.size());
-                        }
-
                         if (response.isEmpty() && !timeStampEnd.equals("now")) {
                             break;
                         }
 
                         //5 seconds delay with a small response.
                         if (response.size() <= 2) {
+                            if (Run.VERBOSE) {
+                                Logger.getLogger(ElasticSearchImpl.class.getName())
+                                    .log(Level.INFO, "Waiting for new logs");
+                            }
                             Thread.sleep(5000);
                         }
 
@@ -207,10 +209,6 @@ public class ElasticSearchImpl implements LineReader {
                                     fifoList.add(temp.toString());
                                 }
                                 fifoList.notify();
-                                if (Run.VERBOSE) {
-                                    Logger.getLogger(ElasticSearchImpl.class.getName()).
-                                            log(Level.INFO, "Added new log to fifoList");
-                                }
                             }
 
                             lastTimeStampStart = (String) h._source.get("TimeStamp");
@@ -230,10 +228,15 @@ public class ElasticSearchImpl implements LineReader {
                         //Updating the low time limit for a new search.
                         timeStampStart = lastTimeStampStart;
 
-                    } catch (IOException | ParseException | InterruptedException ex) {
+                    } catch (IOException | ParseException ex) {
                         Logger.getLogger(ElasticSearchImpl.class.getName()).
                                 log(Level.SEVERE, "Elastic Search fail response", ex);
                         active = false;
+                    } catch (InterruptedException ex) {
+                        if (Run.VERBOSE) {
+                            Logger.getLogger(ElasticSearchImpl.class.getName())
+                                    .log(Level.INFO, "Thread interrupted");
+                        }
                     }
                 }
                 active = false;
@@ -308,10 +311,6 @@ public class ElasticSearchImpl implements LineReader {
         synchronized (fifoList) {
             if (fifoList.isEmpty()) {
                 fifoList.wait();
-            }
-            if (Run.VERBOSE) {
-                Logger.getLogger(ElasticSearchImpl.class.getName()).
-                        log(Level.INFO, "Log line readed from Fifo list");
             }
             return fifoList.removeFirst();
         }

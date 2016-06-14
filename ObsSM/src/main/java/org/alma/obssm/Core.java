@@ -87,8 +87,8 @@ public class Core {
             actions.exceptions(ex);
         } catch (InterruptedException ex) {
             if (Run.VERBOSE)
-                Logger.getLogger(ObsSMPanel.class.getName()).log(Level.INFO, null, ex);
-            actions.exceptions(ex);
+                Logger.getLogger(ObsSMPanel.class.getName())
+                        .log(Level.INFO, "Thread interrupted");
         } finally {
             actions.getManager().lr.interrupt();
             actions.cleanUp();

@@ -58,6 +58,7 @@ import javax.swing.border.BevelBorder;
 import org.alma.obssm.Core;
 
 import org.alma.obssm.Manager;
+import org.alma.obssm.Run;
 import org.alma.obssm.net.ElasticSearchImpl;
 import org.alma.obssm.net.LineReader;
 import org.alma.obssm.parser.Parser;
@@ -375,9 +376,14 @@ public class ObsSMPanel extends JFrame {
                     int res = JOptionPane.showConfirmDialog(m.osmPanel, "Do you want to save this data?");
                     if (JOptionPane.OK_OPTION == res) {
                         cleanData();
+                    } else {
+                        dataSaved = true;
+                        cleanData();
                     }
-                    dataSaved = true;
-                    cleanData();
+                    if (Run.VERBOSE) {
+                        Logger.getLogger(ObsSMPanel.class.getName())
+                                .log(Level.INFO, "Data cleaned");
+                    }
                 }
                 searchButton.setEnabled(false);
                 dfrom.setEnabled(false);
@@ -397,6 +403,10 @@ public class ObsSMPanel extends JFrame {
             @Override
             public void filesNotFound() {
                 JOptionPane.showMessageDialog(m.osmPanel, "SM SCXML Model or JSON Log translator Missing!");
+                if (Run.VERBOSE) {
+                        Logger.getLogger(ObsSMPanel.class.getName())
+                                .log(Level.INFO, "SM SCXML Model or JSON Log translator Missing!");
+                    }
             }
 
             @Override
