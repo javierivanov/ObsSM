@@ -22,6 +22,10 @@
  */
 package org.alma.obssm.sm;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import org.alma.obssm.Manager;
 import org.apache.commons.scxml.model.Transition;
 import org.apache.commons.scxml.model.TransitionTarget;
@@ -37,6 +41,19 @@ import org.apache.commons.scxml.model.TransitionTarget;
  */
 public class DefaultEntryListener extends EntryListener {
 
+    class InnerTransition {
+        String stateFrom;
+        String timeStamp;
+
+        public InnerTransition(String stateFrom, String timeStamp) {
+            this.stateFrom = stateFrom;
+            this.timeStamp = timeStamp;
+        }
+        
+    }
+    
+    private ArrayList<InnerTransition> pastStates;
+    
     public DefaultEntryListener(Manager manager) {
         super(manager);
     }
@@ -51,12 +68,39 @@ public class DefaultEntryListener extends EntryListener {
 
     @Override
     public void onTransition(TransitionTarget from, TransitionTarget to, Transition transition, String array, String timeStamp, String logline) {
-        System.out.println("ARRAY: "+array+" EVENT: " + transition.getEvent() + " TO: " + to.getId() + " FROM: " + from.getId() + " TS: " + timeStamp);
+        
+        pastStates.add(new InnerTransition(from.getId(), timeStamp));
+        
+        long delta = getTimeMillis(timeStamp);
+        for (int row=pastStates.size()-1; row >= 0; row--) {
+            if (pastStates.get(row).stateFrom.equals(to.getId())) {
+                delta -= getTimeMillis(pastStates.get(row).timeStamp);
+            }
+        }
+        
+        if (delta == getTimeMillis(timeStamp)) delta = 0L;
+        
+        delta/=1000;
+        
+        
+        System.out.println("ARRAY: "+array+" EVENT: " + transition.getEvent() + " TO: " + to.getId() + " FROM: " + from.getId() + " TS: " + timeStamp + " DTIME: " + delta);
         System.out.println("\tLOGLINE: " + logline);
     }
 
     @Override
     public void initialize() {
+        pastStates = new ArrayList<>();
+    }
+    
+    private long getTimeMillis(String timestamp) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+        Date d;
+        try {
+            d = sdf.parse(timestamp.replace("T", " "));
+        } catch (ParseException ex) {
+            return (Long) 0L;
+        }
+        return (Long) d.getTime();
     }
 
 }

@@ -70,7 +70,8 @@ public class GuiEntryListener extends EntryListener {
         long delta = getTimeMillis(timeStamp);
         
         for (int row = manager.osmPanel.getTablemodel().getRowCount()-1; row>=0; row--) {
-            if (manager.osmPanel.getTablemodel().getValueAt(row, 2).equals(to.getId())) {
+            if (manager.osmPanel.getTablemodel().getValueAt(row, 2).equals(to.getId()) 
+                    && manager.osmPanel.getTablemodel().getValueAt(row, 1).equals(array)) {
                 delta -= getTimeMillis((String)manager.osmPanel.getTablemodel().getValueAt(row, 0));
                 break;
             }
