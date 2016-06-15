@@ -106,8 +106,14 @@
             
             <state id="PointingSubArrayShutterOpenningStarted">
                 <transition event="Interferometry.settingUpEnd" target="PointingSubArrayShutterOpenningEnded"></transition>
+                <transition event="PointingSubArray.cleanUp" target="PointingSubArrayCleanUpStarted"></transition>
             </state>
-            
+            <state id="PointingSubArrayCleanUpStarted">
+                <transition event="PointingSubArray.cleanUpEnd" target="PointingSubArrayShutterOpenningEnded"></transition>
+            </state>
+            <state id="PointingSubArrayCleanUpEnded">
+                <transition event="PointingSubArray.callreference" target="PointingSubArrayGettingReferenceCalled"></transition>
+            </state>
             <state id="PointingSubArrayShutterOpenningEnded">
                 <transition event="SubscanSequence.runException" target="PointingSubArrayStopped"></transition>
             </state>

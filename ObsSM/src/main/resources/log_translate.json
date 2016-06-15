@@ -302,5 +302,21 @@
         "search_list": ["(Completed deactivating the local oscillator)"],
         "keyName": "(Array\\d+)",
         "eventType": "transition"
+    },
+    {
+        "eventName": "PointingSubArray.cleanUp",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(Completed the cleanUp function)","(alma.Control.ObservingModes.ArrayControllerBase)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
+    },
+    {
+        "eventName": "PointingSubArray.cleanUpEnd",
+        "and_list": [],
+        "or_list": [],
+        "search_list": ["(Completed deactivating array mount controller offshoot)", "(cleanUp)"],
+        "keyName": "(Array\\d+)",
+        "eventType": "transition"
     }
 ]
