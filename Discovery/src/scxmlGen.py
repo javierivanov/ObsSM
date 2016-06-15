@@ -9,7 +9,7 @@ def transitionToState(transition):
 
 def transitionToTransition(transition):
     l = str(transition).split('.')
-    return l[1]
+    return transition
 
 def createSCXML(transitions):
     '''Returns a SCXML document using the transitions'''

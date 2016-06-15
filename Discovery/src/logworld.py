@@ -137,7 +137,7 @@ class LogWorld:
                 if a.keyName is not None:
                     a.keyName = a.keyName.group(0)
                 else:
-                    print ("SOMETHING WRONG WITH THIS SHIT")
+                    print ("SOMETHING WRONG")
                     print (line)
                     return
                 self.agents.append(a)

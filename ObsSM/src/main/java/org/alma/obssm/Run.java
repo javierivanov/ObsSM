@@ -168,6 +168,7 @@ public class Run {
         if (message != null) {
             System.out.println(message);
         }
+        System.out.println("For more information see: https://github.com/javierivanov/ObsSM/wiki");
         formatter.printHelp("obssm.sh", options);
         System.exit(0);
     }
