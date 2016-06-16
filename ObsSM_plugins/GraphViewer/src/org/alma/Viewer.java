@@ -221,6 +221,7 @@ public class Viewer extends javax.swing.JFrame {
             jPanel1.add(jg);
             jg.getJgxAdapter().refresh();
         }
+        setSize(getSize());
         //jPanel1.setSize(jScrollPane1.getSize().height*2,jScrollPane1.getSize().width*2);
     }
 
