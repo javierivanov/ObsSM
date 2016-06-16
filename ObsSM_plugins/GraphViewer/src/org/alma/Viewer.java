@@ -221,9 +221,6 @@ public class Viewer extends javax.swing.JFrame {
             jPanel1.add(jg);
             jg.getJgxAdapter().refresh();
         }
-        setSize(getSize().width-1, getSize().height-1);
-        setSize(getSize().width+1, getSize().height+1);
-        //jPanel1.setSize(jScrollPane1.getSize().height*2,jScrollPane1.getSize().width*2);
     }
 
     public void updateActualState(String array, String graphName, String state) {
@@ -233,6 +230,8 @@ public class Viewer extends javax.swing.JFrame {
                 rePaintGraph();
             }
         }
+        jPanel1.setSize(getSize().width-10, getSize().height-10);
+        jPanel1.setSize(getSize().width+10, getSize().height+10);
         arraysAndgraphs.get(array).get(graphName).setState(state);
     }
 
