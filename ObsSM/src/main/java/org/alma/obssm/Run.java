@@ -168,8 +168,16 @@ public class Run {
         if (message != null) {
             System.out.println(message);
         }
-        System.out.println("For more information see: https://github.com/javierivanov/ObsSM/wiki");
         formatter.printHelp("obssm.sh", options);
+        System.out.println();
+        System.out.println("======================GENERAL RECOMENDATIONS===========================");
+        System.out.println("#   On all the options use =\"\". i.e. --query=\"Array: Array001\"        #");
+        System.out.println("#   TimeStamp format is yyyy-MM-ddThh:mm:ss.zzz                       #");
+        System.out.println("#   In grep mode you can select columns of data using:                #");
+        System.out.println("#         --grep=\"TimeStamp:Array:text\"                               #");
+        System.out.println("#                                                                     #");
+        System.out.println("# For more information see:https://github.com/javierivanov/ObsSM/wiki #");
+        System.out.println("======================GENERAL RECOMENDATIONS===========================");
         System.exit(0);
     }
 
