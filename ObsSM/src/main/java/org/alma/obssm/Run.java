@@ -39,7 +39,7 @@ public class Run {
     /**
      * Flag to run with a simulation input.
      */
-    public static boolean SIMUL = false;
+    public static boolean SIMUL = true;
     
     /**
      * Flag to run with debugging messages. 

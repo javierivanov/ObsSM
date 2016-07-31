@@ -20,7 +20,7 @@ public class SimulationImpl implements LineReader{
      * @param example
      */
     public SimulationImpl(String example) {
-        fifo = example.split("&");
+        fifo = example.split("//");
         for (int a=0; a < fifo.length; a++) {
             Timestamp ts = new Timestamp(System.currentTimeMillis());
             try {

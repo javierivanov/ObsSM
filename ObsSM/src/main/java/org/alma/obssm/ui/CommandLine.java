@@ -35,6 +35,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.alma.obssm.Run;
+import org.alma.obssm.net.SimulationImpl;
 import org.alma.obssm.sm.DefaultEntryListener;
 import org.alma.obssm.sm.EntryListener;
 import org.apache.commons.scxml.model.Transition;
@@ -139,6 +140,11 @@ public class CommandLine {
                     } else {
                         out.setSpecialOutput(new String[]{});
                     }
+                }
+                if (Run.SIMUL) try {
+                    return new SimulationImpl(m.getResourceString("simul_input.txt"));
+                } catch (IOException ex) {
+                    Logger.getLogger(CommandLine.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 return out;
             }
