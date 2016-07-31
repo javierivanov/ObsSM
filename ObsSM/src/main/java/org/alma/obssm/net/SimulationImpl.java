@@ -24,11 +24,11 @@ public class SimulationImpl implements LineReader{
         for (int a=0; a < fifo.length; a++) {
             Timestamp ts = new Timestamp(System.currentTimeMillis());
             try {
-                Thread.sleep(1);
+                Thread.sleep((int)(Math.random()*1000));
             } catch (InterruptedException ex) {
                 Logger.getLogger(SimulationImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
-            fifo[a] = ts.toString().replace(" ","T") + " Array000" + fifo[a];
+            fifo[a] = ts.toString().replace(" ","T") + " Array001" + fifo[a];
         }
     }
     

@@ -61,6 +61,7 @@ import org.alma.obssm.Manager;
 import org.alma.obssm.Run;
 import org.alma.obssm.net.ElasticSearchImpl;
 import org.alma.obssm.net.LineReader;
+import org.alma.obssm.net.SimulationImpl;
 import org.alma.obssm.parser.Parser;
 import org.alma.obssm.sm.EntryListener;
 import org.alma.obssm.sm.GuiEntryListener;
@@ -389,6 +390,13 @@ public class ObsSMPanel extends JFrame {
                 dfrom.setEnabled(false);
                 query.setEnabled(false);
                 dto.setEnabled(false);
+                
+                if (Run.SIMUL) try {
+                    return new SimulationImpl(m.getResourceString("simul_input.txt"));
+                } catch (IOException ex) {
+                    Logger.getLogger(ObsSMPanel.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
                 return new ElasticSearchImpl(dfrom.getText().replace(" ", "T"),
                         dto.getText().replace(" ", "T"),
                         query.getText(),
